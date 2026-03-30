@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sword Factory</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0b14;--bg2:#0d0e1a;--panel:#111220;--panel2:#161728;--panel3:#1c1e34;
+  --border:#1f2244;--border2:#2c2f5a;
+  --accent:#4fc3f7;--accent2:#7c4dff;
+  --gold:#ffd54f;--gold2:#ffab00;
+  --green:#00e676;--red:#ff3b5c;--purple:#c084fc;--orange:#ff6d00;
+  --text:#dde1f8;--text2:#89b4fa;--dim:#3d4068;--dim2:#6b72a8;
+  --prestige:#ff6b35;
+  --radius:8px;--radius-lg:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;height:100vh;overflow:hidden;display:flex;flex-direction:column;background-image:radial-gradient(ellipse at 20% 50%,rgba(124,77,255,0.04) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(79,195,247,0.04) 0%,transparent 50%);}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+#topbar{background:var(--panel);border-bottom:1px solid var(--border2);padding:0 14px;height:46px;display:flex;align-items:center;gap:10px;flex-shrink:0;position:relative;}
+#topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent2),var(--accent),transparent);opacity:0.4;}
+#logo{font-family:'Cinzel',serif;font-size:16px;font-weight:700;letter-spacing:3px;color:var(--accent);text-shadow:0 0 18px rgba(79,195,247,0.35);white-space:nowrap;display:flex;align-items:center;gap:7px;}
+.tpill{display:flex;align-items:center;gap:4px;background:var(--panel2);border:1px solid var(--border);border-radius:5px;padding:3px 9px;font-size:11px;font-weight:600;}
+.tpill .tl{color:var(--dim2);font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-right:2px;}
+.tpill .tv{color:var(--gold);font-weight:700;}
+#xp-wrap{display:flex;align-items:center;gap:5px;}
+#xp-track{width:80px;height:5px;background:var(--panel3);border-radius:3px;overflow:hidden;border:1px solid var(--border);}
+#xp-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0%;transition:width 0.4s;border-radius:3px;}
+#weather-pill{margin-left:auto;padding:3px 11px;border-radius:5px;font-size:10px;font-weight:700;border:1px solid var(--gold2);color:var(--gold);white-space:nowrap;}
+#notif{position:fixed;top:54px;left:50%;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--accent);border-radius:7px;padding:7px 16px;font-family:'Cinzel',serif;font-size:12px;color:var(--accent);z-index:9999;opacity:0;pointer-events:none;transition:opacity 0.25s;box-shadow:0 4px 18px rgba(79,195,247,0.18);white-space:nowrap;}
+#notif.show{opacity:1;}
+#global-announce{
+  position:fixed;top:46px;left:0;right:0;
+  background:linear-gradient(90deg,rgba(15,16,32,0.97),rgba(30,20,60,0.97),rgba(15,16,32,0.97));
+  border-bottom:1px solid var(--accent2);
+  padding:6px 16px;
+  font-family:'Cinzel',serif;font-size:12px;font-weight:700;
+  text-align:center;
+  z-index:9998;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.3s;
+  box-shadow:0 4px 20px rgba(124,77,255,0.3);
+}
+#global-announce.show{opacity:1;}
+#main{display:grid;grid-template-columns:220px 1fr 240px;flex:1;overflow:hidden;}
+.side{background:var(--panel);overflow-y:auto;display:flex;flex-direction:column;border-right:1px solid var(--border2);}
+.side:last-child{border-right:none;border-left:1px solid var(--border2);}
+.side-hdr{font-family:'Cinzel',serif;font-size:9px;font-weight:700;letter-spacing:3px;color:var(--dim2);padding:9px 11px 5px;border-bottom:1px solid var(--border);text-transform:uppercase;flex-shrink:0;}
+.uc{margin:3px 7px;background:var(--panel2);border:1px solid var(--border);border-radius:7px;padding:7px 9px;cursor:pointer;transition:border-color 0.15s,background 0.15s;position:relative;overflow:hidden;}
+.uc::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(79,195,247,0.02));pointer-events:none;}
+.uc:hover:not(.locked):not(.maxed){border-color:var(--accent2);background:var(--panel3);}
+.uc.locked{opacity:0.4;cursor:not-allowed;}
+.uc.maxed{border-color:var(--gold2);cursor:default;}
+.uc.cant{border-color:#ff174444;opacity:0.65;}
+.uc.pready{border-color:var(--prestige);animation:pp 1.4s ease-in-out infinite;}
+@keyframes pp{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 3px rgba(255,107,53,0.25);}}
+.ur1{display:flex;justify-content:space-between;align-items:center;margin-bottom:1px;}
+.un{font-family:'Cinzel',serif;font-size:10px;font-weight:700;}
+.ul2{font-size:8px;color:var(--dim2);}
+.ul2.mx{color:var(--gold);}
+.ue{font-size:8px;color:var(--dim2);margin-bottom:3px;}
+.ub{display:flex;justify-content:space-between;align-items:center;}
+.ucost{font-size:9px;font-weight:700;color:var(--green);}
+.ucost.lk{color:var(--red);}
+.ucost.mx{color:var(--gold);}
+.ups{font-size:8px;color:var(--prestige);}
+.ubar{height:2px;background:var(--border);border-radius:1px;margin-top:4px;overflow:hidden;}
+.ubar-f{height:100%;border-radius:1px;transition:width 0.3s;}
+.pbadge{display:inline-block;background:var(--prestige);color:#fff;font-size:7px;font-weight:700;padding:1px 4px;border-radius:3px;margin-left:3px;}
+#center{display:flex;flex-direction:column;overflow:hidden;background:var(--bg2);}
+#tabs{display:flex;background:var(--panel);border-bottom:1px solid var(--border2);flex-shrink:0;overflow-x:auto;}
+.tab{padding:9px 12px;font-size:10px;font-weight:700;font-family:'Cinzel',serif;letter-spacing:1px;cursor:pointer;color:var(--dim2);border-bottom:2px solid transparent;transition:all 0.2s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:hover:not(.active){color:var(--text);}
+#roll-area{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}
+.tc{display:flex;flex-direction:column;gap:8px;}
+
+/* SWORD DISPLAY */
+#sdisplay{background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:14px;text-align:center;position:relative;overflow:hidden;}
+#sdisplay::before{content:'';position:absolute;top:-40%;left:20%;right:20%;height:180%;background:radial-gradient(ellipse,rgba(79,195,247,0.05) 0%,transparent 60%);pointer-events:none;}
+#sword-svg-wrap{width:72px;height:72px;margin:0 auto 8px;}
+#sname{font-family:'Cinzel',serif;font-size:13px;font-weight:700;margin-bottom:6px;line-height:1.3;}
+#stags{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:5px;}
+.stag{font-size:8px;font-weight:700;padding:2px 7px;border-radius:3px;border:1px solid;letter-spacing:0.5px;font-family:'Cinzel',serif;}
+#sencs{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:7px;}
+.etag{font-size:8px;font-weight:600;padding:2px 7px;border-radius:3px;}
+#sdmg{font-size:12px;font-weight:700;color:var(--red);margin-bottom:2px;min-height:15px;}
+#sval{font-size:11px;color:var(--gold);font-weight:600;min-height:14px;}
+#sword-level-tag{font-size:9px;color:var(--dim2);margin-bottom:3px;}
+
+/* BUTTONS */
+#rbtnrow{display:flex;gap:7px;}
+.rbtn{padding:9px 0;flex:1;border:none;border-radius:7px;font-family:'Cinzel',serif;font-size:10px;font-weight:700;cursor:pointer;transition:transform 0.1s,box-shadow 0.2s;letter-spacing:0.8px;display:flex;align-items:center;justify-content:center;gap:5px;}
+.rbtn:active{transform:scale(0.97);}
+#broll{background:linear-gradient(135deg,#7c4dff,#4fc3f7);color:#fff;box-shadow:0 0 14px rgba(124,77,255,0.25);}
+#broll:hover{box-shadow:0 0 22px rgba(124,77,255,0.45);}
+#bsell{background:linear-gradient(135deg,#ff6d00,#ffd54f);color:#111;}
+#bbank{background:linear-gradient(135deg,#ffd54f,#ffab00);color:#111;font-size:9px;}
+#block-btn{background:var(--panel2);color:var(--text);border:1px solid var(--border2);font-size:9px;}
+#block-btn.locked{background:linear-gradient(135deg,#ff1744,#ff6d00);color:#fff;border:none;}
+#bauto{background:var(--panel2);color:var(--text);border:1px solid var(--border2);font-size:9px;}
+#bauto.on{background:linear-gradient(135deg,#00e676,#00b0ff);color:#111;}
+
+.hwrap{display:flex;flex-direction:column;gap:2px;max-height:120px;overflow-y:auto;}
+.hi{background:var(--panel);border-left:2px solid var(--border2);border-radius:0 4px 4px 0;padding:3px 7px;font-size:9px;display:flex;justify-content:space-between;align-items:center;animation:si 0.2s ease;}
+@keyframes si{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.slbl{font-family:'Cinzel',serif;font-size:8px;font-weight:700;letter-spacing:2px;color:var(--dim2);padding:5px 0 3px;border-bottom:1px solid var(--border);margin-bottom:3px;text-transform:uppercase;}
+
+/* ASCENDER */
+#apanel{background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:12px;}
+#ahdr{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:var(--purple);text-align:center;margin-bottom:4px;letter-spacing:2px;}
+#asub{font-size:9px;color:var(--dim2);text-align:center;margin-bottom:7px;}
+#atrack{background:var(--panel3);border-radius:5px;height:9px;overflow:hidden;border:1px solid var(--border);margin-bottom:5px;}
+#afill{height:100%;background:linear-gradient(90deg,var(--accent2),#ff0066);width:0%;transition:width 0.2s;border-radius:5px;}
+#ares{text-align:center;font-size:11px;font-weight:700;min-height:16px;margin-bottom:5px;}
+.arow{display:flex;justify-content:center;gap:14px;font-size:9px;color:var(--dim2);margin-bottom:5px;}
+.arow span{color:var(--text);font-weight:700;}
+#pline{font-size:8px;color:var(--dim2);text-align:center;margin-bottom:7px;}
+.astbtn{width:100%;padding:8px;border:none;border-radius:7px;background:linear-gradient(135deg,#7c4dff,#ff0066);color:#fff;font-family:'Cinzel',serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity 0.2s;}
+.astbtn:hover{opacity:0.85;}
+.ahi{background:var(--panel);border-left:2px solid var(--border2);border-radius:0 4px 4px 0;padding:3px 7px;font-size:9px;display:flex;justify-content:space-between;}
+/* Ascender stat upgrade buttons */
+.asc-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px;}
+.asc-stat-btn{padding:8px 4px;border:1px solid var(--border2);border-radius:7px;background:var(--panel2);color:var(--text);font-family:'Cinzel',serif;font-size:8px;font-weight:700;cursor:pointer;text-align:center;transition:all 0.15s;}
+.asc-stat-btn:hover:not(:disabled){border-color:var(--purple);background:var(--panel3);}
+.asc-stat-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.asc-stat-btn .asb-val{font-size:10px;font-weight:700;color:var(--purple);display:block;margin-top:2px;}
+.asc-stat-btn .asb-cost{font-size:7px;color:var(--green);display:block;}
+
+/* SELL STATION */
+#sstation{background:linear-gradient(135deg,#0f1020,#1a1c35);border:2px solid var(--border2);border-radius:12px;overflow:hidden;}
+.sell-hdr-bar{background:linear-gradient(90deg,#ff1744,#ff6d00);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;}
+.sell-hdr-bar .sh-title{font-family:'Cinzel',serif;font-size:14px;font-weight:900;color:#fff;letter-spacing:3px;text-shadow:0 2px 8px rgba(0,0,0,0.5);}
+.sell-hdr-bar .sh-nav{display:flex;gap:8px;}
+.sell-nav-btn{padding:4px 12px;border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all 0.15s;}
+.sell-nav-btn.home{background:#00e676;color:#111;}
+.sell-nav-btn.bank{background:#ffd54f;color:#111;}
+.sell-nav-btn.asc-nav{background:#ce93d8;color:#111;}
+.sell-nav-btn:hover{opacity:0.8;}
+.sell-index-tabs{display:flex;background:var(--panel);border-bottom:1px solid var(--border2);overflow-x:auto;}
+.sit{padding:6px 10px;font-size:9px;font-weight:700;font-family:'Cinzel',serif;cursor:pointer;color:var(--dim2);border-bottom:2px solid transparent;white-space:nowrap;}
+.sit.active{color:var(--gold);border-bottom-color:var(--gold);}
+.sit:hover:not(.active){color:var(--text);}
+.sell-index-content{padding:8px;}
+.index-grid{display:flex;gap:6px;flex-wrap:wrap;}
+.index-card{background:var(--panel2);border:1px solid var(--border);border-radius:7px;padding:7px 9px;min-width:100px;flex:1;}
+.ic-title{font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.ic-sub{font-size:8px;color:var(--dim2);margin-bottom:5px;}
+.ic-row{display:flex;justify-content:space-between;font-size:8px;padding:1px 0;}
+.ic-name{color:var(--dim2);}
+.ic-val{font-weight:700;}
+
+#slist{display:flex;flex-direction:column;gap:2px;margin-top:7px;max-height:130px;overflow-y:auto;}
+.srow{display:flex;justify-content:space-between;align-items:center;background:var(--panel2);border-radius:4px;padding:4px 8px;font-size:9px;cursor:pointer;transition:background 0.15s;border:1px solid var(--border);}
+.srow:hover{background:var(--panel3);border-color:var(--border2);}
+.srow.locked-sw{cursor:default;opacity:0.7;}
+.srow.locked-sw::after{content:'🔒';margin-left:4px;font-size:8px;}
+#sallbtn{width:100%;margin-top:7px;padding:7px;border:none;border-radius:6px;background:linear-gradient(135deg,#ff6d00,#ffd54f);color:#111;font-family:'Cinzel',serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+.auto-sell-row{display:flex;gap:6px;margin-top:5px;}
+.auto-sell-btn{flex:1;padding:6px;border:none;border-radius:6px;font-family:'Cinzel',serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:0.5px;}
+#auto-sell-toggle{background:var(--panel2);color:var(--text);border:1px solid var(--border2);}
+#auto-sell-toggle.on{background:linear-gradient(135deg,#00e676,#00b0ff);color:#111;border:none;}
+.fsr{display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--border);}
+.fsr:last-child{border-bottom:none;}
+
+/* BANK */
+#bank-panel{background:linear-gradient(135deg,#0f1020,#1a1c35);border:2px solid var(--gold2);border-radius:12px;overflow:hidden;}
+.bank-hdr{background:linear-gradient(90deg,#ffd54f,#ffab00);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;}
+.bank-hdr-title{font-family:'Cinzel',serif;font-size:13px;font-weight:900;color:#111;letter-spacing:2px;}
+.bank-stat{font-size:9px;color:#555;font-weight:700;}
+.bank-body{padding:8px;}
+.bank-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:6px;}
+.bslot{aspect-ratio:1;background:var(--panel2);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:border-color 0.15s;overflow:hidden;}
+.bslot.filled{background:var(--panel3);}
+.bslot:hover.filled{border-color:var(--gold);}
+.bslot .bsv{position:absolute;bottom:1px;right:1px;font-size:4px;font-weight:700;color:var(--gold);font-family:'Cinzel',serif;}
+.bank-withdraw-btn{width:100%;padding:6px;border:none;border-radius:6px;background:linear-gradient(135deg,#ffd54f,#ffab00);color:#111;font-family:'Cinzel',serif;font-size:9px;font-weight:700;cursor:pointer;margin-top:4px;}
+
+/* MOBS / COMBAT */
+#mcard{background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:11px;text-align:center;}
+#msvg{width:70px;height:70px;margin:0 auto 5px;}
+#mname{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--red);margin-bottom:3px;}
+#mtrack{background:var(--panel3);border-radius:5px;height:9px;overflow:hidden;border:1px solid var(--border);margin:5px 0;}
+#mfill{height:100%;background:linear-gradient(90deg,#ff1744,#ff6d00);width:100%;transition:width 0.15s;border-radius:5px;}
+#mreward{font-size:9px;color:var(--gold);margin-bottom:3px;}
+#mlevel{font-size:8px;color:var(--dim2);margin-bottom:7px;}
+.matkbtn{width:100%;padding:7px;border:none;border-radius:6px;background:linear-gradient(135deg,#ff1744,#ff6d00);color:#fff;font-family:'Cinzel',serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+.mrow{display:flex;justify-content:space-between;align-items:center;background:var(--panel2);border-radius:4px;padding:4px 8px;font-size:9px;cursor:pointer;transition:background 0.15s;border:1px solid var(--border);}
+.mrow:hover{background:var(--panel3);}
+.mrow.act{border-color:var(--accent);}
+.mob-badge{font-size:7px;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px;}
+.mob-badge.boss{background:#ff1744;color:#fff;}
+
+/* INDEX */
+#index-wrap{background:var(--panel);border:1px solid var(--border2);border-radius:10px;overflow:hidden;}
+.idx-tabs{display:flex;background:var(--panel2);border-bottom:1px solid var(--border);}
+.idx-tab{flex:1;padding:6px;font-size:8px;font-weight:700;font-family:'Cinzel',serif;cursor:pointer;color:var(--dim2);border-bottom:2px solid transparent;text-align:center;}
+.idx-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.idx-content{padding:6px;max-height:220px;overflow-y:auto;}
+.idx-row{display:flex;justify-content:space-between;align-items:center;padding:2px 5px;border-radius:3px;font-size:8px;border-left:2px solid transparent;}
+.idx-row:hover{background:var(--panel2);}
+.idx-rn{font-weight:700;font-family:'Cinzel',serif;}
+.idx-rc{color:var(--dim2);}
+.idx-eff{font-size:7px;color:var(--dim2);}
+
+/* RIGHT PANEL */
+.sc{margin:3px 7px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:6px 9px;}
+.scl{font-size:8px;color:var(--dim2);letter-spacing:1px;text-transform:uppercase;margin-bottom:1px;}
+.scv{font-size:12px;font-weight:700;}
+#igrid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:0 7px 7px;}
+.islot{aspect-ratio:1;background:var(--panel2);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:border-color 0.15s;overflow:hidden;}
+.islot:hover{border-color:var(--accent2);}
+.islot.filled{background:var(--panel3);}
+.islot.locked-slot{border-color:#ff174477!important;}
+.islot .slbl2{position:absolute;bottom:1px;right:1px;font-size:4px;font-weight:700;color:var(--gold);font-family:'Cinzel',serif;}
+.islot .lock-ico{position:absolute;top:1px;left:1px;font-size:7px;}
+
+/* LEADERBOARD */
+#lb-wrap{background:var(--panel);border:1px solid var(--border2);border-radius:10px;overflow:hidden;}
+.lb-hdr{background:linear-gradient(90deg,#ffd54f33,transparent);padding:6px 10px;font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:var(--gold);border-bottom:1px solid var(--border);}
+.lb-row{display:flex;justify-content:space-between;align-items:center;padding:4px 10px;font-size:9px;border-bottom:1px solid var(--border);}
+.lb-row:last-child{border-bottom:none;}
+.lb-row.me{background:rgba(79,195,247,0.07);border-left:2px solid var(--accent);}
+.lb-rank{color:var(--gold);font-weight:700;font-family:'Cinzel',serif;width:20px;}
+.lb-name{color:var(--text);flex:1;margin-left:6px;}
+.lb-val{color:var(--green);font-weight:700;}
+
+/* WEATHER */
+body.wrain::before{content:'';position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,80,200,0.04),transparent);pointer-events:none;animation:rp 2s ease-in-out infinite;z-index:0;}
+@keyframes rp{0%,100%{opacity:0.4}50%{opacity:1}}
+body.wblood{--bg:#0d0508;--bg2:#0a0308;}
+body.wnight{--bg:#05060f;--bg2:#060718;}
+
+/* BOSS SPAWN ALERT */
+#boss-alert{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1a0005,#3d0010);border:2px solid #ff1744;border-radius:10px;padding:10px 20px;z-index:9998;opacity:0;pointer-events:none;transition:opacity 0.3s;text-align:center;}
+#boss-alert.show{opacity:1;}
+#boss-alert .ba-title{font-family:'Cinzel',serif;font-size:13px;font-weight:900;color:#ff1744;letter-spacing:2px;}
+#boss-alert .ba-sub{font-size:10px;color:#ffab91;margin-top:2px;}
+
+/* SWORD SVG TIERS */
+.sword-icon{width:100%;height:100%;animation:sf 3s ease-in-out infinite;}
+@keyframes sf{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}
+
+/* AREA INFO */
+.area-info{background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:8px;}
+.area-row{display:flex;justify-content:space-between;align-items:center;padding:2px 0;border-bottom:1px solid var(--border);}
+.area-row:last-child{border-bottom:none;}
+.area-name{font-weight:700;font-family:'Cinzel',serif;color:var(--text);}
+.area-luck{color:var(--gold);}
+.area-pvp{font-size:7px;padding:1px 5px;border-radius:3px;font-weight:700;}
+.area-pvp.on{background:#ff174433;color:#ff1744;border:1px solid #ff174466;}
+.area-pvp.off{background:#00e67633;color:#00e676;border:1px solid #00e67666;}
+.area-pvp.safe{background:#4fc3f733;color:#4fc3f7;border:1px solid #4fc3f766;}
+
+/* AREA SELECTOR */
+.area-btn{padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--panel2);color:var(--text);font-family:'Cinzel',serif;font-size:8px;font-weight:700;cursor:pointer;transition:all 0.15s;text-align:left;width:100%;}
+.area-btn:hover:not(:disabled){border-color:var(--accent2);}
+.area-btn.active-area{border-color:var(--accent);background:var(--panel3);}
+.area-btn:disabled{opacity:0.4;cursor:not-allowed;}
+</style>
+</head>
+<body>
+<div id="notif">—</div>
+<div id="global-announce"></div>
+<div id="boss-alert">
+  <div class="ba-title" id="ba-title">⚔ BOSS SPAWNED!</div>
+  <div class="ba-sub" id="ba-sub">Goblin King has appeared!</div>
+</div>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden">
+<defs>
+<symbol id="i-sword" viewBox="0 0 40 40">
+  <line x1="8" y1="33" x2="33" y2="8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="33,8 38,3 38,9 32,9" fill="currentColor"/>
+  <line x1="9" y1="26" x2="16" y2="26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <line x1="14" y1="22" x2="14" y2="29" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="7" cy="33" r="2.5" fill="currentColor"/>
+</symbol>
+<symbol id="i-coin" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/>
+  <path d="M12 7 L12 17 M10 9 Q12 8 14 9 M10 15 Q12 16 14 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-sun" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="4" fill="currentColor"/>
+  <line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <line x1="12" y1="19" x2="12" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <line x1="2" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <line x1="19" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-goblin" viewBox="0 0 40 40">
+  <ellipse cx="20" cy="25" rx="9" ry="11" fill="#388e3c"/>
+  <ellipse cx="20" cy="14" rx="8" ry="7" fill="#43a047"/>
+  <ellipse cx="14" cy="11" rx="3" ry="4" fill="#43a047"/>
+  <ellipse cx="26" cy="11" rx="3" ry="4" fill="#43a047"/>
+  <ellipse cx="16" cy="15" rx="2" ry="2" fill="#1b5e20"/>
+  <ellipse cx="24" cy="15" rx="2" ry="2" fill="#1b5e20"/>
+  <path d="M17 20 Q20 22 23 20" stroke="#1b5e20" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-orc" viewBox="0 0 40 40">
+  <ellipse cx="20" cy="26" rx="12" ry="11" fill="#558b2f"/>
+  <ellipse cx="20" cy="14" rx="10" ry="9" fill="#689f38"/>
+  <ellipse cx="16" cy="13" rx="3" ry="2.5" fill="#33691e"/>
+  <ellipse cx="24" cy="13" rx="3" ry="2.5" fill="#33691e"/>
+  <rect x="12" y="22" width="5" height="4" rx="1" fill="#33691e"/>
+  <rect x="23" y="22" width="5" height="4" rx="1" fill="#33691e"/>
+  <path d="M15 19 Q20 23 25 19" stroke="#33691e" stroke-width="1.5" fill="none"/>
+</symbol>
+<symbol id="i-dragon" viewBox="0 0 40 40">
+  <ellipse cx="20" cy="22" rx="14" ry="12" fill="#b71c1c"/>
+  <ellipse cx="20" cy="12" rx="10" ry="9" fill="#c62828"/>
+  <polygon points="6,8 12,18 2,16" fill="#b71c1c"/>
+  <polygon points="34,8 38,16 28,18" fill="#b71c1c"/>
+  <ellipse cx="15" cy="11" rx="3" ry="3" fill="#ff8f00"/>
+  <ellipse cx="25" cy="11" rx="3" ry="3" fill="#ff8f00"/>
+  <ellipse cx="15" cy="11" rx="1.5" ry="1.5" fill="#212121"/>
+  <ellipse cx="25" cy="11" rx="1.5" ry="1.5" fill="#212121"/>
+  <path d="M14 17 Q20 22 26 17" stroke="#ff5722" stroke-width="2" fill="none"/>
+</symbol>
+<symbol id="i-demon" viewBox="0 0 40 40">
+  <ellipse cx="20" cy="24" rx="13" ry="13" fill="#4a148c"/>
+  <ellipse cx="20" cy="13" rx="10" ry="10" fill="#6a1b9a"/>
+  <polygon points="10,6 14,16 6,13" fill="#7b1fa2"/>
+  <polygon points="30,6 34,13 26,16" fill="#7b1fa2"/>
+  <ellipse cx="15" cy="12" rx="3" ry="3" fill="#ff0000"/>
+  <ellipse cx="25" cy="12" rx="3" ry="3" fill="#ff0000"/>
+  <path d="M14 19 Q20 25 26 19" stroke="#ff6d00" stroke-width="2" fill="none"/>
+  <line x1="20" y1="3" x2="16" y2="8" stroke="#7b1fa2" stroke-width="2"/>
+  <line x1="20" y1="3" x2="24" y2="8" stroke="#7b1fa2" stroke-width="2"/>
+</symbol>
+<symbol id="i-shadow" viewBox="0 0 40 40">
+  <ellipse cx="20" cy="24" rx="13" ry="13" fill="#212121" opacity="0.9"/>
+  <ellipse cx="20" cy="13" rx="10" ry="10" fill="#1a1a2e"/>
+  <ellipse cx="15" cy="12" rx="3" ry="3" fill="#7c4dff"/>
+  <ellipse cx="25" cy="12" rx="3" ry="3" fill="#7c4dff"/>
+  <path d="M14 19 Q20 24 26 19" stroke="#4fc3f7" stroke-width="2" fill="none"/>
+  <line x1="9" y1="9" x2="5" y2="5" stroke="#7c4dff" stroke-width="1.5" opacity="0.6"/>
+  <line x1="31" y1="9" x2="35" y2="5" stroke="#7c4dff" stroke-width="1.5" opacity="0.6"/>
+</symbol>
+<symbol id="i-lich" viewBox="0 0 40 40">
+  <ellipse cx="20" cy="26" rx="11" ry="10" fill="#37474f"/>
+  <ellipse cx="20" cy="13" rx="9" ry="9" fill="#455a64"/>
+  <ellipse cx="15" cy="12" rx="2.5" ry="2.5" fill="#00e5ff"/>
+  <ellipse cx="25" cy="12" rx="2.5" ry="2.5" fill="#00e5ff"/>
+  <path d="M15 19 Q20 23 25 19" stroke="#00e5ff" stroke-width="1.5" fill="none"/>
+  <line x1="13" y1="5" x2="20" y2="10" stroke="#78909c" stroke-width="1.5"/>
+  <line x1="27" y1="5" x2="20" y2="10" stroke="#78909c" stroke-width="1.5"/>
+  <line x1="20" y1="3" x2="20" y2="10" stroke="#90a4ae" stroke-width="2"/>
+</symbol>
+<symbol id="i-titan" viewBox="0 0 40 40">
+  <ellipse cx="20" cy="26" rx="15" ry="12" fill="#5d4037"/>
+  <ellipse cx="20" cy="13" rx="12" ry="10" fill="#6d4c41"/>
+  <ellipse cx="15" cy="12" rx="3.5" ry="3.5" fill="#ff6d00"/>
+  <ellipse cx="25" cy="12" rx="3.5" ry="3.5" fill="#ff6d00"/>
+  <path d="M13 20 Q20 27 27 20" stroke="#ff8f00" stroke-width="2.5" fill="none"/>
+  <line x1="5" y1="15" x2="35" y2="15" stroke="#4e342e" stroke-width="2" opacity="0.5"/>
+</symbol>
+<symbol id="i-void" viewBox="0 0 40 40">
+  <ellipse cx="20" cy="22" rx="15" ry="15" fill="#0a0010" opacity="0.95"/>
+  <ellipse cx="20" cy="22" rx="12" ry="12" fill="#1a0030"/>
+  <ellipse cx="15" cy="20" rx="3" ry="3" fill="#ea80fc"/>
+  <ellipse cx="25" cy="20" rx="3" ry="3" fill="#ea80fc"/>
+  <circle cx="20" cy="22" r="5" fill="none" stroke="#7c4dff" stroke-width="1.5" opacity="0.7"/>
+  <circle cx="20" cy="22" r="9" fill="none" stroke="#4a148c" stroke-width="1" opacity="0.5"/>
+</symbol>
+</defs>
+</svg>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div id="logo">⚔ SWORD FACTORY</div>
+  <div class="tpill"><span class="tl">CASH</span><span class="tv" id="t-cash">$0</span></div>
+  <div class="tpill"><span class="tl">LVL</span><span class="tv" id="t-lvl">1</span></div>
+  <div id="xp-wrap">
+    <div id="xp-track"><div id="xp-fill"></div></div>
+    <span style="font-size:9px;color:var(--dim2)" id="t-xp">0/100</span>
+  </div>
+  <div class="tpill"><span class="tl">LUCK</span><span class="tv" id="t-luck">×1.00</span></div>
+  <div class="tpill"><span class="tl">INV</span><span class="tv" id="t-inv">0/85</span></div>
+  <div class="tpill"><span class="tl">BANK</span><span class="tv" id="t-bank-count">0/50</span></div>
+  <div id="weather-pill" id="t-weather">☀ Clear · ×1 Luck</div>
+  <div class="tpill" style="color:#ff5252;border-color:#ff525244;font-size:9px;margin-left:4px;" id="triple-timer">🔥 Triple: 30:00</div>
+</div>
+<div id="global-announce"></div>
+
+<div id="main">
+  <!-- LEFT: UPGRADES -->
+  <div class="side">
+    <div class="side-hdr">Factory Upgrades</div>
+    <div id="ulist"></div>
+  </div>
+
+  <!-- CENTER -->
+  <div id="center">
+    <div id="tabs">
+      <div class="tab active" onclick="sw('factory')">⚒ Factory</div>
+      <div class="tab" onclick="sw('ascender')">✦ Ascender</div>
+      <div class="tab" onclick="sw('sell')">💰 Sell</div>
+      <div class="tab" onclick="sw('bank')">🏦 Bank</div>
+      <div class="tab" onclick="sw('mobs')">⚔ Combat</div>
+      <div class="tab" onclick="sw('index')">📖 Index</div>
+      <div class="tab" onclick="sw('leaderboard')">🏆 Leaderboard</div>
+    </div>
+    <div id="roll-area">
+
+      <!-- FACTORY -->
+      <div id="t-factory" class="tc">
+        <div id="sdisplay">
+          <div id="sword-svg-wrap"></div>
+          <div id="sword-level-tag"></div>
+          <div id="sname" style="color:var(--dim2);">Roll to forge a sword</div>
+          <div id="sencs"></div>
+          <div id="stags"></div>
+          <div id="sdmg"></div>
+          <div id="sval"></div>
+        </div>
+        <div id="rbtnrow">
+          <button class="rbtn" id="broll" onclick="rollSword(true)">⚒ FORGE</button>
+          <button class="rbtn" id="bsell" onclick="sellCur()">💰 SELL</button>
+          <button class="rbtn" id="bbank" onclick="bankCur()">🏦 BANK</button>
+          <button class="rbtn" id="block-btn" onclick="lockCur()">🔓 LOCK</button>
+          <button class="rbtn" id="bauto" onclick="toggleAuto()">AUTO: OFF</button>
+        </div>
+        <div class="slbl">Recent Rolls</div>
+        <div class="hwrap" id="hist"></div>
+      </div>
+
+      <!-- ASCENDER -->
+      <div id="t-ascender" class="tc" style="display:none;">
+        <div id="apanel">
+          <div id="ahdr">✦ THE ASCENDER ✦</div>
+          <div id="asub">Select a sword from inventory to ascend its stats</div>
+          <div style="margin-bottom:6px;">
+            <div style="font-size:8px;color:var(--dim2);margin-bottom:3px;">Selected for Ascension:</div>
+            <div id="asc-sword-display" style="background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:6px;min-height:40px;font-size:9px;color:var(--dim2);text-align:center;cursor:pointer;" onclick="selectAscSword()">Click to select a sword from inventory</div>
+          </div>
+          <div id="atrack"><div id="afill"></div></div>
+          <div id="ares" style="color:var(--dim2);">—</div>
+          <div class="arow">
+            Asc Luck:&nbsp;<span id="a-luck">×1</span>&nbsp;|&nbsp;Speed:&nbsp;<span id="a-spd">1.500s</span>&nbsp;|&nbsp;Tries:&nbsp;<span id="a-tries">0</span>
+          </div>
+          <div id="pline">Pity: 0 fails · Bonus: ×1.00</div>
+          <div class="asc-stat-grid" id="asc-stat-grid">
+            <button class="asc-stat-btn" onclick="ascUpgStat('rarity')" id="asb-rarity"><span>Rarity</span><span class="asb-val" id="asv-rarity">—</span><span class="asb-cost" id="asc-rarity-cost">Select sword</span></button>
+            <button class="asc-stat-btn" onclick="ascUpgStat('quality')" id="asb-quality"><span>Quality</span><span class="asb-val" id="asv-quality">—</span><span class="asb-cost" id="asc-quality-cost">Select sword</span></button>
+            <button class="asc-stat-btn" onclick="ascUpgStat('mold')" id="asb-mold"><span>Mold</span><span class="asb-val" id="asv-mold">—</span><span class="asb-cost" id="asc-mold-cost">Select sword</span></button>
+            <button class="asc-stat-btn" onclick="ascUpgStat('class')" id="asb-class"><span>Class</span><span class="asb-val" id="asv-class">—</span><span class="asb-cost" id="asc-class-cost">Select sword</span></button>
+            <button class="asc-stat-btn" onclick="ascUpgStat('level')" id="asb-level"><span>Level</span><span class="asb-val" id="asv-level">—</span><span class="asb-cost" id="asc-level-cost">Select sword</span></button>
+            <button class="asc-stat-btn" onclick="ascUpgStat('enchant')" id="asb-enchant"><span>Enchant</span><span class="asb-val" id="asv-enchant">—</span><span class="asb-cost" id="asc-enchant-cost">Select sword</span></button>
+          </div>
+          <div style="margin-top:6px;display:flex;gap:5px;">
+            <button class="astbtn" id="abtn" onclick="toggleAsc()" style="flex:1;">▶ AUTO ASCEND</button>
+          </div>
+        </div>
+        <div class="slbl" style="margin-top:7px;">Recent Ascensions</div>
+        <div id="ahist" style="display:flex;flex-direction:column;gap:2px;max-height:150px;overflow-y:auto;"></div>
+      </div>
+
+      <!-- SELL STATION -->
+      <div id="t-sell" class="tc" style="display:none;">
+        <div id="sstation">
+          <div class="sell-hdr-bar">
+            <div class="sh-title">⚔ SELL STATION</div>
+            <div class="sh-nav">
+              <button class="sell-nav-btn home" onclick="sw('factory')">HOME</button>
+              <button class="sell-nav-btn bank" onclick="sw('bank')">BANK</button>
+              <button class="sell-nav-btn asc-nav" onclick="sw('ascender')">ASC</button>
+            </div>
+          </div>
+          <div class="sell-index-tabs">
+            <div class="sit active" onclick="setSellTab('swords')">My Swords</div>
+            <div class="sit" onclick="setSellTab('rarity')">Rarity Index</div>
+            <div class="sit" onclick="setSellTab('quality')">Quality Index</div>
+            <div class="sit" onclick="setSellTab('mold')">Mold Index</div>
+            <div class="sit" onclick="setSellTab('class')">Class Index</div>
+            <div class="sit" onclick="setSellTab('enchant')">Enchant Index</div>
+          </div>
+          <div class="sell-index-content" id="sell-tab-content">
+            <div id="slist"></div>
+            <button id="sallbtn" onclick="sellAll()">SELL ALL (unlocked)</button>
+            <div class="auto-sell-row">
+              <button class="auto-sell-btn" id="auto-sell-toggle" onclick="toggleAutoSell()">AUTO SELL: OFF</button>
+              <button class="auto-sell-btn" style="background:var(--panel3);border:1px solid var(--border2);color:var(--dim2);" onclick="sw('index')">Open Index →</button>
+            </div>
+          </div>
+        </div>
+        <div class="slbl" style="margin-top:8px;">Factory Statistics</div>
+        <div id="fstats" style="background:var(--panel);border:1px solid var(--border2);border-radius:7px;padding:6px 9px;"></div>
+      </div>
+
+      <!-- BANK -->
+      <div id="t-bank" class="tc" style="display:none;">
+        <div id="bank-panel">
+          <div class="bank-hdr">
+            <div class="bank-hdr-title">🏦 BANK STATION</div>
+            <div class="bank-stat" id="bank-worth-hdr">Total: $0</div>
+          </div>
+          <div class="bank-body">
+            <div style="font-size:8px;color:var(--dim2);text-align:center;margin-bottom:5px;">Stores your swords safely. Earn passive income from stored swords. Click to withdraw.</div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:5px;">
+              <span style="color:var(--dim2);">Bank Capacity</span>
+              <span id="bank-cap-txt" style="color:var(--gold);font-weight:700;">0/50</span>
+            </div>
+            <div style="background:var(--panel3);height:4px;border-radius:2px;overflow:hidden;margin-bottom:7px;"><div id="bank-cap-bar" style="height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));width:0%;transition:width 0.3s;border-radius:2px;"></div></div>
+            <div class="bank-grid" id="bgrid"></div>
+            <div style="display:flex;gap:5px;margin-top:5px;">
+              <button class="bank-withdraw-btn" onclick="withdrawAll()" style="flex:1;">Withdraw All</button>
+              <button class="bank-withdraw-btn" onclick="sellFromBank()" style="flex:1;background:linear-gradient(135deg,#ff6d00,#ffd54f);color:#111;">Sell All Banked</button>
+            </div>
+            <div style="margin-top:8px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:7px;">
+              <div style="font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:var(--gold);margin-bottom:4px;">Bank Statistics</div>
+              <div class="fsr"><span style="color:var(--dim2)">Total Bank Worth</span><span id="bank-total-worth" style="color:var(--gold);font-weight:700;">$0</span></div>
+              <div class="fsr"><span style="color:var(--dim2)">Passive Income/Day</span><span id="bank-income" style="color:var(--green);font-weight:700;">$0/day</span></div>
+              <div class="fsr"><span style="color:var(--dim2)">Swords Stored</span><span id="bank-count-stat">0</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOBS -->
+      <div id="t-mobs" class="tc" style="display:none;">
+        <div id="mcard">
+          <div id="msvg"></div>
+          <div id="mname">Select Area & Enemy</div>
+          <div id="mtrack"><div id="mfill"></div></div>
+          <div id="mreward">—</div>
+          <div id="mlevel"></div>
+          <button class="matkbtn" onclick="atkMob()">⚔ ATTACK</button>
+        </div>
+        <div class="slbl" style="margin-top:7px;">Select Area</div>
+        <div id="area-list" style="display:flex;flex-direction:column;gap:3px;margin-bottom:5px;"></div>
+        <div class="slbl">Boss Spawns (Rare!)</div>
+        <div id="boss-log" style="display:flex;flex-direction:column;gap:2px;max-height:80px;overflow-y:auto;"></div>
+      </div>
+
+      <!-- INDEX -->
+      <div id="t-index" class="tc" style="display:none;">
+        <div id="index-wrap">
+          <div class="idx-tabs">
+            <div class="idx-tab active" onclick="setIdxTab('rarity')">Rarities</div>
+            <div class="idx-tab" onclick="setIdxTab('quality')">Quality</div>
+            <div class="idx-tab" onclick="setIdxTab('mold')">Molds</div>
+            <div class="idx-tab" onclick="setIdxTab('class')">Classes</div>
+            <div class="idx-tab" onclick="setIdxTab('enchant')">Enchants</div>
+          </div>
+          <div class="idx-content" id="idx-content"></div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD -->
+      <div id="t-leaderboard" class="tc" style="display:none;">
+        <div id="lb-wrap">
+          <div class="lb-hdr">🏆 Top Players — Total Cash</div>
+          <div id="lb-list"></div>
+        </div>
+        <div id="lb-wrap2" style="margin-top:6px;">
+          <div style="background:var(--panel);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:6px;">
+            <div class="lb-hdr">🎖 Top Players — Level</div>
+            <div id="lb-lvl-list"></div>
+          </div>
+          <div id="lb-wrap3" style="background:var(--panel);border:1px solid var(--border2);border-radius:10px;overflow:hidden;">
+            <div class="lb-hdr">⚔ Top DMG Dealers</div>
+            <div id="lb-dmg-list"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="side">
+    <div class="side-hdr">Statistics</div>
+    <div class="sc"><div class="scl">Total Cash Earned</div><div class="scv" id="s-tc" style="color:var(--gold)">$0</div></div>
+    <div class="sc"><div class="scl">Total Rolls</div><div class="scv" id="s-r">0</div></div>
+    <div class="sc"><div class="scl">Best Rarity</div><div class="scv" id="s-b">—</div></div>
+    <div class="sc"><div class="scl">Sword DMG</div><div class="scv" id="s-d" style="color:var(--red)">0</div></div>
+    <div class="sc"><div class="scl">Factory Rate</div><div class="scv" id="s-fr">0/min</div></div>
+    <div class="sc"><div class="scl">Total Sold</div><div class="scv" id="s-s">0</div></div>
+    <div class="sc"><div class="scl">Ascension Luck</div><div class="scv" id="s-asc" style="color:var(--purple)">×1.00</div></div>
+    <div class="side-hdr" style="margin-top:3px;">Inventory (<span id="icnt">0</span>/85)</div>
+    <div id="igrid"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA FROM PDFs
+// ============================================================
+const R=[
+  {n:"Basic-",c:1/1,col:"#9e9e9e",tier:0},{n:"Basic",c:1/1.33,col:"#bdbdbd",tier:0},{n:"Basic+",c:1/1.77,col:"#e0e0e0",tier:0},{n:"Basic++",c:1/2.37,col:"#eeeeee",tier:0},
+  {n:"Common-",c:1/3.16,col:"#a5d6a7",tier:1},{n:"Common",c:1/4.2,col:"#81c784",tier:1},{n:"Common+",c:1/5.62,col:"#66bb6a",tier:1},{n:"Common++",c:1/7.5,col:"#4caf50",tier:1},
+  {n:"Uncommon-",c:1/10,col:"#80deea",tier:2},{n:"Uncommon",c:1/13.3,col:"#4dd0e1",tier:2},{n:"Uncommon+",c:1/17.7,col:"#26c6da",tier:2},{n:"Uncommon++",c:1/23.7,col:"#00bcd4",tier:2},
+  {n:"Rare-",c:1/31.6,col:"#90caf9",tier:3},{n:"Rare",c:1/42,col:"#64b5f6",tier:3},{n:"Rare+",c:1/56.2,col:"#42a5f5",tier:3},{n:"Rare++",c:1/75,col:"#2196f3",tier:3},
+  {n:"Epic-",c:1/100,col:"#ce93d8",tier:4},{n:"Epic",c:1/133,col:"#ba68c8",tier:4},{n:"Epic+",c:1/177,col:"#ab47bc",tier:4},{n:"Epic++",c:1/237,col:"#9c27b0",tier:4},
+  {n:"Legendary-",c:1/316,col:"#ffcc80",tier:5},{n:"Legendary",c:1/420,col:"#ffa726",tier:5},{n:"Legendary+",c:1/562,col:"#ff9800",tier:5},{n:"Legendary++",c:1/750,col:"#fb8c00",tier:5},
+  {n:"Mythical-",c:1/1000,col:"#ef9a9a",tier:6},{n:"Mythical",c:1/1330,col:"#e57373",tier:6},{n:"Mythical+",c:1/1770,col:"#ef5350",tier:6},{n:"Mythical++",c:1/2370,col:"#f44336",tier:6},
+  {n:"Divine-",c:1/3160,col:"#fff59d",tier:7},{n:"Divine",c:1/4200,col:"#fff176",tier:7},{n:"Divine+",c:1/5620,col:"#ffee58",tier:7},{n:"Divine++",c:1/7500,col:"#ffeb3b",tier:7},
+  {n:"Super-",c:1/10000,col:"#f48fb1",tier:8},{n:"Super",c:1/13300,col:"#f06292",tier:8},{n:"Super+",c:1/17700,col:"#ec407a",tier:8},{n:"Super++",c:1/23700,col:"#e91e63",tier:8},
+  {n:"Mega-",c:1/31600,col:"#80cbc4",tier:9},{n:"Mega",c:1/42000,col:"#4db6ac",tier:9},{n:"Mega+",c:1/56200,col:"#26a69a",tier:9},{n:"Mega++",c:1/75000,col:"#009688",tier:9},
+  {n:"Ultra-",c:1/1e5,col:"#ffab91",tier:10},{n:"Ultra",c:1/133000,col:"#ff8a65",tier:10},{n:"Ultra+",c:1/177000,col:"#ff7043",tier:10},{n:"Ultra++",c:1/237000,col:"#ff5722",tier:10},
+  {n:"Omega-",c:1/316000,col:"#ff80ab",tier:11},{n:"Omega",c:1/420000,col:"#ff4081",tier:11},{n:"Omega+",c:1/562000,col:"#f50057",tier:11},{n:"Omega++",c:1/750000,col:"#c51162",tier:11},
+  {n:"Extreme-",c:1/1e6,col:"#ccff90",tier:12},{n:"Extreme",c:1/1.33e6,col:"#b2ff59",tier:12},{n:"Extreme+",c:1/1.77e6,col:"#76ff03",tier:12},{n:"Extreme++",c:1/2.37e6,col:"#64dd17",tier:12},
+  {n:"Ultimate-",c:1/3.16e6,col:"#69f0ae",tier:13},{n:"Ultimate",c:1/4.2e6,col:"#00e676",tier:13},{n:"Ultimate+",c:1/5.62e6,col:"#00c853",tier:13},{n:"Ultimate++",c:1/7.5e6,col:"#00701a",tier:13},
+  {n:"Insane-",c:1/1e7,col:"#ff9e80",tier:14},{n:"Insane",c:1/1.33e7,col:"#ff6d00",tier:14},{n:"Insane+",c:1/1.77e7,col:"#e65100",tier:14},{n:"Insane++",c:1/2.37e7,col:"#bf360c",tier:14},
+  {n:"Hyper-",c:1/3.16e7,col:"#ea80fc",tier:15},{n:"Hyper",c:1/4.2e7,col:"#e040fb",tier:15},{n:"Hyper+",c:1/5.62e7,col:"#d500f9",tier:15},{n:"Hyper++",c:1/7.5e7,col:"#aa00ff",tier:15},
+  {n:"Godly-",c:1/1e8,col:"#ffe57f",tier:16},{n:"Godly",c:1/2e8,col:"#ffd740",tier:16},{n:"Godly+",c:1/4e8,col:"#ffab00",tier:16},{n:"Godly++",c:1/8e8,col:"#ff6f00",tier:16},
+  {n:"Unique-",c:1/1.6e9,col:"#cfd8dc",tier:17},{n:"Unique",c:1/3.2e9,col:"#b0bec5",tier:17},{n:"Unique+",c:1/6.4e9,col:"#90a4ae",tier:17},{n:"Unique++",c:1/1.28e10,col:"#78909c",tier:17},
+  {n:"Exotic-",c:1/2.56e10,col:"#ffccbc",tier:18},{n:"Exotic",c:1/5.12e10,col:"#ffab91",tier:18},{n:"Exotic+",c:1/1.02e11,col:"#ff8a65",tier:18},{n:"Exotic++",c:1/2.04e11,col:"#ff7043",tier:18},
+  {n:"Supreme-",c:1/4.1e11,col:"#b39ddb",tier:19},{n:"Supreme",c:1/8.2e11,col:"#9575cd",tier:19},{n:"Supreme+",c:1/1.63e12,col:"#7e57c2",tier:19},{n:"Supreme++",c:1/3.27e12,col:"#673ab7",tier:19},
+  {n:"Celestial-",c:1/6.55e12,col:"#80d8ff",tier:20},{n:"Celestial",c:1/1.3e13,col:"#40c4ff",tier:20},{n:"Celestial+",c:1/2.62e13,col:"#00b0ff",tier:20},{n:"Celestial++",c:1/5.24e13,col:"#0091ea",tier:20},
+  {n:"Eternal-",c:1/1.0486e14,col:"#fffde7",tier:21},{n:"Eternal",c:1/2.0972e14,col:"#fff9c4",tier:21},
+  {n:"Cosmic-",c:1/1.68e15,col:"#fce4ec",tier:22},{n:"Cosmic",c:1/3.36e15,col:"#f8bbd0",tier:22},
+  {n:"Heavenly-",c:1/2.684e16,col:"#e0f7fa",tier:23},{n:"Heavenly",c:1/5.368e16,col:"#b2ebf2",tier:23},
+];
+const Q=[
+  {n:"Broken",c:1/1,m:0.5,cashBoost:1},{n:"Rough",c:1/3,m:0.8,cashBoost:1.1},{n:"Bad",c:1/9,m:0.9,cashBoost:1.2},
+  {n:"Okay",c:1/27,m:1,cashBoost:1.4},{n:"Fine",c:1/81,m:1.1,cashBoost:1.6},{n:"Good",c:1/243,m:1.2,cashBoost:2},
+  {n:"Great",c:1/730,m:1.35,cashBoost:2.5},{n:"Awesome",c:1/2180,m:1.5,cashBoost:3.5},{n:"Excellent",c:1/6560,m:1.75,cashBoost:5},
+  {n:"Perfect",c:1/19600,m:2,cashBoost:7},{n:"Best",c:1/59000,m:2.5,cashBoost:10},
+  {n:"Incredible",c:1/177000,m:3,cashBoost:15},{n:"Tremendous",c:1/530000,m:4,cashBoost:25},{n:"Fantastic",c:1/1.6e6,m:5,cashBoost:40},
+  {n:"Absurd",c:1/4.78e6,m:7,cashBoost:70},{n:"Exquisite",c:1/1.43e7,m:10,cashBoost:100},
+  {n:"Remarkable",c:1/4.3e7,m:15,cashBoost:150},{n:"Extravagant",c:1/1.3e8,m:20,cashBoost:250},
+  {n:"Phenomenal",c:1/3.87e8,m:30,cashBoost:500},{n:"Brilliant",c:1/1.16e9,m:50,cashBoost:1000},
+  {n:"Astounding",c:1/3.48e9,m:80,cashBoost:2000},{n:"Marvelous",c:1/1.04e10,m:120,cashBoost:4000},
+  {n:"Spectacular",c:1/3.13e10,m:180,cashBoost:8000},{n:"Extraordinary",c:1/9.4e10,m:280,cashBoost:15000},
+  {n:"Fabulous",c:1/2.82e11,m:420,cashBoost:30000},{n:"Splendid",c:1/8.47e11,m:640,cashBoost:60000},
+  {n:"Glorious",c:1/2.54e12,m:960,cashBoost:120000},{n:"Magnificent",c:1/7.62e12,m:1400,cashBoost:250000},
+  {n:"Terrific",c:1/2.28e13,m:2000,cashBoost:500000},{n:"Wondrous",c:1/6.86e13,m:2500,cashBoost:1000000},
+  {n:"Astonishing",c:1/2.05e14,m:3000,cashBoost:2000000},{n:"Miraculous",c:1/6.18e14,m:3600,cashBoost:5000000},
+  {n:"Staggering",c:1/1.85e15,m:4200,cashBoost:10000000},{n:"Supernatural",c:1/5.56e15,m:5000,cashBoost:20000000},
+  {n:"Unlimited",c:1/1.668e16,m:6000,cashBoost:50000000},{n:"Boundless",c:1/5.003e16,m:7500,cashBoost:100000000},
+  {n:"Prodigious",c:1/1.501e17,m:9000,cashBoost:200000000},{n:"Abnormal",c:1/4.503e17,m:11000,cashBoost:500000000},
+  {n:"Magical",c:1/1.351e18,m:13000,cashBoost:1000000000},{n:"Catastrophic",c:1/4.053e18,m:16000,cashBoost:2000000000},
+  {n:"Radiant",c:1/1.216e19,m:20000,cashBoost:5000000000},{n:"Dazzling",c:1/3.645e19,m:25000,cashBoost:10000000000},
+  {n:"Hypnotic",c:1/1.094e20,m:30000,cashBoost:20000000000},{n:"Premium",c:1/3.281e20,m:37000,cashBoost:50000000000},
+  {n:"Graceful",c:1/9.842e20,m:45000,cashBoost:100000000000},{n:"Deluxe",c:1/2.953e21,m:55000,cashBoost:500000000000},
+];
+const M=[
+  {n:"Normal",c:1/1,d:1,cashBoost:1},{n:"Bronze",c:1/10,d:1.5,cashBoost:1.5},
+  {n:"Silver",c:1/100,d:2,cashBoost:2},{n:"Gold",c:1/1000,d:3,cashBoost:3},
+  {n:"Sapphire",c:1/10000,d:5,cashBoost:5},{n:"Emerald",c:1/1e5,d:8,cashBoost:8},
+  {n:"Ruby",c:1/1e6,d:15,cashBoost:15},{n:"Amethyst",c:1/1e7,d:25,cashBoost:25},
+  {n:"Diamond",c:1/1e8,d:50,cashBoost:50},{n:"Opal",c:1/1e9,d:100,cashBoost:100},
+  {n:"Crystal",c:1/1e10,d:200,cashBoost:200},{n:"Topaz",c:1/1e11,d:500,cashBoost:500},
+  {n:"Painite",c:1/1e12,d:1000,cashBoost:1000},{n:"Azure",c:1/1e13,d:2000,cashBoost:2000},
+  {n:"Uranium",c:1/1e14,d:5000,cashBoost:5000},{n:"Quartz",c:1/1e15,d:10000,cashBoost:10000},
+  {n:"Ammolite",c:1/1e16,d:25000,cashBoost:25000},{n:"Citrine",c:1/1e17,d:60000,cashBoost:60000},
+  {n:"Aquamarine",c:1/1e18,d:150000,cashBoost:150000},{n:"Mithril",c:1/1e19,d:400000,cashBoost:400000},
+  {n:"Bismuth",c:1/1e20,d:1000000,cashBoost:1000000},{n:"Iridium",c:1/1e21,d:3000000,cashBoost:3000000},
+];
+const CL=[
+  {n:"Regular",c:1/1,d:1},{n:"Nice",c:1/4,d:1.15},{n:"Cool",c:1/16,d:1.3},{n:"Decent",c:1/64,d:1.5},
+  {n:"Strong",c:1/256,d:2},{n:"Tough",c:1/1020,d:2.5},{n:"Solid",c:1/4100,d:3},{n:"Powerful",c:1/16300,d:4},
+  {n:"Crazy",c:1/65500,d:5},{n:"Unstoppable",c:1/262000,d:7},{n:"Impossible",c:1/1.04e6,d:10},
+  {n:"Ethereal",c:1/4.2e6,d:15},{n:"Unimaginable",c:1/1.67e7,d:20},{n:"Outrageous",c:1/6.7e7,d:30},
+  {n:"Limitless",c:1/2.68e8,d:50},{n:"Invincible",c:1/1.07e9,d:75},{n:"Chaotic",c:1/4.3e9,d:100},
+  {n:"Unbeatable",c:1/1.7e10,d:150},{n:"Colossal",c:1/6.87e10,d:200},{n:"Unbreakable",c:1/2.74e11,d:260},
+  {n:"Indomitable",c:1/1.1e12,d:310},{n:"Omnipotent",c:1/4.4e12,d:375},{n:"Vigorous",c:1/1.759e13,d:450},
+  {n:"Ruthless",c:1/7.037e13,d:550},{n:"Mighty",c:1/2.815e14,d:680},{n:"Ferocious",c:1/1.126e15,d:850},
+  {n:"Resilient",c:1/4.52e15,d:1100},{n:"Immortal",c:1/1.808e16,d:1400},{n:"Undying",c:1/7.232e16,d:1800},
+  {n:"Prime",c:1/2.893e17,d:2300},{n:"Elite",c:1/1.157e18,d:3000},{n:"Heroic",c:1/4.627e18,d:4000},
+  {n:"Inimitable",c:1/1.851e19,d:5500},{n:"Astronomical",c:1/7.403e19,d:7500},
+];
+const EN=[
+  {n:"Fortune",c:1/1,col:"#ffd54f",eff:"+10% sell value/tier"},
+  {n:"Sharpness",c:1/1.25,col:"#ff5252",eff:"+10% sword DMG/tier"},
+  {n:"Protection",c:1/1.65,col:"#82b1ff",eff:"+10% more HP/tier"},
+  {n:"Haste",c:1/2.5,col:"#69f0ae",eff:"+2% move speed/tier"},
+  {n:"Swiftness",c:1/5,col:"#84ffff",eff:"+3% attack speed/tier"},
+  {n:"Critical",c:1/6.7,col:"#ffab40",eff:"+5% crit chance/tier"},
+  {n:"Resistance",c:1/8,col:"#8c9eff",eff:"-10% damage taken/tier"},
+  {n:"Healing",c:1/10,col:"#ff80ab",eff:"+3% HP regen/tier"},
+  {n:"Looting",c:1/13.5,col:"#ccff90",eff:"+2% XP & cash/tier"},
+  {n:"Attraction",c:1/20,col:"#ea80fc",eff:"+2% mob aggro range/tier"},
+  {n:"Stealth",c:1/25,col:"#b0bec5",eff:"-1% mob detection/tier"},
+  {n:"Ancient",c:1/33,col:"#ff6d00",eff:"+10% value/tier (grows over time)"},
+  {n:"Desperation",c:1/50,col:"#ff1744",eff:"+10-20% DMG at low HP"},
+  {n:"Insight",c:1/100,col:"#ce93d8",eff:"+25% XP/tier"},
+  {n:"Thorns",c:1/125,col:"#a5d6a7",eff:"+4% reflect DMG/tier"},
+  {n:"Knockback",c:1/150,col:"#80deea",eff:"+4% knockback/tier"},
+];
+const NM=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV","XXV","XXVI","XXVII","XXVIII","XXIX","XXX","XXXI","XXXII","XXXIII","XXXIV","XXXV","XXXVI","XXXVII","XXXVIII","XXXIX","XL"];
+
+const UPS=[
+  {id:"appraiser",n:"Appraiser",ico:"🔍",unlock:0,base:0,scale:5e7,maxLvl:1800,col:"#4fc3f7",eff:"Reveals sword stats"},
+  {id:"conveyor",n:"Conveyor",ico:"⚙",unlock:0,base:100,scale:8e10/1800,maxLvl:1800,col:"#69f0ae",eff:"Auto-forge speed"},
+  {id:"polisher",n:"Polisher",ico:"✨",unlock:1000,base:1000,scale:5e12/1800,maxLvl:1800,col:"#84ffff",eff:"+Quality chance"},
+  {id:"upgrader",n:"Upgrader",ico:"⬆",unlock:30000,base:30000,scale:2e13/1800,maxLvl:1800,col:"#82b1ff",eff:"+Rarity chance"},
+  {id:"molder",n:"Molder",ico:"🔩",unlock:1e5,base:1e5,scale:7e13/1800,maxLvl:1800,col:"#ffab40",eff:"+Mold chance"},
+  {id:"classifier",n:"Classifier",ico:"📊",unlock:1e7,base:1e7,scale:4e14/1800,maxLvl:1800,col:"#ff80ab",eff:"+Class chance"},
+  {id:"enchanter",n:"Enchanter",ico:"⭐",unlock:1e9,base:1e9,scale:2e15/1800,maxLvl:1800,col:"#ce93d8",eff:"Enchants swords"},
+  {id:"ascender",n:"Ascender",ico:"🔺",unlock:1e12,base:1e12,scale:8e14,maxLvl:0,col:"#ff6d00",eff:"Ascend speed & luck"},
+];
+
+// AREAS with mob luck multipliers
+const AREAS=[
+  {n:"Beginner's Trials",mobLuck:1,pvp:"off",minLvl:0,col:"#69f0ae",mobs:[
+    {n:"Goblin",ico:"i-goblin",hp:50,rew:50,xp:5,lvl:5,bossChance:0.01},
+    {n:"Orc",ico:"i-orc",hp:300,rew:400,xp:20,lvl:12,bossChance:0.005},
+  ]},
+  {n:"Mystical Forest",mobLuck:2,pvp:"off",minLvl:20,col:"#4fc3f7",mobs:[
+    {n:"Forest Orc",ico:"i-orc",hp:2000,rew:3000,xp:80,lvl:25,bossChance:0.008},
+    {n:"Shadow Beast",ico:"i-shadow",hp:8000,rew:15000,xp:250,lvl:35,bossChance:0.003},
+  ]},
+  {n:"Stranded Island",mobLuck:5,pvp:"safe",minLvl:75,col:"#ffab40",mobs:[
+    {n:"Lich",ico:"i-lich",hp:5e4,rew:1e5,xp:1000,lvl:80,bossChance:0.006},
+    {n:"Titan",ico:"i-titan",hp:2e5,rew:5e5,xp:3000,lvl:100,bossChance:0.002},
+  ]},
+  {n:"Snowy Fields",mobLuck:15,pvp:"safe",minLvl:120,col:"#b2ebf2",mobs:[
+    {n:"Frost Demon",ico:"i-demon",hp:2e6,rew:5e6,xp:20000,lvl:130,bossChance:0.005},
+    {n:"Void Entity",ico:"i-void",hp:1e7,rew:3e7,xp:80000,lvl:160,bossChance:0.002},
+  ]},
+  {n:"Crystal Caverns",mobLuck:75,pvp:"safe",minLvl:200,col:"#ea80fc",mobs:[
+    {n:"Crystal Golem",ico:"i-titan",hp:1e8,rew:5e8,xp:500000,lvl:220,bossChance:0.004},
+    {n:"Shadow Void",ico:"i-void",hp:5e8,rew:3e9,xp:2e6,lvl:260,bossChance:0.001},
+  ]},
+  {n:"Volcanic Isles",mobLuck:300,pvp:"on",minLvl:300,col:"#ff5722",mobs:[
+    {n:"Infernal Demon",ico:"i-demon",hp:5e9,rew:5e10,xp:1e7,lvl:320,bossChance:0.003},
+    {n:"Lava Dragon",ico:"i-dragon",hp:5e10,rew:5e11,xp:5e7,lvl:380,bossChance:0.001},
+  ]},
+  {n:"Intraplanetarium",mobLuck:1000,pvp:"on",minLvl:420,col:"#7c4dff",mobs:[
+    {n:"Cosmic Lich",ico:"i-lich",hp:5e11,rew:1e13,xp:5e8,lvl:440,bossChance:0.002},
+    {n:"Void Titan",ico:"i-void",hp:5e12,rew:1e14,xp:2e9,lvl:490,bossChance:0.001},
+  ]},
+  {n:"Ancient Mineshaft",mobLuck:5000,pvp:"on",minLvl:510,col:"#ff6d00",mobs:[
+    {n:"Ancient Dragon",ico:"i-dragon",hp:1e14,rew:1e16,xp:1e11,lvl:550,bossChance:0.002},
+    {n:"Primordial Void",ico:"i-void",hp:1e15,rew:1e17,xp:5e11,lvl:600,bossChance:0.0005},
+  ]},
+];
+
+const WX=[
+  {n:"☀ Clear",lm:1,col:"#ffd54f",bc:"#ffab00",cls:""},
+  {n:"🌧 Rain",lm:1.5,col:"#82b1ff",bc:"#2979ff",cls:"wrain"},
+  {n:"🌙 Night",lm:1.3,col:"#9fa8da",bc:"#3949ab",cls:"wnight"},
+  {n:"🩸 Blood Moon",lm:4,col:"#ff5252",bc:"#c62828",cls:"wblood"},
+  {n:"⚡ Storm",lm:2.5,col:"#ce93d8",bc:"#7c4dff",cls:""},
+  {n:"❄ Blizzard",lm:2,col:"#80d8ff",bc:"#0091ea",cls:""},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const S={
+  cash:0,tc:0,lvl:1,xp:0,xpN:100,rolls:0,
+  inv:[],bank:[],cur:null,lockedCur:false,
+  ul:{},up:{},
+  autoOn:false,autoI:null,
+  factI:null,
+  wxIdx:0,wxTick:0,
+  ascOn:false,ascI:null,ascTries:0,pFails:0,
+  ascSword:null,ascSwordIdx:-1,
+  areaIdx:0,mobIdx:0,mobHp:0,
+  best:null,sold:0,
+  autoSell:false,
+  sellTab:'swords',
+  idxTab:'rarity',
+  bossActive:false,bossMob:null,bossHp:0,
+  leaderboard:[],
+  bankIncome:0,lastBankTick:Date.now(),
+};
+UPS.forEach(u=>{S.ul[u.id]=u.id==='appraiser'?1:0;S.up[u.id]=0;});
+
+// LEADERBOARD SEED
+// leaderboard seeded below
+function seedLeaderboard(){
+  const names=["XxSwordMasterxX","Vestkil","DragonSlayer99","ForgeKing","BladeLord","OmegaFarmer","InfiniteGrind","SwordGod","LuckMax","RNGblessed"];
+  const rarNames=["Heavenly","Cosmic","Eternal","Celestial++","Supreme++","Exotic++","Unique++","Godly++","Hyper++","Ultra++"];
+  S.leaderboard=names.map((nm,i)=>({
+    name:nm,
+    val:Math.pow(10,24-i*2)*( 0.5+Math.random()),
+    dmg:Math.pow(10,20-i*1.8)*(0.5+Math.random()),
+    lvl:Math.max(1,600-i*55+Math.floor(Math.random()*30)),
+    rarity:R.find(r=>r.n===rarNames[i])||R[R.length-1-i*3],
+  }));
+  S.leaderboard.sort((a,b)=>b.val-a.val);
+}
+seedLeaderboard();
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n){
+  if(n===undefined||n===null||isNaN(n))return"0";n=Number(n);
+  if(n>=1e33)return(n/1e33).toFixed(2)+"Dc";
+  if(n>=1e30)return(n/1e30).toFixed(2)+"No";
+  if(n>=1e27)return(n/1e27).toFixed(2)+"Oc";
+  if(n>=1e24)return(n/1e24).toFixed(2)+"Sp";
+  if(n>=1e21)return(n/1e21).toFixed(2)+"Sx";
+  if(n>=1e18)return(n/1e18).toFixed(2)+"Qn";
+  if(n>=1e15)return(n/1e15).toFixed(2)+"Qd";
+  if(n>=1e12)return(n/1e12).toFixed(2)+"T";
+  if(n>=1e9)return(n/1e9).toFixed(2)+"B";
+  if(n>=1e6)return(n/1e6).toFixed(2)+"M";
+  if(n>=1e3)return(n/1e3).toFixed(2)+"K";
+  return Math.floor(n)+"";
+}
+
+function luck(){
+  const wx=WX[S.wxIdx].lm;
+  const area=AREAS[S.areaIdx].mobLuck;
+  const playerLvl=1+(S.lvl/100);
+  return wx*playerLvl*(area/Math.max(1,area-1)||1);
+}
+
+function totalLuck(){
+  return WX[S.wxIdx].lm*(1+S.lvl/100)*(AREAS[S.areaIdx].mobLuck/1);
+}
+
+function ascLuck(){
+  const ascLvl=S.ul['ascender']||0;
+  return 1+(ascLvl/200);
+}
+
+function roll(arr,lm=1){
+  let p=arr[0];
+  const cap=Math.min(lm,500);
+  for(let i=arr.length-1;i>=0;i--){
+    if(Math.random()<Math.min(0.999,arr[i].c*cap)){p=arr[i];break;}
+  }
+  return p;
+}
+
+function uBonus(id){const l=S.ul[id]||0,p=S.up[id]||0;return 1+(l/300)*(1+p*0.5);}
+function factSpeed(){return Math.max(100,1000-S.ul['conveyor']*0.52);}
+
+function sVal(sw){
+  let v=(1/sw.r.c)*(sw.q.cashBoost||1)*(sw.m.cashBoost||1)*0.0005;
+  v*=sw.cl.d;
+  v*=(1+(sw.swLvl||0)*0.1);
+  sw.encs.forEach(e=>{
+    if(e.n.n==="Fortune")v*=(1+0.1*e.tier);
+    if(e.n.n==="Ancient")v*=(1+0.1*e.tier);
+  });
+  return Math.max(1,v);
+}
+
+function sDmg(sw){
+  // Mold does NOT boost DMG — only rarity and class do
+  let d=(1/sw.r.c)*sw.cl.d*0.002;
+  d*=(1+(sw.swLvl||0)*0.15);
+  sw.encs.forEach(e=>{
+    if(e.n.n==="Sharpness")d*=(1+0.1*e.tier);
+    if(e.n.n==="Critical")d*=(1+0.05*e.tier);
+  });
+  return Math.max(1,d);
+}
+
+function eTier(){
+  for(let i=40;i>=1;i--)if(Math.random()<1/Math.pow(1.6,i))return i;
+  return 1;
+}
+
+function genSwordLevel(rIdx){
+  // Level scales with rarity tier
+  const base=Math.max(1,Math.floor(rIdx*3.5)+Math.floor(Math.random()*20));
+  return base;
+}
+
+// ============================================================
+// SWORD ROLLING
+// ============================================================
+let _rollCD=0;
+function rollSword(manual=false){
+  if(manual){
+    const now=Date.now();
+    if(now-_rollCD<1000){notify('Cooldown: wait 1s between manual forges');return;}
+    _rollCD=now;
+  }
+  if(S.inv.length>=85){notify("Inventory full! Sell or bank swords.");return;}
+  S.rolls++;
+  const lk=totalLuck();
+  const lkCap=Math.min(lk,1000);
+  const r=roll(R,1+uBonus('upgrader')*lk*0.01);
+  const q=roll(Q,1+uBonus('polisher')*lk*0.01);
+  const m=roll(M,1+uBonus('molder')*lk*0.01);
+  const cl=roll(CL,1+uBonus('classifier')*lk*0.01);
+  const rIdx=R.indexOf(r);
+  const swLvl=genSwordLevel(rIdx);
+  let encs=[];
+  if(S.ul['enchanter']>0){
+    const numEncs=S.ul['enchanter']>=400&&Math.random()<0.4?2:1;
+    const used=new Set();
+    for(let i=0;i<numEncs;i++){
+      let enc;
+      let tries=0;
+      do{enc=roll(EN,1+uBonus('enchanter')*0.05);tries++;}while(used.has(enc.n)&&tries<10);
+      used.add(enc.n);
+      encs.push({n:enc,tier:eTier()});
+    }
+  }
+  const sw={r,q,m,cl,encs,swLvl,id:Date.now()+Math.random(),locked:false};
+  sw.val=sVal(sw);sw.dmg=sDmg(sw);
+  S.cur=sw;S.lockedCur=false;
+  dispSword(sw);addHist(sw);
+  // XP gain per PDF: (val/5)*insightLvl*1.25
+  const insightLvl=1+encs.filter(e=>e.n.n==="Insight").reduce((a,e)=>a+e.tier,0)*0.25;
+  const xpGain=Math.max(1,(sw.val/5)*insightLvl*1.25);
+  gainXP(xpGain);
+  if(!S.best||(1/sw.r.c)>(1/S.best.c)){
+    S.best=sw.r;
+    const el=document.getElementById('s-b');
+    el.textContent=sw.r.n;el.style.color=sw.r.col;
+  }
+  if(R.indexOf(sw.r)>=40)notify(`✦ ${sw.r.n} ${sw.cl.n} forged!`);
+  // Global announce for 1M+ RNG
+  checkGlobalAnnounce(sw,'forge');
+  document.getElementById('s-r').textContent=fmt(S.rolls);
+  document.getElementById('s-d').textContent=fmt(sw.dmg)+' DMG';
+  // auto-add to inventory
+  addToInv(sw);S.cur=sw;
+  if(S.autoSell&&!sw.locked)autoSellSword(sw);
+}
+
+function autoSellSword(sw){
+  const idx=S.inv.indexOf(sw);
+  if(idx>=0&&!sw.locked){sellIdx(idx);}
+}
+
+// ============================================================
+// SWORD DISPLAY
+// ============================================================
+function getSwordSVG(sw,w=72,h=72){
+  const rIdx=R.indexOf(sw.r);
+  const col=sw.r.col;
+  const uid='s'+(sw.id?sw.id.toString().slice(-4):'0');
+  const tier=Math.floor(rIdx/4); // 0=basic,1=common,2=uncommon,...
+  const gBlur=tier>=5?2:tier>=3?1:0;
+  const glowFilter=gBlur>0?`<filter id="g${uid}" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="${gBlur}" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`:'';
+  const gRef=gBlur>0?`filter="url(#g${uid})"`:'';
+  // Blade width grows with tier
+  const bw=1.5+Math.min(tier*0.25,2);
+  // Crossguard size
+  const cg=5+Math.min(tier,8);
+  // Pommel size
+  const pm=2+Math.min(tier*0.3,3);
+  // Double-edge details for higher tiers
+  const dEdge=tier>=3?`<line x1="9" y1="33" x2="31" y2="11" stroke="${col}" stroke-width="${bw*0.4}" stroke-linecap="round" opacity="0.4"/>`:'';
+  // Blade fuller line
+  const fuller=tier>=2?`<line x1="11" y1="31" x2="30" y2="12" stroke="#fff" stroke-width="0.5" stroke-linecap="round" opacity="0.3"/>`:'';
+  // Gems/runes on blade
+  let gems='';
+  if(tier>=6)gems+=`<circle cx="18" cy="24" r="1.5" fill="#fff" opacity="0.7"/>`;
+  if(tier>=8)gems+=`<circle cx="21" cy="21" r="1.2" fill="#fff" opacity="0.6"/><circle cx="15" cy="27" r="1" fill="${col}" opacity="0.9"/>`;
+  if(tier>=10)gems+=`<polygon points="20,19 21.5,22 20,21 18.5,22" fill="#fff" opacity="0.8"/>`;
+  // Wings/extra crossguard for divine+
+  let wings='';
+  if(tier>=7){
+    wings=`<path d="M10,27 Q6,24 8,21 Q9,25 12,26Z" fill="${col}" opacity="0.6"/>`;
+    wings+=`<path d="M18,19 Q21,15 24,17 Q20,18 19,21Z" fill="${col}" opacity="0.6"/>`;
+  }
+  // Aura ring for cosmic+
+  let aura='';
+  if(tier>=14)aura=`<circle cx="13" cy="29" r="8" fill="none" stroke="${col}" stroke-width="0.6" opacity="0.25" stroke-dasharray="2 3"/>`;
+  if(tier>=16)aura+=`<circle cx="13" cy="29" r="12" fill="none" stroke="${col}" stroke-width="0.4" opacity="0.15" stroke-dasharray="1 4"/>`;
+  // Stars for legendary+
+  let stars='';
+  if(tier>=5){
+    const sc=Math.min(tier-4,5);
+    for(let i=0;i<sc;i++){
+      stars+=`<polygon points="${33-i*3},${3+i} ${34-i*3},${6+i} ${35-i*3},${3+i} ${34-i*3},${5+i}" fill="${col}" opacity="${0.5+i*0.08}"/>`;
+    }
+  }
+  // Blade shape: simple line for low tier, polygon for high tier
+  let blade='';
+  if(tier<4){
+    blade=`<line x1="9" y1="35" x2="34" y2="10" stroke="${col}" stroke-width="${bw}" stroke-linecap="round"/>`;
+  } else {
+    // Polygon blade (wider, more impressive)
+    const bOff=bw*0.7;
+    blade=`<polygon points="34,10 36,8 11,33 8,36 9,35" fill="${col}" opacity="0.9"/>
+    <polygon points="34,10 36,8 9,35 12,32" fill="#fff" opacity="0.15"/>`;
+  }
+  // Tip
+  const tip=tier>=8?`<polygon points="34,10 36,8 38,6 35,9" fill="${col}" opacity="0.8"/>`
+    :`<polygon points="34,10 37,7 37,12 32,12" fill="${col}"/>`;
+  return `<svg viewBox="0 0 42 42" width="${w}" height="${h}">
+    <defs>${glowFilter}</defs>
+    <g ${gRef}>
+      ${aura}
+      ${blade}${dEdge}${fuller}
+      ${tip}
+      <line x1="7" y1="${27-cg/2}" x2="${7+cg}" y2="${27-cg/2}" stroke="${col}" stroke-width="${1.5+tier*0.1}" stroke-linecap="round"/>
+      <line x1="${10}" y1="${24}" x2="${10}" y2="${24+cg}" stroke="${col}" stroke-width="${1.5+tier*0.1}" stroke-linecap="round"/>
+      <circle cx="8" cy="${33}" r="${pm}" fill="${col}"/>
+      ${wings}${gems}${stars}
+    </g>
+  </svg>`;
+}
+
+function dispSword(sw){
+  document.getElementById('sword-svg-wrap').innerHTML=getSwordSVG(sw,72,72);
+  document.getElementById('sword-level-tag').textContent=`Sword Level ${sw.swLvl}`;
+  document.getElementById('sword-level-tag').style.color=sw.r.col;
+  const nm=document.getElementById('sname');
+  nm.textContent=`${sw.q.n} ${sw.r.n} ${sw.cl.n} Sword`;nm.style.color=sw.r.col;
+  document.getElementById('stags').innerHTML=`
+    <span class="stag" style="color:${sw.r.col};border-color:${sw.r.col}44">${sw.r.n}</span>
+    <span class="stag" style="color:#a5d6a7;border-color:#4caf5044">${sw.q.n}</span>
+    <span class="stag" style="color:#ffcc80;border-color:#ff980044">${sw.m.n}</span>
+    <span class="stag" style="color:#82b1ff;border-color:#2196f344">${sw.cl.n}</span>
+  `;
+  const ec=document.getElementById('sencs');ec.innerHTML='';
+  sw.encs.forEach(e=>{
+    ec.innerHTML+=`<span class="etag" style="color:${e.n.col};border-color:${e.n.col}55;background:${e.n.col}10">${e.n.n} ${NM[e.tier-1]||NM[NM.length-1]}</span>`;
+  });
+  document.getElementById('sdmg').textContent=fmt(sw.dmg)+' DMG';
+  document.getElementById('sval').textContent='Value: $'+fmt(sw.val);
+  const lb=document.getElementById('block-btn');
+  if(sw.locked){lb.textContent='🔒 LOCKED';lb.classList.add('locked');}
+  else{lb.textContent='🔓 LOCK';lb.classList.remove('locked');}
+}
+
+function addHist(sw){
+  const h=document.getElementById('hist');
+  const d=document.createElement('div');d.className='hi';d.style.borderLeftColor=sw.r.col;
+  d.innerHTML=`<span style="color:${sw.r.col};font-family:'Cinzel',serif">${sw.r.n} · ${sw.cl.n}</span><span style="color:var(--gold)">$${fmt(sw.val)}</span>`;
+  h.insertBefore(d,h.firstChild);while(h.children.length>12)h.removeChild(h.lastChild);
+}
+
+// ============================================================
+// SELL / BANK / LOCK
+// ============================================================
+function sellCur(){
+  if(!S.cur)return;
+  if(S.lockedCur){notify("Sword is locked!");return;}
+  const idx=S.inv.indexOf(S.cur);
+  if(idx>=0){sellIdx(idx);}
+}
+function bankCur(){
+  if(!S.cur)return;
+  if(S.bank.length>=50){notify("Bank is full! (50/50)");return;}
+  const idx=S.inv.indexOf(S.cur);
+  if(idx>=0){
+    S.bank.push(S.inv[idx]);
+    S.inv.splice(idx,1);
+    S.cur=null;
+    renderInv();updBankUI();
+    notify("Sword banked! +passive income");
+  }
+}
+function lockCur(){
+  if(!S.cur)return;
+  S.cur.locked=!S.cur.locked;
+  S.lockedCur=S.cur.locked;
+  const lb=document.getElementById('block-btn');
+  if(S.cur.locked){lb.textContent='🔒 LOCKED';lb.classList.add('locked');notify("Sword locked - won't be sold");}
+  else{lb.textContent='🔓 LOCK';lb.classList.remove('locked');notify("Sword unlocked");}
+  renderInv();
+}
+function addToInv(sw){
+  if(S.inv.length>=85)return;
+  S.inv.push(sw);
+  renderInv();updSell();
+  document.getElementById('t-inv').textContent=S.inv.length+'/85';
+}
+function sellIdx(i){
+  const sw=S.inv[i];if(!sw||sw.locked)return;
+  addCash(sw.val);S.sold++;
+  S.inv.splice(i,1);
+  renderInv();updSell();
+  document.getElementById('s-s').textContent=fmt(S.sold);
+  updateLB();
+}
+function sellAll(){
+  let t=0;let cnt=0;
+  S.inv=S.inv.filter(s=>{
+    if(!s.locked){t+=s.val;S.sold++;cnt++;return false;}
+    return true;
+  });
+  addCash(t);renderInv();updSell();
+  document.getElementById('s-s').textContent=fmt(S.sold);
+  notify(`Sold ${cnt} swords · +$${fmt(t)}`);
+  updateLB();
+}
+function toggleAutoSell(){
+  S.autoSell=!S.autoSell;
+  const b=document.getElementById('auto-sell-toggle');
+  b.textContent=S.autoSell?'AUTO SELL: ON':'AUTO SELL: OFF';
+  b.classList.toggle('on',S.autoSell);
+  notify(S.autoSell?'Auto-sell enabled (unlocked swords)':'Auto-sell disabled');
+}
+function addCash(a){
+  S.cash+=a;S.tc+=a;
+  document.getElementById('t-cash').textContent='$'+fmt(S.cash);
+  document.getElementById('s-tc').textContent='$'+fmt(S.tc);
+  renderUps();
+}
+
+// BANK
+function withdrawAll(){
+  S.inv.push(...S.bank.filter(_=>S.inv.length<85));
+  S.bank=[];
+  renderInv();updBankUI();updSell();
+  notify("All swords withdrawn from bank");
+}
+function sellFromBank(){
+  let t=0;
+  S.bank.forEach(s=>t+=s.val);
+  addCash(t);S.sold+=S.bank.length;
+  S.bank=[];
+  updBankUI();
+  document.getElementById('s-s').textContent=fmt(S.sold);
+  notify(`Banked swords sold · +$${fmt(t)}`);
+}
+function updBankUI(){
+  const g=document.getElementById('bgrid');if(!g)return;
+  g.innerHTML='';
+  for(let i=0;i<50;i++){
+    const sl=document.createElement('div');sl.className='bslot';
+    if(S.bank[i]){
+      const sw=S.bank[i];sl.classList.add('filled');sl.style.borderColor=sw.r.col+'77';
+      sl.innerHTML=`<svg viewBox="0 0 40 40" width="18" height="18" style="color:${sw.r.col}"><use href="#i-sword"/></svg><span class="bsv" style="color:${sw.r.col}">${sw.r.n.slice(0,3).toUpperCase()}</span>`;
+      sl.title=`${sw.r.n} ${sw.cl.n} — $${fmt(sw.val)}`;
+      const idx=i;sl.onclick=()=>{if(S.inv.length<85){S.inv.push(S.bank[idx]);S.bank.splice(idx,1);renderInv();updBankUI();updSell();}else notify("Inventory full");};
+    }
+    g.appendChild(sl);
+  }
+  const cnt=S.bank.length;
+  const worth=S.bank.reduce((a,s)=>a+s.val,0);
+  document.getElementById('t-bank-count').textContent=cnt+'/50';
+  document.getElementById('bank-cap-txt').textContent=cnt+'/50';
+  document.getElementById('bank-cap-bar').style.width=(cnt/50*100)+'%';
+  document.getElementById('bank-total-worth').textContent='$'+fmt(worth);
+  document.getElementById('bank-worth-hdr').textContent='Total: $'+fmt(worth);
+  document.getElementById('bank-count-stat').textContent=cnt;
+  // Passive income: 15% of bank worth per day
+  const income=worth*0.15;
+  document.getElementById('bank-income').textContent='$'+fmt(income)+'/day';
+  S.bankIncome=income/86400000; // per ms
+}
+
+// Bank passive income tick
+function tickBankIncome(){
+  const now=Date.now();
+  const dt=now-S.lastBankTick;
+  S.lastBankTick=now;
+  if(S.bank.length>0){
+    addCash(S.bankIncome*dt);
+  }
+}
+
+// ============================================================
+// INVENTORY RENDER
+// ============================================================
+function renderInv(){
+  const g=document.getElementById('igrid');if(!g)return;g.innerHTML='';
+  for(let i=0;i<85;i++){
+    const sl=document.createElement('div');sl.className='islot';
+    if(S.inv[i]){
+      const sw=S.inv[i];sl.classList.add('filled');
+      sl.style.borderColor=sw.locked?'#ff174477':sw.r.col+'77';
+      if(sw.locked)sl.classList.add('locked-slot');
+      sl.innerHTML=`${sw.locked?'<span class="lock-ico">🔒</span>':''}${getSwordSVG(sw,18,18)}<span class="slbl2" style="color:${sw.r.col}">${sw.cl.n.slice(0,3).toUpperCase()}</span>`;
+      sl.title=`${sw.r.n} ${sw.cl.n} Lv${sw.swLvl} — $${fmt(sw.val)} | ${fmt(sw.dmg)} DMG`;
+      const idx=i;
+      sl.onclick=()=>{
+        if(sw.locked){notify("Sword is locked!");return;}
+        S.cur=sw;dispSword(sw);sw2('factory');
+      };
+    }
+    g.appendChild(sl);
+  }
+  const cnt=S.inv.length;
+  document.getElementById('icnt').textContent=cnt;
+  document.getElementById('t-inv').textContent=cnt+'/85';
+}
+
+// ============================================================
+// SELL UI
+// ============================================================
+function updSell(){
+  if(S.sellTab!=='swords')return;
+  const list=document.getElementById('slist');if(!list)return;list.innerHTML='';
+  S.inv.forEach((sw,i)=>{
+    const d=document.createElement('div');d.className='srow'+(sw.locked?' locked-sw':'');
+    d.innerHTML=`<span style="color:${sw.r.col};font-weight:700;font-family:'Cinzel',serif">${sw.r.n} ${sw.m.n} Lv${sw.swLvl}</span><span style="color:var(--gold);font-weight:700">$${fmt(sw.val)}</span>`;
+    if(!sw.locked)d.onclick=()=>sellIdx(i);
+    list.appendChild(d);
+  });
+  const iv=S.ul['conveyor']>0?factSpeed():0;
+  document.getElementById('fstats').innerHTML=`
+    <div class="fsr"><span style="color:var(--dim2)">Swords Sold</span><span>${fmt(S.sold)}</span></div>
+    <div class="fsr"><span style="color:var(--dim2)">Factory Rate</span><span>${iv>0?(60000/iv).toFixed(1)+' /min':'Offline'}</span></div>
+    <div class="fsr"><span style="color:var(--dim2)">Total Cash</span><span style="color:var(--gold)">$${fmt(S.tc)}</span></div>
+    <div class="fsr"><span style="color:var(--dim2)">Total Rolls</span><span>${fmt(S.rolls)}</span></div>
+    <div class="fsr"><span style="color:var(--dim2)">Total Luck</span><span style="color:var(--accent)">×${totalLuck().toFixed(2)}</span></div>
+  `;
+}
+
+let sellTabActive='swords';
+function setSellTab(tab){
+  sellTabActive=tab;
+  document.querySelectorAll('.sit').forEach((el,i)=>{
+    const tabs=['swords','rarity','quality','mold','class','enchant'];
+    el.classList.toggle('active',tabs[i]===tab);
+  });
+  const cont=document.getElementById('sell-tab-content');
+  if(tab==='swords'){
+    cont.innerHTML=`<div id="slist"></div><button id="sallbtn" onclick="sellAll()">SELL ALL (unlocked)</button><div class="auto-sell-row"><button class="auto-sell-btn ${S.autoSell?'on':''}" id="auto-sell-toggle" onclick="toggleAutoSell()">${S.autoSell?'AUTO SELL: ON':'AUTO SELL: OFF'}</button><button class="auto-sell-btn" style="background:var(--panel3);border:1px solid var(--border2);color:var(--dim2);" onclick="sw('index')">Open Index →</button></div>`;
+    updSell();
+  } else {
+    let html='<div style="padding:4px;">';
+    const headers={rarity:'Rarity Index — Boosts Cash & DMG',quality:'Quality Index — Boosts Cash',mold:'Mold Index — Boosts Cash',class:'Class Index — Boosts DMG',enchant:'Enchant Index'};
+    html+=`<div style="font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--gold);margin-bottom:7px;">${headers[tab]}</div>`;
+    if(tab==='rarity'){
+      const lk=totalLuck();
+      R.slice(0,20).forEach(r=>{
+        const effC=Math.min(r.c*lk,1);
+        html+=`<div style="display:flex;justify-content:space-between;padding:2px 5px;border-radius:3px;margin:1px 0;border-left:2px solid ${r.col}40"><span style="color:${r.col};font-size:8px;font-weight:700;font-family:'Cinzel',serif">${r.n}</span><span style="color:var(--dim2);font-size:8px">1/${fmt(Math.round(1/r.c))} → ×${lk.toFixed(1)} = 1/${fmt(Math.round(1/(r.c*lk)))}</span></div>`;
+      });
+      html+=`<div style="color:var(--dim2);font-size:8px;margin-top:5px;">...showing top 20. Chances scaled by your current ×${lk.toFixed(2)} luck.</div>`;
+    } else if(tab==='quality'){
+      Q.slice(0,15).forEach(q=>{html+=`<div style="display:flex;justify-content:space-between;padding:2px 5px;border-radius:3px;margin:1px 0"><span style="color:var(--accent);font-size:8px;font-weight:700">${q.n}</span><span style="color:var(--dim2);font-size:8px">1/${fmt(Math.round(1/q.c))} · x${q.m} Cash</span></div>`;});
+    } else if(tab==='mold'){
+      M.slice(0,12).forEach(m=>{html+=`<div style="display:flex;justify-content:space-between;padding:2px 5px;border-radius:3px;margin:1px 0"><span style="color:var(--gold);font-size:8px;font-weight:700">${m.n}</span><span style="color:var(--dim2);font-size:8px">1/${fmt(Math.round(1/m.c))} · x${m.cashBoost} Cash · x${m.d} DMG</span></div>`;});
+    } else if(tab==='class'){
+      CL.slice(0,15).forEach(cl=>{html+=`<div style="display:flex;justify-content:space-between;padding:2px 5px;border-radius:3px;margin:1px 0"><span style="color:var(--red);font-size:8px;font-weight:700">${cl.n}</span><span style="color:var(--dim2);font-size:8px">1/${fmt(Math.round(1/cl.c))} · x${cl.d} DMG</span></div>`;});
+    } else if(tab==='enchant'){
+      EN.forEach(e=>{html+=`<div style="display:flex;justify-content:space-between;padding:2px 5px;border-radius:3px;margin:1px 0;border-left:2px solid ${e.col}44"><span style="color:${e.col};font-size:8px;font-weight:700">${e.n}</span><span style="color:var(--dim2);font-size:8px">1/${fmt(Math.round(1/e.c))} · ${e.eff}</span></div>`;});
+    }
+    html+='</div>';
+    cont.innerHTML=html;
+  }
+}
+
+// ============================================================
+// AUTO / FACTORY
+// ============================================================
+function toggleAuto(){
+  S.autoOn=!S.autoOn;
+  const b=document.getElementById('bauto');
+  if(S.autoOn){b.textContent='AUTO: ON';b.classList.add('on');}
+  else{b.textContent='AUTO: OFF';b.classList.remove('on');}
+}
+function startFact(){
+  if(S.factI)clearInterval(S.factI);
+  const iv=factSpeed();
+  S.factI=setInterval(()=>{
+    if(S.ul['conveyor']>0&&S.inv.length<85&&(S.autoOn||S.ul['conveyor']>0)){
+      rollSword();
+    }
+  },iv);
+  document.getElementById('s-fr').textContent=(60000/iv).toFixed(1)+' /min';
+}
+
+// ============================================================
+// ASCENDER
+// ============================================================
+function selectAscSword(){
+  if(S.inv.length===0){notify("No swords in inventory");return;}
+  // Pick the highest value unlocked sword
+  let best=null,bIdx=-1;
+  S.inv.forEach((sw,i)=>{if(!best||sw.val>best.val){best=sw;bIdx=i;}});
+  S.ascSword=best;S.ascSwordIdx=bIdx;
+  updAscDisplay();
+  notify(`Selected: ${best.r.n} ${best.cl.n}`);
+}
+function updAscDisplay(){
+  const el=document.getElementById('asc-sword-display');
+  const sw=S.ascSword;
+  if(!sw){el.textContent='Click to select a sword from inventory';el.style.color='var(--dim2)';return;}
+  el.style.color=sw.r.col;
+  el.innerHTML=`<div style="font-family:'Cinzel',serif;font-weight:700;color:${sw.r.col}">${sw.q.n} ${sw.r.n} ${sw.cl.n}</div>
+  <div style="font-size:8px;color:var(--dim2)">Lv${sw.swLvl} · $${fmt(sw.val)} · ${fmt(sw.dmg)} DMG</div>`;
+  // Update stat buttons
+  const upg=getRUpgIdx(sw);const uq=getQUpgIdx(sw);const um=getMUpgIdx(sw);const uc2=getCLUpgIdx(sw);
+  document.getElementById('asv-rarity').textContent=sw.r.n;
+  document.getElementById('asv-quality').textContent=sw.q.n;
+  document.getElementById('asv-mold').textContent=sw.m.n;
+  document.getElementById('asv-class').textContent=sw.cl.n;
+  document.getElementById('asv-level').textContent='Lv'+sw.swLvl;
+  document.getElementById('asv-enchant').textContent=sw.encs.length>0?sw.encs[0].n.n+' '+NM[(sw.encs[0].tier||1)-1]:'None';
+  const ascCostMul=0.3; // ascender costs less than factory
+  document.getElementById('asc-rarity-cost').textContent=upg<R.length-1?'$'+fmt(ascCost(R[upg+1].c)*ascCostMul):'MAX';
+  document.getElementById('asc-quality-cost').textContent=uq<Q.length-1?'$'+fmt(ascCost(Q[uq+1].c)*ascCostMul):'MAX';
+  document.getElementById('asc-mold-cost').textContent=um<M.length-1?'$'+fmt(ascCost(M[um+1].c)*ascCostMul):'MAX';
+  document.getElementById('asc-class-cost').textContent=uc2<CL.length-1?'$'+fmt(ascCost(CL[uc2+1].c)*ascCostMul):'MAX';
+  document.getElementById('asc-level-cost').textContent='$'+fmt(Math.floor(sw.val*0.05));
+  document.getElementById('asc-enchant-cost').textContent=sw.encs.length>0?'$'+fmt(Math.floor(sw.val*0.08)):'Need Enchanter';
+}
+function getRUpgIdx(sw){return R.indexOf(sw.r);}
+function getQUpgIdx(sw){return Q.indexOf(sw.q);}
+function getMUpgIdx(sw){return M.indexOf(sw.m);}
+function getCLUpgIdx(sw){return CL.indexOf(sw.cl);}
+function ascCost(c){return Math.max(1,Math.floor((1/c)*0.0002));}
+function ascUpgStat(stat){
+  const sw=S.ascSword;if(!sw){notify("Select a sword first");return;}
+  const mul=0.3;
+  if(stat==='rarity'){
+    const idx=getRUpgIdx(sw);if(idx>=R.length-1){notify("Max rarity!");return;}
+    const cost=Math.floor(ascCost(R[idx+1].c)*mul);
+    if(S.cash<cost){notify("Not enough cash: $"+fmt(cost));return;}
+    S.cash-=cost;sw.r=R[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);
+    addCashDisplay();notify(`✦ Rarity → ${sw.r.n}!`);
+  } else if(stat==='quality'){
+    const idx=getQUpgIdx(sw);if(idx>=Q.length-1){notify("Max quality!");return;}
+    const cost=Math.floor(ascCost(Q[idx+1].c)*mul);
+    if(S.cash<cost){notify("Not enough cash");return;}
+    S.cash-=cost;sw.q=Q[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);
+    addCashDisplay();notify(`✦ Quality → ${sw.q.n}!`);
+  } else if(stat==='mold'){
+    const idx=getMUpgIdx(sw);if(idx>=M.length-1){notify("Max mold!");return;}
+    const cost=Math.floor(ascCost(M[idx+1].c)*mul);
+    if(S.cash<cost){notify("Not enough cash");return;}
+    S.cash-=cost;sw.m=M[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);
+    addCashDisplay();notify(`✦ Mold → ${sw.m.n}!`);
+  } else if(stat==='class'){
+    const idx=getCLUpgIdx(sw);if(idx>=CL.length-1){notify("Max class!");return;}
+    const cost=Math.floor(ascCost(CL[idx+1].c)*mul);
+    if(S.cash<cost){notify("Not enough cash");return;}
+    S.cash-=cost;sw.cl=CL[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);
+    addCashDisplay();notify(`✦ Class → ${sw.cl.n}!`);
+  } else if(stat==='level'){
+    const cost=Math.floor(sw.val*0.05);
+    if(S.cash<cost){notify("Not enough cash");return;}
+    S.cash-=cost;sw.swLvl+=Math.max(1,Math.floor(sw.swLvl*0.1)+1);sw.val=sVal(sw);sw.dmg=sDmg(sw);
+    addCashDisplay();notify(`✦ Level → ${sw.swLvl}!`);
+  } else if(stat==='enchant'){
+    if(sw.encs.length===0){notify("No enchants to upgrade");return;}
+    const cost=Math.floor(sw.val*0.08);
+    if(S.cash<cost){notify("Not enough cash");return;}
+    S.cash-=cost;sw.encs[0].tier=Math.min(40,sw.encs[0].tier+1);sw.val=sVal(sw);sw.dmg=sDmg(sw);
+    addCashDisplay();notify(`✦ ${sw.encs[0].n.n} → ${NM[sw.encs[0].tier-1]}!`);
+  }
+  updAscDisplay();renderInv();updSell();
+  document.getElementById('s-d').textContent=fmt(sw.dmg)+' DMG';
+  document.getElementById('s-asc').textContent='×'+ascLuck().toFixed(2);
+  addAHist(stat.charAt(0).toUpperCase()+stat.slice(1)+' upgraded',true);
+}
+function addCashDisplay(){
+  document.getElementById('t-cash').textContent='$'+fmt(S.cash);
+  renderUps();
+}
+
+function pityLuck(bc){
+  const rng=Math.max(10000,(1/bc)/2);
+  const s1=Math.floor(rng*0.55);
+  const st=Math.max(500,Math.floor(rng*0.05));
+  if(S.pFails<s1)return 1;
+  return 1+(Math.floor((S.pFails-s1)/st)+1)*0.1;
+}
+function ascSpd(){
+  const l=S.ul['ascender']||0;
+  if(!l)return 1500;
+  // Per PDF formula: speed based on level
+  const spd=Math.max(60,Math.floor(1500/(1+l/60)));
+  return spd;
+}
+function toggleAsc(){
+  S.ascOn=!S.ascOn;
+  const b=document.getElementById('abtn');
+  if(S.ascOn){
+    b.textContent='⏹ STOP';b.style.background='linear-gradient(135deg,#ff1744,#ff6d00)';
+    S.ascTries=0;S.pFails=0;runAsc();
+  }else{
+    b.textContent='▶ AUTO ASCEND';b.style.background='linear-gradient(135deg,#7c4dff,#ff0066)';
+    clearInterval(S.ascI);
+  }
+}
+function runAsc(){
+  if(!S.ascSword){notify("Select a sword to ascend!");S.ascOn=false;document.getElementById('abtn').textContent='▶ AUTO ASCEND';return;}
+  const spd=ascSpd();
+  document.getElementById('a-spd').textContent=(spd/1000).toFixed(3)+'s';
+  S.ascI=setInterval(()=>{
+    if(!S.ascSword){return;}
+    S.ascTries++;S.pFails++;
+    const al=ascLuck();
+    document.getElementById('a-tries').textContent=fmt(S.ascTries);
+    document.getElementById('a-luck').textContent='×'+al.toFixed(2);
+    document.getElementById('s-asc').textContent='×'+al.toFixed(2);
+    // Auto-upgrade random stat when success
+    const chance=0.05*al*pityLuck(0.001);
+    if(Math.random()<chance){
+      const stats=['rarity','quality','mold','class','level','enchant'];
+      const chosen=stats[Math.floor(Math.random()*stats.length)];
+      ascUpgStatFree(chosen);
+      S.pFails=0;
+      const el=document.getElementById('ares');
+      el.textContent=`✦ ${chosen.toUpperCase()} ASCENDED!`;el.style.color='#00e676';
+      addAHist(chosen+' auto-ascended',true);
+    } else {
+      const el=document.getElementById('ares');
+      el.textContent=`[FAIL] ${fmt(S.pFails)} tries`;el.style.color='var(--red)';
+    }
+    document.getElementById('pline').textContent=`Pity: ${S.pFails} fails · Bonus: ×${pityLuck(0.001).toFixed(2)}`;
+    document.getElementById('afill').style.width=(S.ascTries%50*2)+'%';
+  },spd);
+}
+function ascUpgStatFree(stat){
+  const sw=S.ascSword;if(!sw)return;
+  if(stat==='rarity'){const idx=getRUpgIdx(sw);if(idx<R.length-1){sw.r=R[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+  else if(stat==='quality'){const idx=getQUpgIdx(sw);if(idx<Q.length-1){sw.q=Q[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+  else if(stat==='mold'){const idx=getMUpgIdx(sw);if(idx<M.length-1){sw.m=M[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+  else if(stat==='class'){const idx=getCLUpgIdx(sw);if(idx<CL.length-1){sw.cl=CL[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+  else if(stat==='level'){sw.swLvl+=1;sw.val=sVal(sw);sw.dmg=sDmg(sw);}
+  else if(stat==='enchant'){if(sw.encs.length>0){sw.encs[0].tier=Math.min(40,sw.encs[0].tier+1);sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+  updAscDisplay();renderInv();
+}
+function addAHist(n,ok){
+  const h=document.getElementById('ahist');const d=document.createElement('div');d.className='ahi';
+  d.style.borderLeftColor=ok?'var(--green)':'var(--red)';
+  d.innerHTML=`<span style="color:${ok?'var(--green)':'var(--red)'}">[${ok?'✦':'✗'}] ${n}</span><span style="color:var(--dim2)">#${fmt(S.ascTries)}</span>`;
+  h.insertBefore(d,h.firstChild);while(h.children.length>15)h.removeChild(h.lastChild);
+}
+
+// ============================================================
+// COMBAT / MOBS / BOSSES
+// ============================================================
+function renderAreas(){
+  const list=document.getElementById('area-list');if(!list)return;list.innerHTML='';
+  AREAS.forEach((area,i)=>{
+    const btn=document.createElement('button');
+    btn.className='area-btn'+(i===S.areaIdx?' active-area':'');
+    btn.disabled=S.lvl<area.minLvl;
+    const pvpCol=area.pvp==='on'?'#ff1744':area.pvp==='safe'?'#4fc3f7':'#00e676';
+    const pvpLabel=area.pvp==='on'?'PVP ON':area.pvp==='safe'?'SAFE PVP':'PVP OFF';
+    btn.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="color:${area.col};font-size:9px">${area.n}</span>
+      <span class="area-pvp ${area.pvp}" style="font-size:7px">${pvpLabel}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:8px;margin-top:2px;">
+      <span style="color:var(--gold)">×${area.mobLuck} Mob Luck</span>
+      <span style="color:var(--dim2)">Lv${area.minLvl}+</span>
+    </div>`;
+    btn.onclick=()=>{
+      if(S.lvl<area.minLvl){notify(`Need Level ${area.minLvl}`);return;}
+      S.areaIdx=i;S.mobIdx=0;
+      renderAreas();selMob(0);
+      document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
+    };
+    list.appendChild(btn);
+  });
+}
+function selMob(i){
+  const area=AREAS[S.areaIdx];
+  if(!area.mobs[i])i=0;
+  S.mobIdx=i;
+  const mob=area.mobs[i];
+  S.mobHp=mob.hp;
+  const svgEl=document.getElementById('msvg');
+  svgEl.innerHTML=`<svg viewBox="0 0 40 40" width="70" height="70"><use href="#${mob.ico}"/></svg>`;
+  document.getElementById('mname').textContent=mob.n;
+  document.getElementById('mname').style.color=area.col;
+  document.getElementById('mreward').textContent=`Reward: $${fmt(mob.rew)} + ${fmt(mob.xp)} XP`;
+  document.getElementById('mlevel').textContent=`Level ${mob.lvl} Enemy`;
+  updMobBar();
+}
+function atkMob(){
+  const sw=S.cur||(S.inv[0]||null);
+  if(!sw){notify('No sword! Roll one first.');return;}
+  const area=AREAS[S.areaIdx];
+  const mob=S.bossActive?S.bossMob:area.mobs[S.mobIdx];
+  if(!mob)return;
+  const dmg=sw.dmg*(1+S.lvl*0.01);
+  if(S.bossActive){
+    S.bossHp=Math.max(0,S.bossHp-dmg);
+    updMobBar();
+    if(S.bossHp<=0){
+      // Boss killed — reward a sword scaled to area mob luck
+      const area=AREAS[S.areaIdx];
+      const ml=area.mobLuck;
+      // Higher area = rarer drop floor
+      const rarFloor=Math.min(R.length-8, Math.floor(Math.log10(Math.max(1,ml))*12));
+      const bossRarIdx=Math.min(R.length-1, rarFloor+Math.floor(Math.random()*12));
+      const bossRarity=R[bossRarIdx];
+      const bossQ=Q[Math.min(Q.length-1,Math.floor(Q.length*0.3+Math.random()*Q.length*0.4))];
+      const bossM=M[Math.min(M.length-1,Math.floor(Math.random()*M.length*0.5))];
+      const bossCL=CL[Math.min(CL.length-1,Math.floor(CL.length*0.2+Math.random()*CL.length*0.4))];
+      const bossEncs=[{n:EN[Math.floor(Math.random()*EN.length)],tier:eTier()},{n:EN[Math.floor(Math.random()*EN.length)],tier:eTier()}];
+      const bossLvl=S.bossMob.lvl+Math.floor(Math.random()*20);
+      const bossSw={r:bossRarity,q:bossQ,m:bossM,cl:bossCL,encs:bossEncs,swLvl:bossLvl,id:Date.now()+Math.random(),locked:false};
+      const multi=tripleSpawnActive?20:5;
+      bossSw.val=sVal(bossSw)*multi; bossSw.dmg=sDmg(bossSw)*(multi/2);
+      addCash(S.bossMob.rew*(tripleSpawnActive?10:5));
+      gainXP(S.bossMob.xp*(tripleSpawnActive?10:5));
+      if(S.inv.length<85)addToInv(bossSw);
+      notify(`⚔ BOSS SLAIN! ${bossRarity.n} ${bossCL.n} Sword dropped!${tripleSpawnActive?' 🔥 TRIPLE!':''}`);
+      checkGlobalAnnounce(bossSw,'boss');
+      if(tripleSpawnActive) globalAnnounce(`🔥 TRIPLE BOSS KILLED! ${bossRarity.n} ${bossCL.n} Drop!`,bossRarity.col,'🔥');
+      S.bossActive=false;
+      const bossAlert=document.getElementById('boss-alert');
+      bossAlert.classList.remove('show');
+      selMob(S.mobIdx);
+      addBossLog(S.bossMob.n+' SLAIN! Drop: '+bossRarity.n,true);
+      updateLB();
+    }
+  } else {
+    S.mobHp=Math.max(0,S.mobHp-dmg);
+    updMobBar();
+    if(S.mobHp<=0){
+      addCash(mob.rew);gainXP(mob.xp);
+      notify(`${mob.n} defeated! +$${fmt(mob.rew)}`);
+      S.mobHp=mob.hp;updMobBar();
+      // Boss spawn chance
+      if(Math.random()<mob.bossChance){spawnBoss(mob);}
+    }
+  }
+}
+function spawnBoss(baseMob){
+  S.bossActive=true;
+  S.bossMob={...baseMob,n:`${baseMob.n} King`,hp:baseMob.hp*20,rew:baseMob.rew*15,xp:baseMob.xp*10,lvl:baseMob.lvl+30};
+  S.bossHp=S.bossMob.hp;
+  document.getElementById('mname').textContent=S.bossMob.n+' 👑';
+  document.getElementById('mname').style.color='#ffd54f';
+  document.getElementById('mreward').textContent=`BOSS REWARD: $${fmt(S.bossMob.rew*5)} + SWORD DROP!`;
+  document.getElementById('mlevel').textContent=`Boss Level ${S.bossMob.lvl} — HP: ${fmt(S.bossMob.hp)}`;
+  const bossAlert=document.getElementById('boss-alert');
+  document.getElementById('ba-title').textContent=`⚔ BOSS SPAWNED!`;
+  document.getElementById('ba-sub').textContent=`${S.bossMob.n} has appeared! Kill it for a sword drop!`;
+  bossAlert.classList.add('show');
+  setTimeout(()=>bossAlert.classList.remove('show'),5000);
+  addBossLog(S.bossMob.n+' spawned!',false);
+}
+function updMobBar(){
+  const mob=S.bossActive?S.bossMob:AREAS[S.areaIdx].mobs[S.mobIdx];
+  const hp=S.bossActive?S.bossHp:S.mobHp;
+  if(!mob)return;
+  const pct=(hp/mob.hp*100);
+  const bar=document.getElementById('mfill');
+  bar.style.width=pct+'%';
+  bar.style.background=S.bossActive?'linear-gradient(90deg,#ffd54f,#ff6d00)':'linear-gradient(90deg,#ff1744,#ff6d00)';
+}
+function addBossLog(msg,killed){
+  const h=document.getElementById('boss-log');if(!h)return;
+  const d=document.createElement('div');d.className='ahi';
+  d.style.borderLeftColor=killed?'var(--gold)':'var(--red)';
+  d.innerHTML=`<span style="color:${killed?'var(--gold)':'var(--red)'};font-size:8px">${killed?'💀':'👑'} ${msg}</span>`;
+  h.insertBefore(d,h.firstChild);while(h.children.length>8)h.removeChild(h.lastChild);
+}
+
+// ============================================================
+// INDEX
+// ============================================================
+function renderIndex(tab){
+  const cont=document.getElementById('idx-content');if(!cont)return;
+  const lk=totalLuck();
+  const rLk=lk*uBonus('upgrader');
+  const qLk=lk*uBonus('polisher');
+  const mLk=lk*uBonus('molder');
+  const clLk=lk*uBonus('classifier');
+  let html='<div style="font-size:8px;color:var(--dim2);padding:4px 6px;border-bottom:1px solid var(--border);margin-bottom:3px;">Base RNG → Your scaled RNG (×'+lk.toFixed(1)+' total luck)</div>';
+  if(tab==='rarity'){
+    R.forEach(r=>{
+      const scaled=Math.max(1,Math.round(1/(r.c*Math.min(rLk,1000))));
+      const base=Math.round(1/r.c);
+      html+=`<div class="idx-row" style="border-left-color:${r.col}55">
+        <span class="idx-rn" style="color:${r.col}">${r.n}</span>
+        <span class="idx-rc">1/${fmt(base)}</span>
+        <span class="idx-eff" style="color:${r.col}88">→ 1/${fmt(scaled)}</span>
+      </div>`;
+    });
+  } else if(tab==='quality'){
+    Q.forEach(q=>{
+      const scaled=Math.max(1,Math.round(1/(q.c*Math.min(qLk,1000))));
+      html+=`<div class="idx-row"><span class="idx-rn" style="color:var(--accent)">${q.n}</span><span class="idx-rc">1/${fmt(Math.round(1/q.c))}</span><span class="idx-eff">→ 1/${fmt(scaled)} · ×${q.cashBoost} Cash</span></div>`;
+    });
+  } else if(tab==='mold'){
+    // Mold boosts Cash only — no DMG
+    M.forEach(m=>{
+      const scaled=Math.max(1,Math.round(1/(m.c*Math.min(mLk,1000))));
+      html+=`<div class="idx-row"><span class="idx-rn" style="color:var(--gold)">${m.n}</span><span class="idx-rc">1/${fmt(Math.round(1/m.c))}</span><span class="idx-eff">→ 1/${fmt(scaled)} · ×${m.cashBoost} Cash</span></div>`;
+    });
+  } else if(tab==='class'){
+    CL.forEach(cl=>{
+      const scaled=Math.max(1,Math.round(1/(cl.c*Math.min(clLk,1000))));
+      html+=`<div class="idx-row"><span class="idx-rn" style="color:var(--red)">${cl.n}</span><span class="idx-rc">1/${fmt(Math.round(1/cl.c))}</span><span class="idx-eff">→ 1/${fmt(scaled)} · ×${cl.d} DMG</span></div>`;
+    });
+  } else if(tab==='enchant'){
+    EN.forEach(e=>{
+      html+=`<div class="idx-row" style="border-left-color:${e.col}44"><span class="idx-rn" style="color:${e.col}">${e.n}</span><span class="idx-rc">1/${fmt(Math.round(1/e.c))}</span><span class="idx-eff" style="color:${e.col}88">${e.eff}</span></div>`;
+    });
+  }
+  cont.innerHTML=html;
+}
+function setIdxTab(tab){
+  document.querySelectorAll('.idx-tab').forEach((el,i)=>{
+    const ts=['rarity','quality','mold','class','enchant'];
+    el.classList.toggle('active',ts[i]===tab);
+  });
+  renderIndex(tab);
+}
+
+// ============================================================
+// LEADERBOARD
+// ============================================================
+function updateLB(){
+  const playerEntry={name:'You ⚔',val:S.tc,dmg:S.cur?.dmg||0,lvl:S.lvl,rarity:S.best,isMe:true};
+  let combined=[...S.leaderboard.filter(e=>!e.isMe),playerEntry];
+  combined.sort((a,b)=>b.val-a.val);
+  const list=document.getElementById('lb-list');if(!list)return;
+  list.innerHTML='';
+  combined.slice(0,10).forEach((e,i)=>{
+    const d=document.createElement('div');d.className='lb-row'+(e.isMe?' me':'');
+    const medals=['🥇','🥈','🥉'];
+    const rarCol=e.rarity?e.rarity.col:'var(--dim2)';
+    const rarName=e.rarity?e.rarity.n:'—';
+    d.innerHTML=`<span class="lb-rank">${medals[i]||('#'+(i+1))}</span>
+      <span class="lb-name">${e.name}</span>
+      <span class="lb-val">$${fmt(e.val)}</span>
+      <span style="color:${rarCol};font-size:8px;font-family:'Cinzel',serif;min-width:60px;text-align:right">${rarName}</span>`;
+    list.appendChild(d);
+  });
+  // Level leaderboard
+  const lvlList=document.getElementById('lb-lvl-list');
+  if(lvlList){
+    const lvlComb=[...S.leaderboard.filter(e=>!e.isMe).map(e=>({...e})),playerEntry];
+    lvlComb.sort((a,b)=>(b.lvl||0)-(a.lvl||0));
+    lvlList.innerHTML='';
+    lvlComb.slice(0,8).forEach((e,i)=>{
+      const d=document.createElement('div');d.className='lb-row'+(e.isMe?' me':'');
+      d.innerHTML=`<span class="lb-rank">${['🥇','🥈','🥉'][i]||('#'+(i+1))}</span><span class="lb-name">${e.name}</span><span class="lb-val" style="color:var(--accent)">Lv ${e.lvl||1}</span>`;
+      lvlList.appendChild(d);
+    });
+  }
+  // DMG leaderboard
+  const dmgList=document.getElementById('lb-dmg-list');if(!dmgList)return;
+  dmgList.innerHTML='';
+  const dmgCombined=[...S.leaderboard.filter(e=>!e.isMe).map(e=>({...e,dmg:e.dmg||0})),playerEntry];
+  dmgCombined.sort((a,b)=>b.dmg-a.dmg);
+  dmgCombined.slice(0,8).forEach((e,i)=>{
+    const d=document.createElement('div');d.className='lb-row'+(e.isMe?' me':'');
+    d.innerHTML=`<span class="lb-rank">${['🥇','🥈','🥉'][i]||('#'+(i+1))}</span><span class="lb-name">${e.name}</span><span class="lb-val" style="color:var(--red)">${fmt(e.dmg)} DMG</span>`;
+    dmgList.appendChild(d);
+  });
+}
+
+// ============================================================
+// XP / LEVELS
+// ============================================================
+function gainXP(a){
+  S.xp+=a;
+  let leveled=false;
+  while(S.xp>=S.xpN){
+    S.xp-=S.xpN;S.lvl++;
+    S.xpN=Math.floor(100*Math.pow(1.06,S.lvl));
+    document.getElementById('t-lvl').textContent=S.lvl;
+    if(S.lvl%25===0){notify(`🎉 Level ${S.lvl} reached!`);}
+    leveled=true;
+  }
+  if(leveled){
+    renderAreas(); // unlock new areas
+    document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
+  }
+  document.getElementById('xp-fill').style.width=(S.xp/S.xpN*100)+'%';
+  document.getElementById('xp-fill').style.width=Math.min(100,S.xp/S.xpN*100)+'%';
+  document.getElementById('t-xp').textContent=fmt(S.xp)+'/'+fmt(S.xpN);
+  document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
+}
+
+// ============================================================
+// WEATHER
+// ============================================================
+function tickWx(){
+  S.wxTick++;
+  if(S.wxTick>90){
+    S.wxTick=0;S.wxIdx=Math.floor(Math.random()*WX.length);applyWx();
+  }
+}
+function applyWx(){
+  const w=WX[S.wxIdx];
+  WX.forEach(x=>{if(x.cls)document.body.classList.remove(x.cls);});
+  if(w.cls)document.body.classList.add(w.cls);
+  const pill=document.getElementById('weather-pill');
+  pill.style.color=w.col;pill.style.borderColor=w.col+'66';
+  pill.textContent=w.n+' · ×'+w.lm+' Luck';
+  document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
+  notify(`Weather: ${w.n} (×${w.lm} Luck)`);
+}
+
+// ============================================================
+// UPGRADES
+// ============================================================
+function getCost(u,lvl){
+  if(u.id==='appraiser')return 0;
+  const p=S.up[u.id]||0;
+  return Math.floor(u.base+u.scale*lvl*Math.pow(1.018,lvl)*(1+p*2));
+}
+function buyUpg(id){
+  const u=UPS.find(x=>x.id===id);if(!u)return;
+  const lvl=S.ul[id];
+  if(u.maxLvl>0&&lvl>=u.maxLvl){notify(u.n+' is maxed');return;}
+  if(lvl===0&&S.cash<u.unlock){notify(`Need $${fmt(u.unlock)} to unlock ${u.n}`);return;}
+  const cost=getCost(u,lvl);
+  if(S.cash<cost){notify('Not enough cash! Need $'+fmt(cost));return;}
+  S.cash-=cost;S.ul[id]++;
+  document.getElementById('t-cash').textContent='$'+fmt(S.cash);
+  if(id==='conveyor')startFact();
+  if(u.maxLvl>0&&S.ul[id]%100===0&&S.ul[id]<u.maxLvl){S.up[id]=(S.up[id]||0)+1;notify(`✦ ${u.n} Prestige ${S.up[id]}!`);}
+  renderUps();
+}
+function getMachineInfo(u){
+  const lvl=S.ul[u.id]||0;
+  if(u.id==='conveyor'&&lvl>0){
+    const spd=factSpeed();
+    return `<span style="color:var(--accent);font-size:7px">${(60000/spd).toFixed(1)}/min · ${(spd/1000).toFixed(2)}s</span>`;
+  }
+  if(u.id==='ascender'&&lvl>0){
+    const spd=Math.max(60,Math.floor(1500/(1+lvl/60)));
+    return `<span style="color:var(--purple);font-size:7px">×${ascLuck().toFixed(2)} luck · ${(spd/1000).toFixed(2)}s</span>`;
+  }
+  if(u.id==='upgrader'&&lvl>0) return `<span style="color:var(--accent);font-size:7px">×${uBonus('upgrader').toFixed(1)} rarity luck</span>`;
+  if(u.id==='polisher'&&lvl>0) return `<span style="color:var(--accent);font-size:7px">×${uBonus('polisher').toFixed(1)} quality luck</span>`;
+  if(u.id==='molder'&&lvl>0)   return `<span style="color:var(--accent);font-size:7px">×${uBonus('molder').toFixed(1)} mold luck</span>`;
+  if(u.id==='classifier'&&lvl>0) return `<span style="color:var(--accent);font-size:7px">×${uBonus('classifier').toFixed(1)} class luck</span>`;
+  if(u.id==='enchanter'&&lvl>0) return `<span style="color:var(--purple);font-size:7px">×${uBonus('enchanter').toFixed(1)} enc luck</span>`;
+  if(u.id==='appraiser'&&lvl>0) return `<span style="color:var(--green);font-size:7px">Active</span>`;
+  return '';
+}
+
+function renderUps(){
+  const list=document.getElementById('ulist');if(!list)return;list.innerHTML='';
+  UPS.forEach(u=>{
+    const lvl=S.ul[u.id],p=S.up[u.id]||0;
+    const isMax=u.maxLvl>0&&lvl>=u.maxLvl;
+    const isLocked=lvl===0&&S.cash<u.unlock;
+    const cost=getCost(u,lvl);
+    const pct=u.maxLvl>0?Math.min(100,(lvl/u.maxLvl)*100):Math.min(100,lvl%100);
+    let cls='uc';
+    if(isMax)cls+=' maxed';else if(isLocked)cls+=' locked';else if(S.cash<cost)cls+=' cant';
+    const pb=p>0?`<span class="pbadge">P${p}</span>`:'';
+    const lvlTxt=u.maxLvl>0?`${lvl}/${u.maxLvl}`:`Lv ${lvl}`;
+    let costEl='';
+    if(isMax)costEl=`<span class="ucost mx">MAXED</span>`;
+    else if(isLocked)costEl=`<span class="ucost lk">$${fmt(u.unlock)} unlock</span>`;
+    else costEl=`<span class="ucost">${cost===0?'FREE':'$'+fmt(cost)}</span>`;
+    const mInfo=getMachineInfo(u);
+    const card=document.createElement('div');card.className=cls;
+    card.innerHTML=`
+      <div class="ur1">
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="font-size:13px">${u.ico}</span>
+          <span class="un" style="color:${u.col}">${u.n}</span>${pb}
+        </div>
+        <span class="ul2${isMax?' mx':''}">${lvlTxt}</span>
+      </div>
+      <div class="ue">${u.eff}</div>
+      ${mInfo?`<div style="margin-bottom:2px">${mInfo}</div>`:''}
+      <div class="ub">${costEl}<span class="ups">${p>0?`+${p*50}% power`:''}</span></div>
+      <div class="ubar"><div class="ubar-f" style="width:${pct}%;background:linear-gradient(90deg,${u.col}77,${u.col})"></div></div>
+    `;
+    if(!isMax&&!isLocked)card.onclick=()=>buyUpg(u.id);
+    list.appendChild(card);
+  });
+}
+
+// ============================================================
+// TAB SWITCHER
+// ============================================================
+const ALL_TABS=['factory','ascender','sell','bank','mobs','index','leaderboard'];
+function sw(tab){sw2(tab);}
+function sw2(tab){
+  ALL_TABS.forEach((t,i)=>{
+    const el=document.getElementById('t-'+t);
+    if(el){el.style.display=t===tab?'flex':'none';if(t===tab)el.style.flexDirection='column';}
+    const tabEl=document.querySelectorAll('.tab')[i];
+    if(tabEl)tabEl.classList.toggle('active',t===tab);
+  });
+  if(tab==='sell')updSell();
+  if(tab==='bank')updBankUI();
+  if(tab==='index')renderIndex('rarity');
+  if(tab==='leaderboard')updateLB();
+  if(tab==='mobs')renderAreas();
+  if(tab==='ascender')updAscDisplay();
+}
+
+// ============================================================
+// GLOBAL ANNOUNCEMENTS
+// ============================================================
+let _ga;
+function globalAnnounce(msg,col='#ffd54f',icon='✦'){
+  const el=document.getElementById('global-announce');
+  if(!el)return;
+  el.innerHTML=`<span style="color:${col};font-size:14px;">${icon}</span> <span style="color:${col}">${msg}</span>`;
+  el.classList.add('show');
+  clearTimeout(_ga);
+  _ga=setTimeout(()=>el.classList.remove('show'),6000);
+}
+function checkGlobalAnnounce(sw,source='forge'){
+  const rIdx=R.indexOf(sw.r);
+  const chance=1/sw.r.c;
+  if(chance>=1e6){
+    const src=source==='boss'?'⚔ Boss Drop':'⚒ Forge';
+    globalAnnounce(`[${src}] You obtained ${sw.r.n} ${sw.cl.n} Sword! (1/${fmt(Math.round(chance))} RNG)`,sw.r.col,'✦');
+  }
+}
+
+// ============================================================
+// 30-MIN TRIPLE SPAWN EVENT
+// ============================================================
+let tripleSpawnCountdown=30*60; // seconds
+let tripleSpawnActive=false;
+function tickTripleSpawn(){
+  tripleSpawnCountdown--;
+  const el=document.getElementById('triple-timer');
+  if(el){
+    const m=Math.floor(tripleSpawnCountdown/60);
+    const s=tripleSpawnCountdown%60;
+    el.textContent=`Triple Spawn in: ${m}:${s<10?'0':''}${s}`;
+  }
+  if(tripleSpawnCountdown<=0){
+    tripleSpawnCountdown=30*60;
+    triggerTripleSpawn();
+  }
+}
+function triggerTripleSpawn(){
+  tripleSpawnActive=true;
+  globalAnnounce('TRIPLE SPAWN EVENT! All bosses replaced with ULTRA bosses for 60 seconds!','#ff1744','🔥');
+  // Spawn 3 high-rarity bosses at once
+  const area=AREAS[S.areaIdx];
+  const bossRarities=['Celestial','Eternal','Cosmic','Heavenly'];
+  for(let i=0;i<3;i++){
+    setTimeout(()=>{
+      const br=R.find(r=>r.n===bossRarities[Math.floor(Math.random()*bossRarities.length)])||R[R.length-Math.floor(Math.random()*5)-1];
+      const bMob={
+        n:`★ ULTRA ${area.mobs[0].n} BOSS ★`,
+        ico:area.mobs[0].ico,
+        hp:area.mobs[0].hp*100,
+        rew:area.mobs[0].rew*50,
+        xp:area.mobs[0].xp*30,
+        lvl:area.mobs[0].lvl+100,
+        bossChance:0,
+        tripleReward:true,
+        tripleRarity:br,
+      };
+      spawnBoss(bMob);
+    },i*3000);
+  }
+  setTimeout(()=>{tripleSpawnActive=false;},60000);
+}
+
+// ============================================================
+// RARITY-BASED MOB ICON SPAWN
+// ============================================================
+function getRarityMobIcon(rIdx){
+  // Mobs that match rarity tiers — these are all defined in SVG defs
+  if(rIdx>=72)return'i-void';       // Heavenly+
+  if(rIdx>=68)return'i-void';       // Cosmic+
+  if(rIdx>=64)return'i-void';       // Eternal+
+  if(rIdx>=56)return'i-shadow';     // Supreme+
+  if(rIdx>=52)return'i-titan';      // Celestial
+  if(rIdx>=48)return'i-lich';       // Exotic+
+  if(rIdx>=44)return'i-lich';       // Unique+
+  if(rIdx>=36)return'i-dragon';     // Godly+
+  if(rIdx>=32)return'i-dragon';     // Hyper+
+  if(rIdx>=28)return'i-demon';      // Super+
+  if(rIdx>=24)return'i-demon';      // Mythical+
+  if(rIdx>=20)return'i-orc';        // Legendary+
+  if(rIdx>=16)return'i-orc';        // Epic+
+  if(rIdx>=12)return'i-goblin';     // Rare+
+  return'i-goblin';
+}
+
+// ============================================================
+// NOTIFICATION
+// ============================================================
+let _nt;
+function notify(msg){
+  const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');
+  clearTimeout(_nt);_nt=setTimeout(()=>el.classList.remove('show'),2500);
+}
+// ============================================================
+// INIT
+// ============================================================
+renderUps();
+renderInv();
+renderAreas();
+selMob(0);
+startFact();
+// Initial sword
+rollSword();
+// Weather tick
+setInterval(tickWx,1000);
+// Bank passive income tick
+setInterval(tickBankIncome,1000);
+// Triple spawn countdown
+setInterval(tickTripleSpawn,1000);
+// Update luck display every 5s
+setInterval(()=>{
+  document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
+  document.getElementById('s-asc').textContent='×'+ascLuck().toFixed(2);
+  updateLB();
+},5000);
+// Apply initial weather
+applyWx();
+sw('factory');
+</script>
+</body>
+</html>
