@@ -127,6 +127,21 @@ body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;heigh
 .asc-stat-btn{padding:8px 4px;border:1px solid var(--border2);border-radius:7px;background:var(--panel2);color:var(--text);font-family:'Cinzel',serif;font-size:8px;font-weight:700;cursor:pointer;text-align:center;transition:all 0.15s;}
 .asc-stat-btn:hover:not(:disabled){border-color:var(--purple);background:var(--panel3);}
 .asc-stat-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.asc-stat-btn.asc-active{border-color:var(--purple)!important;background:rgba(192,132,252,0.12);color:var(--purple);}
+.asc-stat-btn.asc-active .asb-val{color:var(--green);}
+#spawn-calc{background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:12px;margin-top:8px;}
+.sc-title{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--accent);letter-spacing:2px;margin-bottom:8px;text-align:center;}
+.sc-inp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;font-size:10px;}
+.sc-inp-row label{color:var(--dim2);font-size:9px;}
+.sc-inp{background:var(--panel2);border:1px solid var(--border2);border-radius:5px;color:var(--text);font-size:10px;padding:3px 8px;width:80px;font-family:'Exo 2',sans-serif;}
+.sc-inp:focus{outline:none;border-color:var(--accent);}
+.sc-result{background:var(--panel2);border:1px solid var(--border);border-radius:7px;padding:8px;font-size:9px;margin-top:6px;}
+.sc-res-row{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid var(--border);}
+.sc-res-row:last-child{border-bottom:none;}
+.sc-res-label{color:var(--dim2);}
+.sc-res-val{font-weight:700;color:var(--accent);}
+.sc-impossible{color:var(--red)!important;}
+.sc-gold{color:var(--gold)!important;}
 .asc-stat-btn .asb-val{font-size:10px;font-weight:700;color:var(--purple);display:block;margin-top:2px;}
 .asc-stat-btn .asb-cost{font-size:7px;color:var(--green);display:block;}
 
@@ -443,12 +458,12 @@ body.wnight{--bg:#05060f;--bg2:#060718;}
           </div>
           <div id="pline">Pity: 0 fails · Bonus: ×1.00</div>
           <div class="asc-stat-grid" id="asc-stat-grid">
-            <button class="asc-stat-btn" onclick="ascUpgStat('rarity')" id="asb-rarity"><span>Rarity</span><span class="asb-val" id="asv-rarity">—</span><span class="asb-cost" id="asc-rarity-cost">Select sword</span></button>
-            <button class="asc-stat-btn" onclick="ascUpgStat('quality')" id="asb-quality"><span>Quality</span><span class="asb-val" id="asv-quality">—</span><span class="asb-cost" id="asc-quality-cost">Select sword</span></button>
-            <button class="asc-stat-btn" onclick="ascUpgStat('mold')" id="asb-mold"><span>Mold</span><span class="asb-val" id="asv-mold">—</span><span class="asb-cost" id="asc-mold-cost">Select sword</span></button>
-            <button class="asc-stat-btn" onclick="ascUpgStat('class')" id="asb-class"><span>Class</span><span class="asb-val" id="asv-class">—</span><span class="asb-cost" id="asc-class-cost">Select sword</span></button>
-            <button class="asc-stat-btn" onclick="ascUpgStat('level')" id="asb-level"><span>Level</span><span class="asb-val" id="asv-level">—</span><span class="asb-cost" id="asc-level-cost">Select sword</span></button>
-            <button class="asc-stat-btn" onclick="ascUpgStat('enchant')" id="asb-enchant"><span>Enchant</span><span class="asb-val" id="asv-enchant">—</span><span class="asb-cost" id="asc-enchant-cost">Select sword</span></button>
+            <button class="asc-stat-btn" data-stat="rarity"  onclick="setAscTarget('rarity')"  id="asb-rarity"><span>Rarity</span><span class="asb-val" id="asv-rarity">—</span><span class="asb-cost">~1/12.5</span></button>
+            <button class="asc-stat-btn" data-stat="quality" onclick="setAscTarget('quality')" id="asb-quality"><span>Quality</span><span class="asb-val" id="asv-quality">—</span><span class="asb-cost">~1/8</span></button>
+            <button class="asc-stat-btn" data-stat="mold"    onclick="setAscTarget('mold')"    id="asb-mold"><span>Mold</span><span class="asb-val" id="asv-mold">—</span><span class="asb-cost">~1/7</span></button>
+            <button class="asc-stat-btn" data-stat="class"   onclick="setAscTarget('class')"   id="asb-class"><span>Class</span><span class="asb-val" id="asv-class">—</span><span class="asb-cost">~1/10</span></button>
+            <button class="asc-stat-btn" data-stat="level"   onclick="setAscTarget('level')"   id="asb-level"><span>Level</span><span class="asb-val" id="asv-level">—</span><span class="asb-cost">~1/4</span></button>
+            <button class="asc-stat-btn" data-stat="enchant" onclick="setAscTarget('enchant')" id="asb-enchant"><span>Enchant</span><span class="asb-val" id="asv-enchant">—</span><span class="asb-cost">~1/14</span></button>
           </div>
           <div style="margin-top:6px;display:flex;gap:5px;">
             <button class="astbtn" id="abtn" onclick="toggleAsc()" style="flex:1;">▶ AUTO ASCEND</button>
@@ -529,6 +544,7 @@ body.wnight{--bg:#05060f;--bg2:#060718;}
           <div id="mlevel"></div>
           <button class="matkbtn" onclick="atkMob()">⚔ ATTACK</button>
         </div>
+        <div id="drop-panel" style="display:none;"></div>
         <div class="slbl" style="margin-top:7px;">Select Area</div>
         <div id="area-list" style="display:flex;flex-direction:column;gap:3px;margin-bottom:5px;"></div>
         <div class="slbl">Boss Spawns (Rare!)</div>
@@ -564,6 +580,16 @@ body.wnight{--bg:#05060f;--bg2:#060718;}
             <div class="lb-hdr">⚔ Top DMG Dealers</div>
             <div id="lb-dmg-list"></div>
           </div>
+        </div>
+        <!-- SPAWN CALCULATOR -->
+        <div id="spawn-calc">
+          <div class="sc-title">⚡ TRIPLE/QUAD SPAWN CALCULATOR</div>
+          <div class="sc-inp-row"><label>Players in server</label><input class="sc-inp" type="number" id="sc-players" value="20" min="1" max="271" oninput="calcSpawns()"/></div>
+          <div class="sc-inp-row"><label>Luck Spawn 1 (C17)</label><input class="sc-inp" type="number" id="sc-s1" value="1" step="0.1" oninput="calcSpawns()"/></div>
+          <div class="sc-inp-row"><label>Luck Spawn 2 (C18)</label><input class="sc-inp" type="number" id="sc-s2" value="1" step="0.1" oninput="calcSpawns()"/></div>
+          <div class="sc-inp-row"><label>Luck Spawn 3 (C19)</label><input class="sc-inp" type="number" id="sc-s3" value="1" step="0.1" oninput="calcSpawns()"/></div>
+          <div class="sc-inp-row"><label>Luck Spawn 4 (C20)</label><input class="sc-inp" type="number" id="sc-s4" value="1" step="0.1" oninput="calcSpawns()"/></div>
+          <div class="sc-result" id="sc-result">Press any field to calculate...</div>
         </div>
       </div>
 
@@ -695,41 +721,73 @@ const UPS=[
   {id:"ascender",n:"Ascender",ico:"🔺",unlock:1e12,base:1e12,scale:8e14,maxLvl:0,col:"#ff6d00",eff:"Ascend speed & luck"},
 ];
 
-// AREAS with mob luck multipliers
-const AREAS=[
-  {n:"Beginner's Trials",mobLuck:1,pvp:"off",minLvl:0,col:"#69f0ae",mobs:[
-    {n:"Goblin",ico:"i-goblin",hp:50,rew:50,xp:5,lvl:5,bossChance:0.01},
-    {n:"Orc",ico:"i-orc",hp:300,rew:400,xp:20,lvl:12,bossChance:0.005},
-  ]},
-  {n:"Mystical Forest",mobLuck:2,pvp:"off",minLvl:20,col:"#4fc3f7",mobs:[
-    {n:"Forest Orc",ico:"i-orc",hp:2000,rew:3000,xp:80,lvl:25,bossChance:0.008},
-    {n:"Shadow Beast",ico:"i-shadow",hp:8000,rew:15000,xp:250,lvl:35,bossChance:0.003},
-  ]},
-  {n:"Stranded Island",mobLuck:5,pvp:"safe",minLvl:75,col:"#ffab40",mobs:[
-    {n:"Lich",ico:"i-lich",hp:5e4,rew:1e5,xp:1000,lvl:80,bossChance:0.006},
-    {n:"Titan",ico:"i-titan",hp:2e5,rew:5e5,xp:3000,lvl:100,bossChance:0.002},
-  ]},
-  {n:"Snowy Fields",mobLuck:15,pvp:"safe",minLvl:120,col:"#b2ebf2",mobs:[
-    {n:"Frost Demon",ico:"i-demon",hp:2e6,rew:5e6,xp:20000,lvl:130,bossChance:0.005},
-    {n:"Void Entity",ico:"i-void",hp:1e7,rew:3e7,xp:80000,lvl:160,bossChance:0.002},
-  ]},
-  {n:"Crystal Caverns",mobLuck:75,pvp:"safe",minLvl:200,col:"#ea80fc",mobs:[
-    {n:"Crystal Golem",ico:"i-titan",hp:1e8,rew:5e8,xp:500000,lvl:220,bossChance:0.004},
-    {n:"Shadow Void",ico:"i-void",hp:5e8,rew:3e9,xp:2e6,lvl:260,bossChance:0.001},
-  ]},
-  {n:"Volcanic Isles",mobLuck:300,pvp:"on",minLvl:300,col:"#ff5722",mobs:[
-    {n:"Infernal Demon",ico:"i-demon",hp:5e9,rew:5e10,xp:1e7,lvl:320,bossChance:0.003},
-    {n:"Lava Dragon",ico:"i-dragon",hp:5e10,rew:5e11,xp:5e7,lvl:380,bossChance:0.001},
-  ]},
-  {n:"Intraplanetarium",mobLuck:1000,pvp:"on",minLvl:420,col:"#7c4dff",mobs:[
-    {n:"Cosmic Lich",ico:"i-lich",hp:5e11,rew:1e13,xp:5e8,lvl:440,bossChance:0.002},
-    {n:"Void Titan",ico:"i-void",hp:5e12,rew:1e14,xp:2e9,lvl:490,bossChance:0.001},
-  ]},
-  {n:"Ancient Mineshaft",mobLuck:5000,pvp:"on",minLvl:510,col:"#ff6d00",mobs:[
-    {n:"Ancient Dragon",ico:"i-dragon",hp:1e14,rew:1e16,xp:1e11,lvl:550,bossChance:0.002},
-    {n:"Primordial Void",ico:"i-void",hp:1e15,rew:1e17,xp:5e11,lvl:600,bossChance:0.0005},
-  ]},
+// ============================================================
+// NOOB MOB GENERATION — each mob is a rarity-tier noob
+// ============================================================
+// Noob rarity tiers mapped to game rarities
+const NOOB_RARITIES=[
+  {rIdx:0,  n:"Basic Noob",      col:"#9e9e9e", hp:80,      baseRew:200,       xpMul:1},
+  {rIdx:4,  n:"Common Noob",     col:"#81c784", hp:500,     baseRew:2000,      xpMul:2},
+  {rIdx:8,  n:"Uncommon Noob",   col:"#4dd0e1", hp:3000,    baseRew:20000,     xpMul:4},
+  {rIdx:12, n:"Rare Noob",       col:"#64b5f6", hp:2e4,     baseRew:2e5,       xpMul:8},
+  {rIdx:16, n:"Epic Noob",       col:"#ba68c8", hp:1.5e5,   baseRew:2e6,       xpMul:16},
+  {rIdx:20, n:"Legendary Noob",  col:"#ffa726", hp:1e6,     baseRew:2e7,       xpMul:32},
+  {rIdx:24, n:"Mythical Noob",   col:"#e57373", hp:8e6,     baseRew:2e8,       xpMul:64},
+  {rIdx:28, n:"Divine Noob",     col:"#fff176", hp:6e7,     baseRew:2e9,       xpMul:128},
+  {rIdx:32, n:"Super Noob",      col:"#f06292", hp:5e8,     baseRew:2e10,      xpMul:256},
+  {rIdx:36, n:"Mega Noob",       col:"#4db6ac", hp:4e9,     baseRew:2e11,      xpMul:512},
+  {rIdx:40, n:"Ultra Noob",      col:"#ff8a65", hp:3e10,    baseRew:2e12,      xpMul:1024},
+  {rIdx:44, n:"Omega Noob",      col:"#ff4081", hp:2.5e11,  baseRew:2e13,      xpMul:2048},
+  {rIdx:48, n:"Extreme Noob",    col:"#b2ff59", hp:2e12,    baseRew:2e14,      xpMul:4096},
+  {rIdx:52, n:"Ultimate Noob",   col:"#00e676", hp:1.5e13,  baseRew:2e15,      xpMul:8192},
+  {rIdx:56, n:"Insane Noob",     col:"#ff6d00", hp:1e14,    baseRew:2e16,      xpMul:16384},
+  {rIdx:60, n:"Hyper Noob",      col:"#e040fb", hp:8e14,    baseRew:2e17,      xpMul:32768},
+  {rIdx:64, n:"Godly Noob",      col:"#ffd740", hp:6e15,    baseRew:2e18,      xpMul:65536},
+  {rIdx:68, n:"Unique Noob",     col:"#b0bec5", hp:4e16,    baseRew:2e19,      xpMul:131072},
+  {rIdx:72, n:"Exotic Noob",     col:"#ffab91", hp:3e17,    baseRew:2e20,      xpMul:262144},
+  {rIdx:76, n:"Supreme Noob",    col:"#9575cd", hp:2e18,    baseRew:2e21,      xpMul:524288},
+  {rIdx:80, n:"Celestial Noob",  col:"#40c4ff", hp:1.5e19,  baseRew:2e22,      xpMul:1048576},
+  {rIdx:82, n:"Eternal Noob",    col:"#fff9c4", hp:1e20,    baseRew:2e23,      xpMul:2097152},
+  {rIdx:84, n:"Cosmic Noob",     col:"#f8bbd0", hp:7e20,    baseRew:2e24,      xpMul:4194304},
+  {rIdx:86, n:"Heavenly Noob",   col:"#b2ebf2", hp:5e21,    baseRew:2e25,      xpMul:8388608},
 ];
+
+// Area noob spawn pools — each area has a rarity floor
+const AREAS=[
+  {n:"Beginner's Trials",mobLuck:1,  pvp:"off", minLvl:0,   col:"#69f0ae", noobFloor:0,  noobRange:4},
+  {n:"Mystical Forest",  mobLuck:2,  pvp:"off", minLvl:20,  col:"#4fc3f7", noobFloor:2,  noobRange:4},
+  {n:"Stranded Island",  mobLuck:5,  pvp:"safe",minLvl:75,  col:"#ffab40", noobFloor:4,  noobRange:4},
+  {n:"Snowy Fields",     mobLuck:15, pvp:"safe",minLvl:120, col:"#b2ebf2", noobFloor:6,  noobRange:4},
+  {n:"Crystal Caverns",  mobLuck:75, pvp:"safe",minLvl:200, col:"#ea80fc", noobFloor:9,  noobRange:4},
+  {n:"Volcanic Isles",   mobLuck:300,pvp:"on",  minLvl:300, col:"#ff5722", noobFloor:12, noobRange:4},
+  {n:"Intraplanetarium", mobLuck:1000,pvp:"on", minLvl:420, col:"#7c4dff", noobFloor:15, noobRange:4},
+  {n:"Ancient Mineshaft",mobLuck:5000,pvp:"on", minLvl:510, col:"#ff6d00", noobFloor:19, noobRange:5},
+];
+
+// Generate a random noob for a given area
+function genNoob(area,isElite=false){
+  const fl=area.noobFloor,rng=area.noobRange;
+  const pick=fl+Math.floor(Math.random()*(rng+1));
+  const tier=NOOB_RARITIES[Math.min(pick,NOOB_RARITIES.length-1)];
+  const rarityName=R[Math.min(tier.rIdx,R.length-1)].n;
+  const lvl=50+tier.rIdx*8+Math.floor(Math.random()*30);
+  // Looting multiplier from equipped sword
+  const sw=S.cur||(S.inv[0]||null);
+  const lootMul=sw?sw.encs.filter(e=>e.n.n==="Looting").reduce((a,e)=>a+e.tier*0.02,1):1;
+  const triMul=tripleSpawnActive?125000:1;
+  const areaLuck=area.mobLuck;
+  const rew=tier.baseRew*areaLuck*lootMul*triMul*(isElite?50:1);
+  const xp=Math.max(1,Math.floor(tier.xpMul*areaLuck*(isElite?20:1)*50));
+  return {
+    n:`${rarityName} Lv${lvl} Noob${isElite?' ★':''}`,
+    tier,rarityName,lvl,
+    hp:tier.hp*(isElite?20:1),
+    rew,xp,
+    col:tier.col,
+    isElite,
+    dropR:R[Math.min(tier.rIdx+Math.floor(Math.random()*4),R.length-1)],
+  };
+}
 
 const WX=[
   {n:"☀ Clear",lm:1,col:"#ffd54f",bc:"#ffab00",cls:""},
@@ -809,11 +867,6 @@ function totalLuck(){
   return WX[S.wxIdx].lm*(1+S.lvl/100)*(AREAS[S.areaIdx].mobLuck/1);
 }
 
-function ascLuck(){
-  const ascLvl=S.ul['ascender']||0;
-  return 1+(ascLvl/200);
-}
-
 function roll(arr,lm=1){
   let p=arr[0];
   const cap=Math.min(lm,500);
@@ -823,27 +876,58 @@ function roll(arr,lm=1){
   return p;
 }
 
-function uBonus(id){const l=S.ul[id]||0,p=S.up[id]||0;return 1+(l/300)*(1+p*0.5);}
-function factSpeed(){return Math.max(100,1000-S.ul['conveyor']*0.52);}
+// Each upgrade level gives exponentially more luck — meaningful progression
+// appraiser → rarity luck, polisher → quality luck, etc.
+function uBonus(id){
+  const l=S.ul[id]||0;
+  const p=S.up[id]||0;
+  if(l===0)return 1;
+  // Strong scaling: each 100 levels = major jump, prestige multiplies further
+  const prestigeMul=1+p*1.5;
+  // Exponential tiers: 1-100 gives up to ×5, 100-400 gives ×5-×50, 400-1800 gives ×50-×500
+  let bonus;
+  if(l<=100)     bonus=1+(l/100)*4;           // ×1 → ×5
+  else if(l<=400)bonus=5+(l-100)/300*45;       // ×5 → ×50
+  else if(l<=1200)bonus=50+(l-400)/800*450;    // ×50 → ×500
+  else            bonus=500+(l-1200)/600*4500; // ×500 → ×5000 at max
+  return bonus*prestigeMul;
+}
 
+// Factory speed: conveyor level strongly reduces interval (min 100ms)
+function factSpeed(){
+  const l=S.ul['conveyor']||0;
+  if(l===0)return 8000;
+  // Level 1=7s, 100=3s, 500=0.8s, 1000=0.3s, 1800=0.1s
+  return Math.max(100,Math.floor(8000*Math.pow(0.9985,l)));
+}
+
+// VALUE: rarity × quality cashBoost × mold cashBoost × class multiplier × level scaling
+// The 0.0005 base keeps early numbers reasonable; Heavenly noobs earn huge sums naturally
 function sVal(sw){
-  let v=(1/sw.r.c)*(sw.q.cashBoost||1)*(sw.m.cashBoost||1)*0.0005;
-  v*=sw.cl.d;
-  v*=(1+(sw.swLvl||0)*0.1);
+  const rarBase=1/sw.r.c;                        // rarity: Basic=1, Heavenly=~5.4e16
+  const qMul=sw.q.cashBoost||1;                  // quality: Broken=0.5 → Brilliant=50
+  const mMul=sw.m.cashBoost||1;                  // mold: Normal=1 → Topaz=500
+  const clMul=Math.sqrt(sw.cl.d);                // class: sqrt so it doesn't dwarf rarity
+  const lvlMul=1+Math.pow((sw.swLvl||1)*0.005,1.2); // level: gentle exponential
+  let v=rarBase*qMul*mMul*clMul*lvlMul*0.00015;
   sw.encs.forEach(e=>{
-    if(e.n.n==="Fortune")v*=(1+0.1*e.tier);
-    if(e.n.n==="Ancient")v*=(1+0.1*e.tier);
+    if(e.n.n==="Fortune") v*=(1+0.10*e.tier);
+    if(e.n.n==="Ancient") v*=(1+0.08*e.tier);
+    if(e.n.n==="Looting") v*=(1+0.02*e.tier);
   });
   return Math.max(1,v);
 }
 
+// DMG: rarity × class (primary), level scaling, enchants — mold does NOT affect DMG
 function sDmg(sw){
-  // Mold does NOT boost DMG — only rarity and class do
-  let d=(1/sw.r.c)*sw.cl.d*0.002;
-  d*=(1+(sw.swLvl||0)*0.15);
+  const rarBase=1/sw.r.c;
+  const clMul=sw.cl.d;                           // class is the main DMG driver
+  const lvlMul=1+Math.pow((sw.swLvl||1)*0.008,1.3);
+  let d=rarBase*clMul*lvlMul*0.0008;
   sw.encs.forEach(e=>{
-    if(e.n.n==="Sharpness")d*=(1+0.1*e.tier);
-    if(e.n.n==="Critical")d*=(1+0.05*e.tier);
+    if(e.n.n==="Sharpness")    d*=(1+0.10*e.tier);
+    if(e.n.n==="Critical")     d*=(1+0.05*e.tier);
+    if(e.n.n==="Desperation")  d*=(1+0.15*e.tier); // max bonus at low HP
   });
   return Math.max(1,d);
 }
@@ -872,11 +956,16 @@ function rollSword(manual=false){
   if(S.inv.length>=85){notify("Inventory full! Sell or bank swords.");return;}
   S.rolls++;
   const lk=totalLuck();
-  const lkCap=Math.min(lk,1000);
-  const r=roll(R,1+uBonus('upgrader')*lk*0.01);
-  const q=roll(Q,1+uBonus('polisher')*lk*0.01);
-  const m=roll(M,1+uBonus('molder')*lk*0.01);
-  const cl=roll(CL,1+uBonus('classifier')*lk*0.01);
+  // Each upgrade bonus is applied as a direct luck multiplier for that category
+  // uBonus returns ×1 to ×5000 depending on upgrade level
+  const rLk=lk*uBonus('upgrader');
+  const qLk=lk*uBonus('polisher');
+  const mLk=lk*uBonus('molder');
+  const clLk=lk*uBonus('classifier');
+  const r=roll(R,rLk);
+  const q=roll(Q,qLk);
+  const m=roll(M,mLk);
+  const cl=roll(CL,clLk);
   const rIdx=R.indexOf(r);
   const swLvl=genSwordLevel(rIdx);
   let encs=[];
@@ -1059,20 +1148,28 @@ function addToInv(sw){
 function sellIdx(i){
   const sw=S.inv[i];if(!sw||sw.locked)return;
   addCash(sw.val);S.sold++;
+  // XP from selling: val/5 scaled by insight, good XP source
+  const insightBonus=1+sw.encs.filter(e=>e.n.n==="Insight").reduce((a,e)=>a+e.tier*0.25,0);
+  gainXP(Math.max(1,(sw.val/5)*insightBonus));
   S.inv.splice(i,1);
   renderInv();updSell();
   document.getElementById('s-s').textContent=fmt(S.sold);
   updateLB();
 }
 function sellAll(){
-  let t=0;let cnt=0;
+  let t=0;let cnt=0;let totalXP=0;
   S.inv=S.inv.filter(s=>{
-    if(!s.locked){t+=s.val;S.sold++;cnt++;return false;}
+    if(!s.locked){
+      t+=s.val;S.sold++;cnt++;
+      const ib=1+s.encs.filter(e=>e.n.n==="Insight").reduce((a,e)=>a+e.tier*0.25,0);
+      totalXP+=Math.max(1,(s.val/5)*ib);
+      return false;
+    }
     return true;
   });
-  addCash(t);renderInv();updSell();
+  addCash(t);gainXP(totalXP);renderInv();updSell();
   document.getElementById('s-s').textContent=fmt(S.sold);
-  notify(`Sold ${cnt} swords · +$${fmt(t)}`);
+  notify(`Sold ${cnt} swords · +$${fmt(t)} · +${fmt(totalXP)} XP`);
   updateLB();
 }
 function toggleAutoSell(){
@@ -1265,94 +1362,94 @@ function updAscDisplay(){
   el.style.color=sw.r.col;
   el.innerHTML=`<div style="font-family:'Cinzel',serif;font-weight:700;color:${sw.r.col}">${sw.q.n} ${sw.r.n} ${sw.cl.n}</div>
   <div style="font-size:8px;color:var(--dim2)">Lv${sw.swLvl} · $${fmt(sw.val)} · ${fmt(sw.dmg)} DMG</div>`;
-  // Update stat buttons
-  const upg=getRUpgIdx(sw);const uq=getQUpgIdx(sw);const um=getMUpgIdx(sw);const uc2=getCLUpgIdx(sw);
   document.getElementById('asv-rarity').textContent=sw.r.n;
   document.getElementById('asv-quality').textContent=sw.q.n;
   document.getElementById('asv-mold').textContent=sw.m.n;
   document.getElementById('asv-class').textContent=sw.cl.n;
   document.getElementById('asv-level').textContent='Lv'+sw.swLvl;
   document.getElementById('asv-enchant').textContent=sw.encs.length>0?sw.encs[0].n.n+' '+NM[(sw.encs[0].tier||1)-1]:'None';
-  const ascCostMul=0.3; // ascender costs less than factory
-  document.getElementById('asc-rarity-cost').textContent=upg<R.length-1?'$'+fmt(ascCost(R[upg+1].c)*ascCostMul):'MAX';
-  document.getElementById('asc-quality-cost').textContent=uq<Q.length-1?'$'+fmt(ascCost(Q[uq+1].c)*ascCostMul):'MAX';
-  document.getElementById('asc-mold-cost').textContent=um<M.length-1?'$'+fmt(ascCost(M[um+1].c)*ascCostMul):'MAX';
-  document.getElementById('asc-class-cost').textContent=uc2<CL.length-1?'$'+fmt(ascCost(CL[uc2+1].c)*ascCostMul):'MAX';
-  document.getElementById('asc-level-cost').textContent='$'+fmt(Math.floor(sw.val*0.05));
-  document.getElementById('asc-enchant-cost').textContent=sw.encs.length>0?'$'+fmt(Math.floor(sw.val*0.08)):'Need Enchanter';
+  // Show per-stat luck on each button
+  const statMap={rarity:'asc-rarity-cost',quality:'asc-quality-cost',mold:'asc-mold-cost',class:'asc-class-cost',level:'asc-level-cost',enchant:'asc-enchant-cost'};
+  Object.keys(statMap).forEach(stat=>{
+    const el2=document.getElementById(statMap[stat]);
+    if(el2){
+      const lk=ascStatLuck(stat);
+      const chance=(ASC_RNG[stat]||0.1)*lk;
+      el2.textContent=`×${lk.toFixed(1)} lk · ${(Math.min(chance,0.98)*100).toFixed(1)}%`;
+    }
+  });
 }
 function getRUpgIdx(sw){return R.indexOf(sw.r);}
 function getQUpgIdx(sw){return Q.indexOf(sw.q);}
 function getMUpgIdx(sw){return M.indexOf(sw.m);}
 function getCLUpgIdx(sw){return CL.indexOf(sw.cl);}
-function ascCost(c){return Math.max(1,Math.floor((1/c)*0.0002));}
-function ascUpgStat(stat){
-  const sw=S.ascSword;if(!sw){notify("Select a sword first");return;}
-  const mul=0.3;
-  if(stat==='rarity'){
-    const idx=getRUpgIdx(sw);if(idx>=R.length-1){notify("Max rarity!");return;}
-    const cost=Math.floor(ascCost(R[idx+1].c)*mul);
-    if(S.cash<cost){notify("Not enough cash: $"+fmt(cost));return;}
-    S.cash-=cost;sw.r=R[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);
-    addCashDisplay();notify(`✦ Rarity → ${sw.r.n}!`);
-  } else if(stat==='quality'){
-    const idx=getQUpgIdx(sw);if(idx>=Q.length-1){notify("Max quality!");return;}
-    const cost=Math.floor(ascCost(Q[idx+1].c)*mul);
-    if(S.cash<cost){notify("Not enough cash");return;}
-    S.cash-=cost;sw.q=Q[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);
-    addCashDisplay();notify(`✦ Quality → ${sw.q.n}!`);
-  } else if(stat==='mold'){
-    const idx=getMUpgIdx(sw);if(idx>=M.length-1){notify("Max mold!");return;}
-    const cost=Math.floor(ascCost(M[idx+1].c)*mul);
-    if(S.cash<cost){notify("Not enough cash");return;}
-    S.cash-=cost;sw.m=M[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);
-    addCashDisplay();notify(`✦ Mold → ${sw.m.n}!`);
-  } else if(stat==='class'){
-    const idx=getCLUpgIdx(sw);if(idx>=CL.length-1){notify("Max class!");return;}
-    const cost=Math.floor(ascCost(CL[idx+1].c)*mul);
-    if(S.cash<cost){notify("Not enough cash");return;}
-    S.cash-=cost;sw.cl=CL[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);
-    addCashDisplay();notify(`✦ Class → ${sw.cl.n}!`);
-  } else if(stat==='level'){
-    const cost=Math.floor(sw.val*0.05);
-    if(S.cash<cost){notify("Not enough cash");return;}
-    S.cash-=cost;sw.swLvl+=Math.max(1,Math.floor(sw.swLvl*0.1)+1);sw.val=sVal(sw);sw.dmg=sDmg(sw);
-    addCashDisplay();notify(`✦ Level → ${sw.swLvl}!`);
-  } else if(stat==='enchant'){
-    if(sw.encs.length===0){notify("No enchants to upgrade");return;}
-    const cost=Math.floor(sw.val*0.08);
-    if(S.cash<cost){notify("Not enough cash");return;}
-    S.cash-=cost;sw.encs[0].tier=Math.min(40,sw.encs[0].tier+1);sw.val=sVal(sw);sw.dmg=sDmg(sw);
-    addCashDisplay();notify(`✦ ${sw.encs[0].n.n} → ${NM[sw.encs[0].tier-1]}!`);
-  }
-  updAscDisplay();renderInv();updSell();
-  document.getElementById('s-d').textContent=fmt(sw.dmg)+' DMG';
-  document.getElementById('s-asc').textContent='×'+ascLuck().toFixed(2);
-  addAHist(stat.charAt(0).toUpperCase()+stat.slice(1)+' upgraded',true);
-}
 function addCashDisplay(){
   document.getElementById('t-cash').textContent='$'+fmt(S.cash);
   renderUps();
 }
 
-function pityLuck(bc){
-  const rng=Math.max(10000,(1/bc)/2);
-  const s1=Math.floor(rng*0.55);
-  const st=Math.max(500,Math.floor(rng*0.05));
-  if(S.pFails<s1)return 1;
-  return 1+(Math.floor((S.pFails-s1)/st)+1)*0.1;
+// ============================================================
+// ASCENDER — PURE RNG PER CHOSEN STAT
+// ============================================================
+const ASC_RNG={
+  rarity:  0.08,
+  quality: 0.12,
+  mold:    0.15,
+  class:   0.10,
+  level:   0.25,
+  enchant: 0.07,
+};
+let S_ascTarget=null;
+
+// Map each ascender stat to its factory upgrade counterpart
+const ASC_UPGRADE_MAP={
+  rarity:  'upgrader',   // upgrader boosts rarity → also boosts ascend rarity RNG
+  quality: 'polisher',   // polisher → quality ascend
+  mold:    'molder',     // molder → mold ascend
+  class:   'classifier', // classifier → class ascend
+  enchant: 'enchanter',  // enchanter → enchant ascend
+  level:   'appraiser',  // appraiser (cheapest) → level ascend (easiest)
+};
+
+function ascLuck(){
+  const ascLvl=S.ul['ascender']||0;
+  // Base from ascender level
+  const base=1+(ascLvl/100);
+  return base;
+}
+
+// Luck for a SPECIFIC stat — scales with the matching factory upgrade
+function ascStatLuck(stat){
+  const base=ascLuck();
+  const relatedUpgrade=ASC_UPGRADE_MAP[stat];
+  if(!relatedUpgrade)return base;
+  // The factory upgrade level directly boosts this ascend stat's luck
+  const facLvl=S.ul[relatedUpgrade]||0;
+  const facBonus=1+(facLvl/50);  // every 50 factory upgrade levels = +1x to that stat's ascend
+  const p=S.up[relatedUpgrade]||0;
+  const prestigeBonus=1+p*2;
+  return base*facBonus*prestigeBonus;
 }
 function ascSpd(){
   const l=S.ul['ascender']||0;
   if(!l)return 1500;
-  // Per PDF formula: speed based on level
-  const spd=Math.max(60,Math.floor(1500/(1+l/60)));
-  return spd;
+  return Math.max(60,Math.floor(1500/(1+l/60)));
 }
+
+function setAscTarget(stat){
+  S_ascTarget=stat;
+  document.querySelectorAll('.asc-stat-btn').forEach(b=>{
+    b.classList.toggle('asc-active',b.dataset.stat===stat);
+  });
+  notify(`Targeting: ${stat.charAt(0).toUpperCase()+stat.slice(1)}`);
+}
+
 function toggleAsc(){
   S.ascOn=!S.ascOn;
   const b=document.getElementById('abtn');
   if(S.ascOn){
+    if(!S.ascSword){notify("Select a sword to ascend!");S.ascOn=false;return;}
+    if(!S_ascTarget){notify("Choose a stat to ascend!");S.ascOn=false;return;}
     b.textContent='⏹ STOP';b.style.background='linear-gradient(135deg,#ff1744,#ff6d00)';
     S.ascTries=0;S.pFails=0;runAsc();
   }else{
@@ -1360,44 +1457,51 @@ function toggleAsc(){
     clearInterval(S.ascI);
   }
 }
+
 function runAsc(){
-  if(!S.ascSword){notify("Select a sword to ascend!");S.ascOn=false;document.getElementById('abtn').textContent='▶ AUTO ASCEND';return;}
+  if(!S.ascSword){S.ascOn=false;return;}
   const spd=ascSpd();
   document.getElementById('a-spd').textContent=(spd/1000).toFixed(3)+'s';
   S.ascI=setInterval(()=>{
-    if(!S.ascSword){return;}
+    if(!S.ascSword||!S_ascTarget){return;}
     S.ascTries++;S.pFails++;
-    const al=ascLuck();
+    const al=ascStatLuck(S_ascTarget); // stat-specific luck
+    const alBase=ascLuck();
     document.getElementById('a-tries').textContent=fmt(S.ascTries);
     document.getElementById('a-luck').textContent='×'+al.toFixed(2);
-    document.getElementById('s-asc').textContent='×'+al.toFixed(2);
-    // Auto-upgrade random stat when success
-    const chance=0.05*al*pityLuck(0.001);
-    if(Math.random()<chance){
-      const stats=['rarity','quality','mold','class','level','enchant'];
-      const chosen=stats[Math.floor(Math.random()*stats.length)];
-      ascUpgStatFree(chosen);
+    document.getElementById('s-asc').textContent='×'+alBase.toFixed(2);
+
+    // Pure RNG: base chance × stat-specific luck × pity
+    const baseChance=ASC_RNG[S_ascTarget]||0.1;
+    const pityBonus=Math.min(S.pFails/300,5); // pity builds faster, up to ×5 bonus
+    const finalChance=Math.min(0.98,baseChance*al*(1+pityBonus));
+
+    const el=document.getElementById('ares');
+    if(Math.random()<finalChance){
+      const sw=S.ascSword;
+      const statName=S_ascTarget.charAt(0).toUpperCase()+S_ascTarget.slice(1);
+      if(S_ascTarget==='rarity'){const idx=getRUpgIdx(sw);if(idx<R.length-1){sw.r=R[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+      else if(S_ascTarget==='quality'){const idx=getQUpgIdx(sw);if(idx<Q.length-1){sw.q=Q[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+      else if(S_ascTarget==='mold'){const idx=getMUpgIdx(sw);if(idx<M.length-1){sw.m=M[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+      else if(S_ascTarget==='class'){const idx=getCLUpgIdx(sw);if(idx<CL.length-1){sw.cl=CL[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+      else if(S_ascTarget==='level'){sw.swLvl+=Math.max(1,Math.floor(alBase));sw.val=sVal(sw);sw.dmg=sDmg(sw);}
+      else if(S_ascTarget==='enchant'){if(sw.encs.length>0){sw.encs[0].tier=Math.min(40,sw.encs[0].tier+1);sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
+
+      el.textContent=`✦ ${statName} ASCENDED! (${fmt(S.pFails)} tries)`;el.style.color='#00e676';
+      addAHist(`${statName} ↑ after ${fmt(S.pFails)} tries`,true);
+      if(1/baseChance>=1e4)globalAnnounce(`Ascender: ${statName} upgraded on ${sw.r.n} Sword!`,sw.r.col,'✦');
       S.pFails=0;
-      const el=document.getElementById('ares');
-      el.textContent=`✦ ${chosen.toUpperCase()} ASCENDED!`;el.style.color='#00e676';
-      addAHist(chosen+' auto-ascended',true);
+      updAscDisplay();renderInv();
+      document.getElementById('s-d').textContent=fmt(sw.dmg)+' DMG';
     } else {
-      const el=document.getElementById('ares');
-      el.textContent=`[FAIL] ${fmt(S.pFails)} tries`;el.style.color='var(--red)';
+      el.textContent=`[FAIL] ${fmt(S.pFails)} tries · ${(finalChance*100).toFixed(2)}% chance`;
+      el.style.color='var(--red)';
     }
-    document.getElementById('pline').textContent=`Pity: ${S.pFails} fails · Bonus: ×${pityLuck(0.001).toFixed(2)}`;
-    document.getElementById('afill').style.width=(S.ascTries%50*2)+'%';
+    const relUp=ASC_UPGRADE_MAP[S_ascTarget]||'';
+    const facLvl=relUp?S.ul[relUp]:0;
+    document.getElementById('pline').textContent=`Pity: ${S.pFails} · Luck: ×${al.toFixed(1)} · ${relUp?relUp+' Lv'+facLvl+' bonus':''} · ${(finalChance*100).toFixed(2)}% chance`;
+    document.getElementById('afill').style.width=Math.min(100,(S.pFails/300)*100)+'%';
   },spd);
-}
-function ascUpgStatFree(stat){
-  const sw=S.ascSword;if(!sw)return;
-  if(stat==='rarity'){const idx=getRUpgIdx(sw);if(idx<R.length-1){sw.r=R[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
-  else if(stat==='quality'){const idx=getQUpgIdx(sw);if(idx<Q.length-1){sw.q=Q[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
-  else if(stat==='mold'){const idx=getMUpgIdx(sw);if(idx<M.length-1){sw.m=M[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
-  else if(stat==='class'){const idx=getCLUpgIdx(sw);if(idx<CL.length-1){sw.cl=CL[idx+1];sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
-  else if(stat==='level'){sw.swLvl+=1;sw.val=sVal(sw);sw.dmg=sDmg(sw);}
-  else if(stat==='enchant'){if(sw.encs.length>0){sw.encs[0].tier=Math.min(40,sw.encs[0].tier+1);sw.val=sVal(sw);sw.dmg=sDmg(sw);}}
-  updAscDisplay();renderInv();
 }
 function addAHist(n,ok){
   const h=document.getElementById('ahist');const d=document.createElement('div');d.className='ahi';
@@ -1407,8 +1511,10 @@ function addAHist(n,ok){
 }
 
 // ============================================================
-// COMBAT / MOBS / BOSSES
+// COMBAT — NOOB SYSTEM
 // ============================================================
+let S_mob=null; // current active noob
+
 function renderAreas(){
   const list=document.getElementById('area-list');if(!list)return;list.innerHTML='';
   AREAS.forEach((area,i)=>{
@@ -1417,120 +1523,143 @@ function renderAreas(){
     btn.disabled=S.lvl<area.minLvl;
     const pvpCol=area.pvp==='on'?'#ff1744':area.pvp==='safe'?'#4fc3f7':'#00e676';
     const pvpLabel=area.pvp==='on'?'PVP ON':area.pvp==='safe'?'SAFE PVP':'PVP OFF';
+    const fl=NOOB_RARITIES[Math.min(area.noobFloor,NOOB_RARITIES.length-1)];
     btn.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center">
-      <span style="color:${area.col};font-size:9px">${area.n}</span>
-      <span class="area-pvp ${area.pvp}" style="font-size:7px">${pvpLabel}</span>
+      <span style="color:${area.col};font-size:9px;font-family:'Cinzel',serif;font-weight:700">${area.n}</span>
+      <span style="font-size:7px;color:${pvpCol};font-weight:700">${pvpLabel}</span>
     </div>
     <div style="display:flex;justify-content:space-between;font-size:8px;margin-top:2px;">
-      <span style="color:var(--gold)">×${area.mobLuck} Mob Luck</span>
+      <span style="color:var(--gold)">×${area.mobLuck} Mob Luck · ${fl.n}+</span>
       <span style="color:var(--dim2)">Lv${area.minLvl}+</span>
     </div>`;
     btn.onclick=()=>{
       if(S.lvl<area.minLvl){notify(`Need Level ${area.minLvl}`);return;}
-      S.areaIdx=i;S.mobIdx=0;
-      renderAreas();selMob(0);
+      S.areaIdx=i;spawnNoob();renderAreas();
       document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
     };
     list.appendChild(btn);
   });
 }
-function selMob(i){
+
+function spawnNoob(elite=false){
   const area=AREAS[S.areaIdx];
-  if(!area.mobs[i])i=0;
-  S.mobIdx=i;
-  const mob=area.mobs[i];
-  S.mobHp=mob.hp;
+  S_mob=genNoob(area,elite);
+  S.mobHp=S_mob.hp;
+  // Draw noob SVG — colored circle with text
   const svgEl=document.getElementById('msvg');
-  svgEl.innerHTML=`<svg viewBox="0 0 40 40" width="70" height="70"><use href="#${mob.ico}"/></svg>`;
-  document.getElementById('mname').textContent=mob.n;
-  document.getElementById('mname').style.color=area.col;
-  document.getElementById('mreward').textContent=`Reward: $${fmt(mob.rew)} + ${fmt(mob.xp)} XP`;
-  document.getElementById('mlevel').textContent=`Level ${mob.lvl} Enemy`;
+  const c=S_mob.col;
+  const initials=S_mob.rarityName.slice(0,2).toUpperCase();
+  svgEl.innerHTML=`<svg viewBox="0 0 60 60" width="70" height="70">
+    <circle cx="30" cy="30" r="28" fill="${c}22" stroke="${c}" stroke-width="2"/>
+    <circle cx="30" cy="22" r="10" fill="${c}88"/>
+    <ellipse cx="30" cy="46" rx="14" ry="10" fill="${c}88"/>
+    <text x="30" y="26" text-anchor="middle" font-size="9" fill="${c}" font-family="Cinzel,serif" font-weight="700">${initials}</text>
+    ${elite?'<polygon points="30,4 33,12 42,12 35,17 38,26 30,21 22,26 25,17 18,12 27,12" fill="#ffd54f" opacity="0.9"/>':''}
+    <circle cx="30" cy="30" r="28" fill="none" stroke="${c}44" stroke-width="1" stroke-dasharray="4 3"/>
+  </svg>`;
+  document.getElementById('mname').textContent=S_mob.n;
+  document.getElementById('mname').style.color=S_mob.col;
+  document.getElementById('mreward').textContent=`$${fmt(S_mob.rew)} + ${fmt(S_mob.xp)} XP`;
+  document.getElementById('mlevel').textContent=`Drops: ${S_mob.dropR.n} Sword`;
+  document.getElementById('mlevel').style.color=S_mob.dropR.col;
   updMobBar();
+  // Hide drop panel
+  const dp=document.getElementById('drop-panel');if(dp)dp.style.display='none';
 }
+
+function selMob(i){spawnNoob();} // compat shim
+
 function atkMob(){
   const sw=S.cur||(S.inv[0]||null);
   if(!sw){notify('No sword! Roll one first.');return;}
-  const area=AREAS[S.areaIdx];
-  const mob=S.bossActive?S.bossMob:area.mobs[S.mobIdx];
-  if(!mob)return;
-  const dmg=sw.dmg*(1+S.lvl*0.01);
-  if(S.bossActive){
-    S.bossHp=Math.max(0,S.bossHp-dmg);
-    updMobBar();
-    if(S.bossHp<=0){
-      // Boss killed — reward a sword scaled to area mob luck
-      const area=AREAS[S.areaIdx];
-      const ml=area.mobLuck;
-      // Higher area = rarer drop floor
-      const rarFloor=Math.min(R.length-8, Math.floor(Math.log10(Math.max(1,ml))*12));
-      const bossRarIdx=Math.min(R.length-1, rarFloor+Math.floor(Math.random()*12));
-      const bossRarity=R[bossRarIdx];
-      const bossQ=Q[Math.min(Q.length-1,Math.floor(Q.length*0.3+Math.random()*Q.length*0.4))];
-      const bossM=M[Math.min(M.length-1,Math.floor(Math.random()*M.length*0.5))];
-      const bossCL=CL[Math.min(CL.length-1,Math.floor(CL.length*0.2+Math.random()*CL.length*0.4))];
-      const bossEncs=[{n:EN[Math.floor(Math.random()*EN.length)],tier:eTier()},{n:EN[Math.floor(Math.random()*EN.length)],tier:eTier()}];
-      const bossLvl=S.bossMob.lvl+Math.floor(Math.random()*20);
-      const bossSw={r:bossRarity,q:bossQ,m:bossM,cl:bossCL,encs:bossEncs,swLvl:bossLvl,id:Date.now()+Math.random(),locked:false};
-      const multi=tripleSpawnActive?20:5;
-      bossSw.val=sVal(bossSw)*multi; bossSw.dmg=sDmg(bossSw)*(multi/2);
-      addCash(S.bossMob.rew*(tripleSpawnActive?10:5));
-      gainXP(S.bossMob.xp*(tripleSpawnActive?10:5));
-      if(S.inv.length<85)addToInv(bossSw);
-      notify(`⚔ BOSS SLAIN! ${bossRarity.n} ${bossCL.n} Sword dropped!${tripleSpawnActive?' 🔥 TRIPLE!':''}`);
-      checkGlobalAnnounce(bossSw,'boss');
-      if(tripleSpawnActive) globalAnnounce(`🔥 TRIPLE BOSS KILLED! ${bossRarity.n} ${bossCL.n} Drop!`,bossRarity.col,'🔥');
-      S.bossActive=false;
-      const bossAlert=document.getElementById('boss-alert');
-      bossAlert.classList.remove('show');
-      selMob(S.mobIdx);
-      addBossLog(S.bossMob.n+' SLAIN! Drop: '+bossRarity.n,true);
-      updateLB();
-    }
-  } else {
-    S.mobHp=Math.max(0,S.mobHp-dmg);
-    updMobBar();
-    if(S.mobHp<=0){
-      addCash(mob.rew);gainXP(mob.xp);
-      notify(`${mob.n} defeated! +$${fmt(mob.rew)}`);
-      S.mobHp=mob.hp;updMobBar();
-      // Boss spawn chance
-      if(Math.random()<mob.bossChance){spawnBoss(mob);}
-    }
+  if(!S_mob){spawnNoob();return;}
+  const dmg=sw.dmg*(1+S.lvl*0.005);
+  S.mobHp=Math.max(0,S.mobHp-dmg);
+  updMobBar();
+  if(S.mobHp<=0){
+    // Mob killed
+    addCash(S_mob.rew);gainXP(S_mob.xp);
+    // Always drops a sword — show pickup UI
+    const dropSw=makeMobDrop(S_mob);
+    showDropUI(dropSw,S_mob);
+    if(S_mob.rew>=1e6)globalAnnounce(`Killed ${S_mob.n} · +$${fmt(S_mob.rew)}`,S_mob.col,'⚔');
+    addBossLog(S_mob.n+' defeated!',true);
+    // Chance to spawn elite on kill (every ~20 kills roughly)
+    const eliteChance=0.05*AREAS[S.areaIdx].mobLuck*0.001;
+    setTimeout(()=>{spawnNoob(Math.random()<eliteChance);},800);
   }
 }
-function spawnBoss(baseMob){
-  S.bossActive=true;
-  S.bossMob={...baseMob,n:`${baseMob.n} King`,hp:baseMob.hp*20,rew:baseMob.rew*15,xp:baseMob.xp*10,lvl:baseMob.lvl+30};
-  S.bossHp=S.bossMob.hp;
-  document.getElementById('mname').textContent=S.bossMob.n+' 👑';
-  document.getElementById('mname').style.color='#ffd54f';
-  document.getElementById('mreward').textContent=`BOSS REWARD: $${fmt(S.bossMob.rew*5)} + SWORD DROP!`;
-  document.getElementById('mlevel').textContent=`Boss Level ${S.bossMob.lvl} — HP: ${fmt(S.bossMob.hp)}`;
-  const bossAlert=document.getElementById('boss-alert');
-  document.getElementById('ba-title').textContent=`⚔ BOSS SPAWNED!`;
-  document.getElementById('ba-sub').textContent=`${S.bossMob.n} has appeared! Kill it for a sword drop!`;
-  bossAlert.classList.add('show');
-  setTimeout(()=>bossAlert.classList.remove('show'),5000);
-  addBossLog(S.bossMob.n+' spawned!',false);
-}
-function updMobBar(){
-  const mob=S.bossActive?S.bossMob:AREAS[S.areaIdx].mobs[S.mobIdx];
-  const hp=S.bossActive?S.bossHp:S.mobHp;
-  if(!mob)return;
-  const pct=(hp/mob.hp*100);
-  const bar=document.getElementById('mfill');
-  bar.style.width=pct+'%';
-  bar.style.background=S.bossActive?'linear-gradient(90deg,#ffd54f,#ff6d00)':'linear-gradient(90deg,#ff1744,#ff6d00)';
-}
-function addBossLog(msg,killed){
-  const h=document.getElementById('boss-log');if(!h)return;
-  const d=document.createElement('div');d.className='ahi';
-  d.style.borderLeftColor=killed?'var(--gold)':'var(--red)';
-  d.innerHTML=`<span style="color:${killed?'var(--gold)':'var(--red)'};font-size:8px">${killed?'💀':'👑'} ${msg}</span>`;
-  h.insertBefore(d,h.firstChild);while(h.children.length>8)h.removeChild(h.lastChild);
+
+function makeMobDrop(mob){
+  const area=AREAS[S.areaIdx];
+  const dropR=mob.dropR;
+  const dropQ=Q[Math.min(Q.length-1,Math.floor(Math.random()*Q.length*0.6))];
+  const dropM=M[Math.min(M.length-1,Math.floor(Math.random()*M.length*0.5))];
+  const dropCL=CL[Math.min(CL.length-1,Math.floor(Math.random()*CL.length*0.5))];
+  const dropEncs=[];
+  if(Math.random()<0.7){dropEncs.push({n:EN[Math.floor(Math.random()*EN.length)],tier:eTier()});}
+  if(Math.random()<0.3){dropEncs.push({n:EN[Math.floor(Math.random()*EN.length)],tier:eTier()});}
+  const lvl=mob.lvl+Math.floor(Math.random()*10);
+  const sw={r:dropR,q:dropQ,m:dropM,cl:dropCL,encs:dropEncs,swLvl:lvl,id:Date.now()+Math.random(),locked:false};
+  sw.val=sVal(sw);sw.dmg=sDmg(sw);
+  return sw;
 }
 
+function showDropUI(sw,mob){
+  const dp=document.getElementById('drop-panel');if(!dp)return;
+  dp.style.display='block';
+  dp.innerHTML=`
+    <div style="background:var(--panel2);border:1px solid ${sw.r.col}55;border-radius:8px;padding:8px;margin-top:6px;">
+      <div style="font-family:'Cinzel',serif;font-size:9px;font-weight:700;color:${mob.col};margin-bottom:4px;">⚔ DROP from ${mob.n}</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div>${getSwordSVG(sw,36,36)}</div>
+        <div style="flex:1;">
+          <div style="font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:${sw.r.col}">${sw.q.n} ${sw.r.n} ${sw.cl.n}</div>
+          <div style="font-size:8px;color:var(--dim2)">Lv${sw.swLvl} · $${fmt(sw.val)} · ${fmt(sw.dmg)} DMG</div>
+          <div style="font-size:8px;color:var(--purple)">${sw.encs.map(e=>e.n.n+' '+NM[e.tier-1]).join(' · ')||'No enchants'}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:5px;margin-top:6px;">
+        <button onclick="pickupDrop()" style="flex:1;padding:5px;border:none;border-radius:6px;background:var(--green);color:#111;font-family:'Cinzel',serif;font-size:9px;font-weight:700;cursor:pointer;">PICK UP</button>
+        <button onclick="sellDrop()" style="flex:1;padding:5px;border:none;border-radius:6px;background:linear-gradient(135deg,#ff6d00,#ffd54f);color:#111;font-family:'Cinzel',serif;font-size:9px;font-weight:700;cursor:pointer;">SELL ($${fmt(sw.val)})</button>
+        <button onclick="document.getElementById('drop-panel').style.display='none'" style="flex:0.5;padding:5px;border:none;border-radius:6px;background:var(--panel3);color:var(--dim2);font-family:'Cinzel',serif;font-size:9px;cursor:pointer;">SKIP</button>
+      </div>
+    </div>`;
+  dp._sw=sw;
+}
+
+function pickupDrop(){
+  const dp=document.getElementById('drop-panel');if(!dp||!dp._sw)return;
+  if(S.inv.length>=85){notify("Inventory full!");return;}
+  addToInv(dp._sw);notify(`Picked up: ${dp._sw.r.n} ${dp._sw.cl.n} Sword!`);
+  dp.style.display='none';
+}
+function sellDrop(){
+  const dp=document.getElementById('drop-panel');if(!dp||!dp._sw)return;
+  addCash(dp._sw.val);notify(`Sold drop for $${fmt(dp._sw.val)}`);
+  dp.style.display='none';
+}
+
+function spawnBoss(baseMob){
+  // compat — treat as elite noob
+  spawnNoob(true);
+}
+
+function updMobBar(){
+  if(!S_mob)return;
+  const pct=(S.mobHp/S_mob.hp*100);
+  const bar=document.getElementById('mfill');
+  bar.style.width=Math.max(0,pct)+'%';
+  bar.style.background=S_mob.isElite?'linear-gradient(90deg,#ffd54f,#ff6d00)':'linear-gradient(90deg,#ff3b5c,#ff6d00)';
+}
+
+function addBossLog(msg,ok){
+  const h=document.getElementById('boss-log');if(!h)return;
+  const d=document.createElement('div');d.className='ahi';
+  d.style.borderLeftColor=ok?'var(--green)':'var(--gold)';
+  d.innerHTML=`<span style="color:${ok?'var(--green)':'var(--gold)'};font-size:8px">${ok?'✦':'★'} ${msg}</span>`;
+  h.insertBefore(d,h.firstChild);while(h.children.length>8)h.removeChild(h.lastChild);
+}
 // ============================================================
 // INDEX
 // ============================================================
@@ -1631,20 +1760,21 @@ function updateLB(){
 // XP / LEVELS
 // ============================================================
 function gainXP(a){
-  S.xp+=a;
+  // XP is scaled down to manageable numbers — divide by a global factor
+  S.xp+=Math.max(1,a);
   let leveled=false;
   while(S.xp>=S.xpN){
     S.xp-=S.xpN;S.lvl++;
-    S.xpN=Math.floor(100*Math.pow(1.06,S.lvl));
+    // Slower XP curve: flatter growth so grinding feels rewarding
+    S.xpN=Math.floor(200*Math.pow(1.04,S.lvl));
     document.getElementById('t-lvl').textContent=S.lvl;
-    if(S.lvl%25===0){notify(`🎉 Level ${S.lvl} reached!`);}
+    if(S.lvl%10===0){notify(`✦ Level ${S.lvl} reached!`);}
     leveled=true;
   }
   if(leveled){
-    renderAreas(); // unlock new areas
+    renderAreas();
     document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
   }
-  document.getElementById('xp-fill').style.width=(S.xp/S.xpN*100)+'%';
   document.getElementById('xp-fill').style.width=Math.min(100,S.xp/S.xpN*100)+'%';
   document.getElementById('t-xp').textContent=fmt(S.xp)+'/'+fmt(S.xpN);
   document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
@@ -1695,18 +1825,42 @@ function getMachineInfo(u){
   const lvl=S.ul[u.id]||0;
   if(u.id==='conveyor'&&lvl>0){
     const spd=factSpeed();
-    return `<span style="color:var(--accent);font-size:7px">${(60000/spd).toFixed(1)}/min · ${(spd/1000).toFixed(2)}s</span>`;
+    return `<span style="color:var(--accent);font-size:7px">${(60000/spd).toFixed(1)}/min · ${(spd/1000).toFixed(2)}s/sword</span>`;
   }
   if(u.id==='ascender'&&lvl>0){
-    const spd=Math.max(60,Math.floor(1500/(1+lvl/60)));
-    return `<span style="color:var(--purple);font-size:7px">×${ascLuck().toFixed(2)} luck · ${(spd/1000).toFixed(2)}s</span>`;
+    const spd=ascSpd();
+    const al=ascLuck();
+    return `<span style="color:var(--purple);font-size:7px">Base ×${al.toFixed(1)} luck · ${(spd/1000).toFixed(2)}s/tick</span>`;
   }
-  if(u.id==='upgrader'&&lvl>0) return `<span style="color:var(--accent);font-size:7px">×${uBonus('upgrader').toFixed(1)} rarity luck</span>`;
-  if(u.id==='polisher'&&lvl>0) return `<span style="color:var(--accent);font-size:7px">×${uBonus('polisher').toFixed(1)} quality luck</span>`;
-  if(u.id==='molder'&&lvl>0)   return `<span style="color:var(--accent);font-size:7px">×${uBonus('molder').toFixed(1)} mold luck</span>`;
-  if(u.id==='classifier'&&lvl>0) return `<span style="color:var(--accent);font-size:7px">×${uBonus('classifier').toFixed(1)} class luck</span>`;
-  if(u.id==='enchanter'&&lvl>0) return `<span style="color:var(--purple);font-size:7px">×${uBonus('enchanter').toFixed(1)} enc luck</span>`;
-  if(u.id==='appraiser'&&lvl>0) return `<span style="color:var(--green);font-size:7px">Active</span>`;
+  if(u.id==='upgrader'&&lvl>0){
+    const b=uBonus('upgrader');
+    const al=ascStatLuck('rarity');
+    return `<span style="color:var(--accent);font-size:7px">×${b.toFixed(0)} rarity luck · asc ×${al.toFixed(1)}</span>`;
+  }
+  if(u.id==='polisher'&&lvl>0){
+    const b=uBonus('polisher');
+    const al=ascStatLuck('quality');
+    return `<span style="color:var(--accent);font-size:7px">×${b.toFixed(0)} quality luck · asc ×${al.toFixed(1)}</span>`;
+  }
+  if(u.id==='molder'&&lvl>0){
+    const b=uBonus('molder');
+    const al=ascStatLuck('mold');
+    return `<span style="color:var(--gold);font-size:7px">×${b.toFixed(0)} mold luck · asc ×${al.toFixed(1)}</span>`;
+  }
+  if(u.id==='classifier'&&lvl>0){
+    const b=uBonus('classifier');
+    const al=ascStatLuck('class');
+    return `<span style="color:var(--red);font-size:7px">×${b.toFixed(0)} class luck · asc ×${al.toFixed(1)}</span>`;
+  }
+  if(u.id==='enchanter'&&lvl>0){
+    const b=uBonus('enchanter');
+    const al=ascStatLuck('enchant');
+    return `<span style="color:var(--purple);font-size:7px">×${b.toFixed(0)} enc luck · asc ×${al.toFixed(1)}</span>`;
+  }
+  if(u.id==='appraiser'&&lvl>0){
+    const al=ascStatLuck('level');
+    return `<span style="color:var(--green);font-size:7px">Active · level asc ×${al.toFixed(1)}</span>`;
+  }
   return '';
 }
 
@@ -1807,28 +1961,14 @@ function tickTripleSpawn(){
 }
 function triggerTripleSpawn(){
   tripleSpawnActive=true;
-  globalAnnounce('TRIPLE SPAWN EVENT! All bosses replaced with ULTRA bosses for 60 seconds!','#ff1744','🔥');
-  // Spawn 3 high-rarity bosses at once
-  const area=AREAS[S.areaIdx];
-  const bossRarities=['Celestial','Eternal','Cosmic','Heavenly'];
+  globalAnnounce('🔥 TRIPLE SPAWN EVENT! x125,000 Luck for 60 seconds!','#ff1744','🔥');
+  // Spawn 3 elite noobs in quick succession
   for(let i=0;i<3;i++){
     setTimeout(()=>{
-      const br=R.find(r=>r.n===bossRarities[Math.floor(Math.random()*bossRarities.length)])||R[R.length-Math.floor(Math.random()*5)-1];
-      const bMob={
-        n:`★ ULTRA ${area.mobs[0].n} BOSS ★`,
-        ico:area.mobs[0].ico,
-        hp:area.mobs[0].hp*100,
-        rew:area.mobs[0].rew*50,
-        xp:area.mobs[0].xp*30,
-        lvl:area.mobs[0].lvl+100,
-        bossChance:0,
-        tripleReward:true,
-        tripleRarity:br,
-      };
-      spawnBoss(bMob);
+      spawnNoob(true); // isElite=true, tripleSpawnActive=true gives x125000 rewards
     },i*3000);
   }
-  setTimeout(()=>{tripleSpawnActive=false;},60000);
+  setTimeout(()=>{tripleSpawnActive=false;notify('Triple Spawn Event ended.');},60000);
 }
 
 // ============================================================
@@ -1854,6 +1994,106 @@ function getRarityMobIcon(rIdx){
 }
 
 // ============================================================
+// SPAWN CALCULATOR
+// Triple Spawn: every 816 spawns, x125K luck for mobs
+// Default spawn rate: 5 - 0.15 × Players seconds
+// ============================================================
+function calcSpawns(){
+  const players=Math.max(1,parseInt(document.getElementById('sc-players').value)||20);
+  const s1=parseFloat(document.getElementById('sc-s1').value)||1;
+  const s2=parseFloat(document.getElementById('sc-s2').value)||1;
+  const s3=parseFloat(document.getElementById('sc-s3').value)||1;
+  const s4=parseFloat(document.getElementById('sc-s4').value)||1;
+
+  // BASE SPAWN RATE: every (5 - 0.15 × players) seconds
+  // Special cases: <271 mobs → 1s, <100 mobs → 0.1s (we assume normal state here)
+  const baseInterval=Math.max(0.1, 5 - 0.15*players);
+  const spawnsPerSec=1/baseInterval;
+  const spawnsPerMin=spawnsPerSec*60;
+
+  // TRIPLE SPAWN: every 816 spawns, gives ×125,000 luck for mobs
+  const TRIPLE_N=816;
+  const tripleIntervalSec=TRIPLE_N/spawnsPerSec;
+  const tripleIntervalMin=tripleIntervalSec/60;
+
+  // QUAD SPAWN: all 4 luck-based spawn values must align at the same moment.
+  // Each spawn value S1..S4 fires on its own independent cycle.
+  // Spawn i fires every (base / Si) seconds (higher luck = more frequent).
+  // For all 4 to fire simultaneously, we need the LCM of their periods to be finite and rational.
+  // Period_i = baseInterval / Si  (seconds per spawn event i)
+  // Quad period = LCM(P1, P2, P3, P4)
+  // LCM of rationals: LCM(a/b, c/d) = LCM(a,c) / GCD(b,d)
+  // If any Si is irrational or the ratios between them produce an irrational, quad = IMPOSSIBLE.
+  // Practical rule: convert Si to rational fractions (multiply by 100, round to int, keep gcd).
+  // If GCD of all Si*100 values ≥ 1 (integer multiples of smallest unit), quad is possible.
+
+  const toRat=(v)=>{ // convert float to integer ratio (×100, round)
+    const n=Math.round(v*100); return n;
+  };
+  const gcd=(a,b)=>b===0?a:gcd(b,a%b);
+  const lcm=(a,b)=>a/gcd(a,b)*b;
+
+  const n1=toRat(s1),n2=toRat(s2),n3=toRat(s3),n4=toRat(s4);
+  // All must be positive
+  if(n1<=0||n2<=0||n3<=0||n4<=0){
+    document.getElementById('sc-result').innerHTML='<div class="sc-res-row"><span class="sc-res-label">Error</span><span class="sc-res-val sc-impossible">All spawn values must be > 0</span></div>';
+    return;
+  }
+
+  // The spawn periods in units of (baseInterval/100) to keep integer math
+  // P_i = 100 / n_i  (in units of baseInterval/100)
+  // We need LCM of (100/n1, 100/n2, 100/n3, 100/n4)
+  // LCM(100/a, 100/b) = 100 * LCM(1/a, 1/b) = 100/GCD(a,b)
+  const g12=gcd(n1,n2), g34=gcd(n3,n4), gAll=gcd(g12,g34);
+  // LCM of all 4 periods = 100 / gAll (in base units)
+  // So quad fires every (100/gAll) * (baseInterval/100) = baseInterval/gAll seconds
+  const quadPossible=gAll>0;
+  const quadIntervalSec=quadPossible?(baseInterval/gAll*100/Math.min(n1,n2,n3,n4)):Infinity;
+
+  // More precise: quad interval = LCM of all 4 individual periods
+  // P_i (real) = baseInterval / S_i
+  // LCM(P1..P4): use rational arithmetic
+  // LCM(p/q, r/s) = LCM(p,r)/GCD(q,s)  — here pi=100, qi=ni
+  // So LCM = 100 / GCD(n1,n2,n3,n4) * baseInterval / 100 = baseInterval / GCD(n1..n4)
+  const quadIntervalSecFinal=quadPossible?baseInterval/gAll*100/Math.min(n1,n2,n3,n4):Infinity;
+  // Simpler: quad fires every LCM(P1,P2,P3,P4) seconds
+  // P_i = baseInterval/Si. Use rational LCM:
+  // Scale all Pi to integers: multiply by product of all Si denominators
+  // Since Si=ni/100, Pi = baseInterval*100/ni
+  // LCM(baseInterval*100/n1, ...) = baseInterval*100 * LCM(1/n1,..,1/n4)
+  //   = baseInterval*100 / GCD(n1,n2,n3,n4)
+  const quadSec=quadPossible?baseInterval*100/gAll:Infinity;
+  const quadMin=quadSec/60;
+
+  const fmtTime=(s)=>{
+    if(!isFinite(s)||s>999999)return 'IMPOSSIBLE';
+    if(s<60)return s.toFixed(1)+'s';
+    if(s<3600)return (s/60).toFixed(1)+'min';
+    return (s/3600).toFixed(2)+'h';
+  };
+
+  const luck125k='×125,000';
+
+  document.getElementById('sc-result').innerHTML=`
+    <div class="sc-res-row"><span class="sc-res-label">Players in server</span><span class="sc-res-val">${players}</span></div>
+    <div class="sc-res-row"><span class="sc-res-label">Base spawn interval</span><span class="sc-res-val">${baseInterval.toFixed(3)}s</span></div>
+    <div class="sc-res-row"><span class="sc-res-label">Spawns per minute</span><span class="sc-res-val">${spawnsPerMin.toFixed(1)}</span></div>
+    <div class="sc-res-row"><span class="sc-res-label">Spawn values (S1–S4)</span><span class="sc-res-val">${s1} · ${s2} · ${s3} · ${s4}</span></div>
+    <div class="sc-res-row"><span class="sc-res-label">GCD of spawn values</span><span class="sc-res-val">${(gAll/100).toFixed(2)}</span></div>
+    <div style="background:rgba(255,213,79,0.08);border-radius:5px;padding:5px;margin:4px 0;">
+      <div class="sc-res-row"><span class="sc-res-label" style="color:var(--gold)">★ Triple Spawn (×125K luck)</span><span class="sc-res-val sc-gold">Every ${TRIPLE_N} spawns</span></div>
+      <div class="sc-res-row"><span class="sc-res-label" style="color:var(--gold)">Triple interval</span><span class="sc-res-val sc-gold">${fmtTime(tripleIntervalSec)} (~${tripleIntervalMin.toFixed(1)} min)</span></div>
+    </div>
+    <div style="background:${quadPossible?'rgba(0,230,118,0.08)':'rgba(255,59,92,0.08)'};border-radius:5px;padding:5px;">
+      <div class="sc-res-row"><span class="sc-res-label" style="color:${quadPossible?'var(--green)':'var(--red)'}">★★ Quad Spawn (all 4 align)</span><span class="sc-res-val ${quadPossible?'':'sc-impossible'}">${quadPossible?'POSSIBLE':'IMPOSSIBLE — server desynced'}</span></div>
+      ${quadPossible?`<div class="sc-res-row"><span class="sc-res-label">Quad interval</span><span class="sc-res-val sc-gold">${fmtTime(quadSec)}</span></div>
+      <div class="sc-res-row"><span class="sc-res-label">Quads per hour</span><span class="sc-res-val">${(3600/quadSec).toFixed(3)}</span></div>`:''}
+      ${!quadPossible?`<div style="font-size:8px;color:var(--dim2);margin-top:3px;">Quad requires all 4 spawn values to share a common rational divisor. Adjust values so GCD(S1×100, S2×100, S3×100, S4×100) > 0 with aligned periods.</div>`:''}
+    </div>
+  `;
+}
+
+// ============================================================
 // NOTIFICATION
 // ============================================================
 let _nt;
@@ -1867,7 +2107,7 @@ function notify(msg){
 renderUps();
 renderInv();
 renderAreas();
-selMob(0);
+spawnNoob();
 startFact();
 // Initial sword
 rollSword();
