@@ -181,8 +181,30 @@ body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;heigh
 .fsr{display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid var(--border);}
 .fsr:last-child{border-bottom:none;}
 
-/* BANK */
-#bank-panel{background:linear-gradient(135deg,#0f1020,#1a1c35);border:2px solid var(--gold2);border-radius:12px;overflow:hidden;}
+/* ADMIN MENU */
+#admin-menu input{outline:none;}
+#admin-menu button{transition:opacity 0.15s;}
+#admin-menu button:hover{opacity:0.85;}
+/* ASC MODAL */
+.asc-pick:hover{border-color:var(--purple)!important;background:var(--panel3)!important;}
+.asc-pick.picked{border-color:var(--green)!important;background:rgba(0,230,118,0.08)!important;}
+/* EQUIPPED SWORD */
+#equipped-display{min-height:34px;}
+/* MOB SHINY glow animation */
+@keyframes shiny-pulse{0%,100%{filter:drop-shadow(0 0 4px #ffd54f)}50%{filter:drop-shadow(0 0 12px #ffd54f)}}
+.shiny-mob{animation:shiny-pulse 1s ease-in-out infinite;}
+/* BATCH BUTTONS hover */
+.uc button:hover{filter:brightness(1.15);}
+/* SMOOTH TRANSITIONS */
+.islot,.bslot,.uc,.srow,.mrow,.area-btn{transition:all 0.15s ease;}
+#sword-svg-wrap svg{transition:filter 0.3s;}
+/* PROFILE pill */
+#profile-pill{cursor:pointer;}
+#profile-pill:hover{border-color:var(--accent)!important;}
+/* BANK FILTER */
+.bank-filter-btn{padding:3px 7px;border:1px solid var(--border);border-radius:4px;background:var(--panel2);color:var(--dim2);font-size:8px;cursor:pointer;font-family:'Cinzel',serif;}
+.bank-filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(255,213,79,0.1);}
+background:linear-gradient(135deg,#0f1020,#1a1c35);border:2px solid var(--gold2);border-radius:12px;overflow:hidden;}
 .bank-hdr{background:linear-gradient(90deg,#ffd54f,#ffab00);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;}
 .bank-hdr-title{font-family:'Cinzel',serif;font-size:13px;font-weight:900;color:#111;letter-spacing:2px;}
 .bank-stat{font-size:9px;color:#555;font-weight:700;}
@@ -395,6 +417,7 @@ body.wnight{--bg:#05060f;--bg2:#060718;}
   <div class="tpill"><span class="tl">LUCK</span><span class="tv" id="t-luck">×1.00</span></div>
   <div class="tpill"><span class="tl">INV</span><span class="tv" id="t-inv">0/85</span></div>
   <div class="tpill"><span class="tl">BANK</span><span class="tv" id="t-bank-count">0/50</span></div>
+  <div class="tpill" id="profile-pill" onclick="toggleAdminMenu()" title="Click for Admin (or type 'admin')"><span class="tl">USER</span><span class="tv" id="profile-name">Player</span></div>
   <div id="weather-pill" id="t-weather">☀ Clear · ×1 Luck</div>
   <div class="tpill" style="color:#ff5252;border-color:#ff525244;font-size:9px;margin-left:4px;" id="triple-timer">🔥 Triple: 30:00</div>
 </div>
@@ -520,6 +543,13 @@ body.wnight{--bg:#05060f;--bg2:#060718;}
             </div>
             <div style="background:var(--panel3);height:4px;border-radius:2px;overflow:hidden;margin-bottom:7px;"><div id="bank-cap-bar" style="height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));width:0%;transition:width 0.3s;border-radius:2px;"></div></div>
             <div class="bank-grid" id="bgrid"></div>
+            <div style="margin-bottom:5px;">
+              <div style="font-size:8px;color:var(--dim2);margin-bottom:3px;">Auto-bank by rarity floor:</div>
+              <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px;">
+                ${['All','Rare','Epic','Legendary','Mythical','Divine','Super','Mega','Ultra','Omega','Extreme'].map((n,i)=>`<button class="bank-filter-btn" onclick="setBankFilter(${i<1?-1:(i-1)*4+12})" id="bfb-${i}">${n}</button>`).join('')}
+              </div>
+              <button onclick="bankAutoByRarity()" style="width:100%;padding:5px;border:none;border-radius:6px;background:linear-gradient(135deg,#ffd54f,#ffab00);color:#111;font-family:'Cinzel',serif;font-size:9px;font-weight:700;cursor:pointer;">AUTO-BANK FILTERED</button>
+            </div>
             <div style="display:flex;gap:5px;margin-top:5px;">
               <button class="bank-withdraw-btn" onclick="withdrawAll()" style="flex:1;">Withdraw All</button>
               <button class="bank-withdraw-btn" onclick="sellFromBank()" style="flex:1;background:linear-gradient(135deg,#ff6d00,#ffd54f);color:#111;">Sell All Banked</button>
@@ -543,6 +573,10 @@ body.wnight{--bg:#05060f;--bg2:#060718;}
           <div id="mreward">—</div>
           <div id="mlevel"></div>
           <button class="matkbtn" onclick="atkMob()">⚔ ATTACK</button>
+        </div>
+        <div style="margin-top:6px;">
+          <div class="slbl">Equipped Sword</div>
+          <div id="equipped-display" style="font-size:9px;color:var(--dim2);padding:4px 0;">No sword equipped — click a sword in inventory</div>
         </div>
         <div id="drop-panel" style="display:none;"></div>
         <div class="slbl" style="margin-top:7px;">Select Area</div>
@@ -711,14 +745,14 @@ const EN=[
 const NM=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV","XXV","XXVI","XXVII","XXVIII","XXIX","XXX","XXXI","XXXII","XXXIII","XXXIV","XXXV","XXXVI","XXXVII","XXXVIII","XXXIX","XL"];
 
 const UPS=[
-  {id:"appraiser",n:"Appraiser",ico:"🔍",unlock:0,base:0,scale:5e7,maxLvl:1800,col:"#4fc3f7",eff:"Reveals sword stats"},
-  {id:"conveyor",n:"Conveyor",ico:"⚙",unlock:0,base:100,scale:8e10/1800,maxLvl:1800,col:"#69f0ae",eff:"Auto-forge speed"},
-  {id:"polisher",n:"Polisher",ico:"✨",unlock:1000,base:1000,scale:5e12/1800,maxLvl:1800,col:"#84ffff",eff:"+Quality chance"},
-  {id:"upgrader",n:"Upgrader",ico:"⬆",unlock:30000,base:30000,scale:2e13/1800,maxLvl:1800,col:"#82b1ff",eff:"+Rarity chance"},
-  {id:"molder",n:"Molder",ico:"🔩",unlock:1e5,base:1e5,scale:7e13/1800,maxLvl:1800,col:"#ffab40",eff:"+Mold chance"},
-  {id:"classifier",n:"Classifier",ico:"📊",unlock:1e7,base:1e7,scale:4e14/1800,maxLvl:1800,col:"#ff80ab",eff:"+Class chance"},
-  {id:"enchanter",n:"Enchanter",ico:"⭐",unlock:1e9,base:1e9,scale:2e15/1800,maxLvl:1800,col:"#ce93d8",eff:"Enchants swords"},
-  {id:"ascender",n:"Ascender",ico:"🔺",unlock:1e12,base:1e12,scale:8e14,maxLvl:0,col:"#ff6d00",eff:"Ascend speed & luck"},
+  {id:"appraiser", n:"Appraiser", ico:"🔍",unlock:0,    base:0,    scale:5e7,      maxLvl:5000,col:"#4fc3f7",eff:"Reveals sword stats · boosts level ascend"},
+  {id:"conveyor",  n:"Conveyor",  ico:"⚙", unlock:0,    base:100,  scale:8e10/5000,maxLvl:5000,col:"#69f0ae",eff:"Auto-forge speed"},
+  {id:"polisher",  n:"Polisher",  ico:"✨",unlock:1000,  base:1000, scale:5e12/5000,maxLvl:5000,col:"#84ffff",eff:"+Quality chance"},
+  {id:"upgrader",  n:"Upgrader",  ico:"⬆", unlock:30000, base:30000,scale:2e13/5000,maxLvl:5000,col:"#82b1ff",eff:"+Rarity chance"},
+  {id:"molder",    n:"Molder",    ico:"🔩",unlock:1e5,   base:1e5,  scale:7e13/5000,maxLvl:5000,col:"#ffab40",eff:"+Mold chance"},
+  {id:"classifier",n:"Classifier",ico:"📊",unlock:1e7,   base:1e7,  scale:4e14/5000,maxLvl:5000,col:"#ff80ab",eff:"+Class chance"},
+  {id:"enchanter", n:"Enchanter", ico:"⭐",unlock:1e9,   base:1e9,  scale:2e15/5000,maxLvl:5000,col:"#ce93d8",eff:"Enchants swords"},
+  {id:"ascender",  n:"Ascender",  ico:"🔺",unlock:1e12,  base:1e12, scale:8e14,     maxLvl:0,   col:"#ff6d00",eff:"Ascend speed & luck (∞)"},
 ];
 
 // ============================================================
@@ -790,12 +824,16 @@ function genNoob(area,isElite=false){
 }
 
 const WX=[
-  {n:"☀ Clear",lm:1,col:"#ffd54f",bc:"#ffab00",cls:""},
-  {n:"🌧 Rain",lm:1.5,col:"#82b1ff",bc:"#2979ff",cls:"wrain"},
-  {n:"🌙 Night",lm:1.3,col:"#9fa8da",bc:"#3949ab",cls:"wnight"},
-  {n:"🩸 Blood Moon",lm:4,col:"#ff5252",bc:"#c62828",cls:"wblood"},
-  {n:"⚡ Storm",lm:2.5,col:"#ce93d8",bc:"#7c4dff",cls:""},
-  {n:"❄ Blizzard",lm:2,col:"#80d8ff",bc:"#0091ea",cls:""},
+  {n:"Clear",     lm:1,   col:"#ffd54f",bc:"#ffab00",cls:"",      icon:"☀"},
+  {n:"Rain",      lm:1.5, col:"#82b1ff",bc:"#2979ff",cls:"wrain", icon:"🌧"},
+  {n:"Night",     lm:1.3, col:"#9fa8da",bc:"#3949ab",cls:"wnight",icon:"🌙"},
+  {n:"Blood Moon",lm:4,   col:"#ff5252",bc:"#c62828",cls:"wblood",icon:"🩸"},
+  {n:"Storm",     lm:2.5, col:"#ce93d8",bc:"#7c4dff",cls:"",      icon:"⚡"},
+  {n:"Blizzard",  lm:2,   col:"#80d8ff",bc:"#0091ea",cls:"",      icon:"❄"},
+  {n:"Eclipse",   lm:6,   col:"#aa44ff",bc:"#6600cc",cls:"",      icon:"🌑"},
+  {n:"Meteor",    lm:8,   col:"#ff8c00",bc:"#cc5500",cls:"",      icon:"☄"},
+  {n:"Void Storm",lm:12,  col:"#ff00ff",bc:"#aa00aa",cls:"",      icon:"🌀"},
+  {n:"Admin Abuse",lm:100,col:"#ff0000",bc:"#880000",cls:"wblood",icon:"🔥"},
 ];
 
 // ============================================================
@@ -807,7 +845,8 @@ const S={
   ul:{},up:{},
   autoOn:false,autoI:null,
   factI:null,
-  wxIdx:0,wxTick:0,
+  activeWeathers:new Set([0]), // stacking weather — set of WX indices
+  wxTick:0,
   ascOn:false,ascI:null,ascTries:0,pFails:0,
   ascSword:null,ascSwordIdx:-1,
   areaIdx:0,mobIdx:0,mobHp:0,
@@ -818,6 +857,10 @@ const S={
   bossActive:false,bossMob:null,bossHp:0,
   leaderboard:[],
   bankIncome:0,lastBankTick:Date.now(),
+  username:'Player',
+  bankRarityFilter:-1, // -1=all, else rIdx floor
+  adminOpen:false,
+  equippedSword:null, // separate from cur — the sword actually used for combat
 };
 UPS.forEach(u=>{S.ul[u.id]=u.id==='appraiser'?1:0;S.up[u.id]=0;});
 
@@ -864,12 +907,64 @@ function luck(){
 }
 
 function totalLuck(){
-  return WX[S.wxIdx].lm*(1+S.lvl/100)*(AREAS[S.areaIdx].mobLuck/1);
+  // Stacking weathers multiply together
+  let wxMul=1;
+  S.activeWeathers.forEach(idx=>{ wxMul*=WX[idx].lm; });
+  return wxMul*(1+S.lvl/100)*(AREAS[S.areaIdx].mobLuck);
+}
+
+// VALUE: properly scaled so Basic=700 cash, Heavenly=astronomical
+// Base: rarity^0.9 × quality × mold × class^0.5 × level
+function sVal(sw){
+  // 1/c gives actual rarity number (Basic=1, Heavenly=5.4e16)
+  // We want Basic Normal Broken Regular Lv1 ≈ 700 cash
+  // So: rarBase(1) × qMul(0.5) × mMul(1) × clMul(1) × lvlMul(1) × K = 700 → K=1400
+  const rarBase=Math.pow(1/sw.r.c, 0.9);
+  const qMul=sw.q.cashBoost||1;
+  const mMul=sw.m.cashBoost||1;
+  const clMul=Math.pow(sw.cl.d,0.5);
+  const lvlMul=1+Math.pow((sw.swLvl||1)*0.003,1.1);
+  let v=rarBase*qMul*mMul*clMul*lvlMul*1400;
+  sw.encs.forEach(e=>{
+    if(e.n.n==="Fortune") v*=(1+0.10*e.tier);
+    if(e.n.n==="Ancient") v*=(1+0.08*e.tier);
+    if(e.n.n==="Looting") v*=(1+0.02*e.tier);
+  });
+  return Math.max(700,v); // minimum 700 cash always
+}
+
+// DMG: constant per sword — does NOT fluctuate. Only recomputed when sword stats change.
+// Basic Lv1 Regular sword should deal ~100 DMG (enough to kill a Basic Noob in ~1 hit)
+// Formula: rarity × class^0.8 × level^0.7 × enchant multipliers
+// K calibrated so Basic+Regular+Lv5 ≈ 100 DMG
+function sDmg(sw){
+  const rarBase=Math.pow(1/sw.r.c, 0.85);   // rarity dominates
+  const clMul=Math.pow(sw.cl.d, 0.8);        // class is secondary
+  const lvlMul=Math.pow(Math.max(1,sw.swLvl||1), 0.7); // level tertiary
+  let d=rarBase*clMul*lvlMul*120;
+  sw.encs.forEach(e=>{
+    if(e.n.n==="Sharpness")   d*=(1+0.12*e.tier);
+    if(e.n.n==="Critical")    d*=(1+0.06*e.tier); // crit chance, not base dmg
+    if(e.n.n==="Desperation") d*=(1+0.10*e.tier);
+  });
+  return Math.max(80,d); // minimum 80 DMG
+}
+
+// Get crit chance from sword enchants (Critical enchant)
+function getCritChance(sw){
+  if(!sw)return 0;
+  let c=0;
+  sw.encs.forEach(e=>{ if(e.n.n==="Critical")c+=e.tier*0.05; });
+  return Math.min(0.75,c); // max 75% crit
+}
+// Get crit multiplier
+function getCritMul(sw){
+  return 2.0; // crits always deal 2× DMG
 }
 
 function roll(arr,lm=1){
   let p=arr[0];
-  const cap=Math.min(lm,500);
+  const cap=Math.min(lm,1e6); // allow huge cap for high upgrades
   for(let i=arr.length-1;i>=0;i--){
     if(Math.random()<Math.min(0.999,arr[i].c*cap)){p=arr[i];break;}
   }
@@ -1255,7 +1350,13 @@ function renderInv(){
       const idx=i;
       sl.onclick=()=>{
         if(sw.locked){notify("Sword is locked!");return;}
-        S.cur=sw;dispSword(sw);sw2('factory');
+        S.cur=sw;dispSword(sw);
+        equipSword(sw); // equip for combat automatically
+        sw2('factory');
+      };
+      sl.ondblclick=(e)=>{
+        e.stopPropagation();
+        if(!sw.locked){S.cur=sw;dispSword(sw);sw2('factory');}
       };
     }
     g.appendChild(sl);
@@ -1432,8 +1533,61 @@ function ascStatLuck(stat){
 }
 function ascSpd(){
   const l=S.ul['ascender']||0;
-  if(!l)return 1500;
-  return Math.max(60,Math.floor(1500/(1+l/60)));
+  // Base 100ms (10/sec). Higher levels speed it up further.
+  return Math.max(50,Math.floor(100/(1+l/500)));
+}
+
+// ============================================================
+// UPGRADES — with batch buying (1x/5x/100x/1000x)
+// ============================================================
+function getCost(u,lvl){
+  if(u.id==='appraiser')return 0;
+  const p=S.up[u.id]||0;
+  return Math.floor(u.base+u.scale*Math.pow(lvl,1.4)*Math.pow(1.012,lvl)*(1+p*1.5));
+}
+
+function getBatchCost(u,currentLvl,n){
+  let total=0;
+  for(let i=0;i<n;i++) total+=getCost(u,currentLvl+i);
+  return total;
+}
+
+function buyUpg(id,n=1){
+  const u=UPS.find(x=>x.id===id);if(!u)return;
+  let lvl=S.ul[id];
+  // Cap n to max
+  if(u.maxLvl>0) n=Math.min(n,u.maxLvl-lvl);
+  if(n<=0){notify(u.n+' is maxed');return;}
+  if(lvl===0&&S.cash<u.unlock){notify(`Need $${fmt(u.unlock)} to unlock ${u.n}`);return;}
+  const totalCost=getBatchCost(u,lvl,n);
+  if(S.cash<totalCost&&n>1){
+    // Afford as many as possible
+    let affordable=0,cost=0;
+    for(let i=0;i<n;i++){
+      const c=getCost(u,lvl+i);
+      if(cost+c>S.cash)break;
+      cost+=c;affordable++;
+    }
+    if(affordable===0){notify('Not enough cash! Need $'+fmt(getCost(u,lvl)));return;}
+    n=affordable;
+  }
+  if(S.cash<totalCost&&n===1){notify('Not enough cash! Need $'+fmt(totalCost));return;}
+  const actualCost=getBatchCost(u,lvl,n);
+  S.cash-=actualCost;
+  S.ul[id]+=n;
+  document.getElementById('t-cash').textContent='$'+fmt(S.cash);
+  if(id==='conveyor')startFact();
+  // Prestige check
+  const newLvl=S.ul[id];
+  const oldPrestige=Math.floor(lvl/100);
+  const newPrestige=Math.floor(newLvl/100);
+  if(newPrestige>oldPrestige&&u.maxLvl>0){
+    S.up[id]=(S.up[id]||0)+(newPrestige-oldPrestige);
+    notify(`✦ ${u.n} Prestige ${S.up[id]}! (Lv ${newLvl})`);
+  } else if(n>1){
+    notify(`+${n} ${u.n} levels → Lv ${newLvl}`);
+  }
+  renderUps();
 }
 
 function setAscTarget(stat){
@@ -1570,23 +1724,40 @@ function spawnNoob(elite=false){
 function selMob(i){spawnNoob();} // compat shim
 
 function atkMob(){
-  const sw=S.cur||(S.inv[0]||null);
-  if(!sw){notify('No sword! Roll one first.');return;}
+  // Use equipped sword (persistent, not cur which changes on each roll)
+  const sw=S.equippedSword||(S.cur)||(S.inv[0]||null);
+  if(!sw){notify('No sword equipped! Select one from inventory.');return;}
   if(!S_mob){spawnNoob();return;}
-  const dmg=sw.dmg*(1+S.lvl*0.005);
+  // Constant base DMG from sword — no fluctuation
+  let dmg=sw.dmg;
+  let isCrit=false;
+  // Crit check
+  if(Math.random()<getCritChance(sw)){
+    dmg*=getCritMul(sw);
+    isCrit=true;
+  }
+  // Resistance enchant on mob side (none by default)
   S.mobHp=Math.max(0,S.mobHp-dmg);
   updMobBar();
+  // Flash crit
+  if(isCrit){
+    const mn=document.getElementById('mname');
+    mn.style.textShadow='0 0 12px #ffd54f';
+    setTimeout(()=>mn.style.textShadow='',400);
+    notify(`⚡ CRIT! ${fmt(dmg)} DMG`);
+  }
   if(S.mobHp<=0){
-    // Mob killed
+    // Healing enchant restores HP per kill
+    sw.encs.forEach(e=>{
+      if(e.n.n==="Healing"){gainXP(e.tier*100);} // healing gives bonus xp
+    });
     addCash(S_mob.rew);gainXP(S_mob.xp);
-    // Always drops a sword — show pickup UI
     const dropSw=makeMobDrop(S_mob);
     showDropUI(dropSw,S_mob);
     if(S_mob.rew>=1e6)globalAnnounce(`Killed ${S_mob.n} · +$${fmt(S_mob.rew)}`,S_mob.col,'⚔');
     addBossLog(S_mob.n+' defeated!',true);
-    // Chance to spawn elite on kill (every ~20 kills roughly)
-    const eliteChance=0.05*AREAS[S.areaIdx].mobLuck*0.001;
-    setTimeout(()=>{spawnNoob(Math.random()<eliteChance);},800);
+    const eliteChance=Math.min(0.3,0.01*AREAS[S.areaIdx].mobLuck*0.01);
+    setTimeout(()=>{spawnNoob(Math.random()<eliteChance);},600);
   }
 }
 
@@ -1640,10 +1811,44 @@ function sellDrop(){
   dp.style.display='none';
 }
 
-function spawnBoss(baseMob){
-  // compat — treat as elite noob
-  spawnNoob(true);
+function spawnNoob(elite=false){
+  const area=AREAS[S.areaIdx];
+  const base=genNoob(area,elite);
+  // Apply variant
+  const variant=pickVariant();
+  if(variant.n){
+    base.n=variant.n+base.n;
+    base.rew*=variant.lootMul;
+    base.hp*=variant.hpMul;
+    if(variant.col)base.col=variant.col;
+    base.variant=variant;
+  }
+  S_mob=base;
+  S.mobHp=S_mob.hp;
+  const c=S_mob.col;
+  const initials=S_mob.rarityName.slice(0,2).toUpperCase();
+  const glowStr=variant.glow?`<circle cx="30" cy="30" r="26" fill="none" stroke="${c}" stroke-width="3" opacity="0.4"><animate attributeName="r" values="24;30;24" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0.1;0.4" dur="1.5s" repeatCount="indefinite"/></circle>`:'';
+  const starStr=elite?`<polygon points="30,4 33,12 42,12 35,17 38,26 30,21 22,26 25,17 18,12 27,12" fill="#ffd54f" opacity="0.9"/>`:'';
+  const svgEl=document.getElementById('msvg');
+  svgEl.innerHTML=`<svg viewBox="0 0 60 60" width="70" height="70">
+    ${glowStr}
+    <circle cx="30" cy="30" r="28" fill="${c}22" stroke="${c}" stroke-width="2"/>
+    <circle cx="30" cy="22" r="10" fill="${c}88"/>
+    <ellipse cx="30" cy="46" rx="14" ry="10" fill="${c}88"/>
+    <text x="30" y="26" text-anchor="middle" font-size="9" fill="${c}" font-family="Cinzel,serif" font-weight="700">${initials}</text>
+    ${starStr}
+    <circle cx="30" cy="30" r="28" fill="none" stroke="${c}44" stroke-width="1" stroke-dasharray="4 3"/>
+  </svg>`;
+  document.getElementById('mname').textContent=S_mob.n;
+  document.getElementById('mname').style.color=S_mob.col;
+  document.getElementById('mreward').textContent=`$${fmt(S_mob.rew)} + ${fmt(S_mob.xp)} XP${variant.n?' ['+variant.n.trim()+']':''}`;
+  document.getElementById('mlevel').textContent=`Drops: ${S_mob.dropR.n} Sword`;
+  document.getElementById('mlevel').style.color=S_mob.dropR.col;
+  updMobBar();
+  const dp=document.getElementById('drop-panel');if(dp)dp.style.display='none';
 }
+
+function selectAscSword(){ openAscSwordModal(); }
 
 function updMobBar(){
   if(!S_mob)return;
@@ -1785,19 +1990,48 @@ function gainXP(a){
 // ============================================================
 function tickWx(){
   S.wxTick++;
-  if(S.wxTick>90){
-    S.wxTick=0;S.wxIdx=Math.floor(Math.random()*WX.length);applyWx();
+  // Every 60s a random weather event — can ADD or REMOVE
+  if(S.wxTick>60){
+    S.wxTick=0;
+    if(S.adminOpen)return; // don't auto-change during admin control
+    // 40% chance add new weather, 30% remove one, 30% nothing
+    const r=Math.random();
+    if(r<0.4&&S.activeWeathers.size<5){
+      // Add a random non-clear weather (skip idx 0=Clear if others active)
+      const candidates=WX.map((_,i)=>i).filter(i=>i>0&&i<9&&!S.activeWeathers.has(i));
+      if(candidates.length){
+        const pick=candidates[Math.floor(Math.random()*candidates.length)];
+        S.activeWeathers.add(pick);
+        notify(`+ ${WX[pick].icon} ${WX[pick].n} joined! Total ×${totalLuck().toFixed(0)} luck`);
+        applyWx();
+      }
+    } else if(r<0.7&&S.activeWeathers.size>1){
+      // Remove a random non-admin weather
+      const arr=[...S.activeWeathers].filter(i=>i!==9);
+      if(arr.length){
+        const pick=arr[Math.floor(Math.random()*arr.length)];
+        S.activeWeathers.delete(pick);
+        notify(`- ${WX[pick].icon} ${WX[pick].n} ended`);
+        applyWx();
+      }
+    }
   }
 }
+
 function applyWx(){
-  const w=WX[S.wxIdx];
-  WX.forEach(x=>{if(x.cls)document.body.classList.remove(x.cls);});
-  if(w.cls)document.body.classList.add(w.cls);
+  // Apply all active weather CSS classes
+  WX.forEach(w=>{if(w.cls)document.body.classList.remove(w.cls);});
+  S.activeWeathers.forEach(idx=>{if(WX[idx].cls)document.body.classList.add(WX[idx].cls);});
+  // Build stacked weather pill text
+  const names=[...S.activeWeathers].map(i=>WX[i].icon+' '+WX[i].n).join(' + ');
+  const totalMul=totalLuck();
   const pill=document.getElementById('weather-pill');
-  pill.style.color=w.col;pill.style.borderColor=w.col+'66';
-  pill.textContent=w.n+' · ×'+w.lm+' Luck';
-  document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
-  notify(`Weather: ${w.n} (×${w.lm} Luck)`);
+  // Color from highest-luck active weather
+  const sorted=[...S.activeWeathers].sort((a,b)=>WX[b].lm-WX[a].lm);
+  const topW=WX[sorted[0]||0];
+  pill.style.color=topW.col;pill.style.borderColor=topW.bc+'88';
+  pill.textContent=names+' · ×'+totalMul.toFixed(0)+' Luck';
+  document.getElementById('t-luck').textContent='×'+totalMul.toFixed(0);
 }
 
 // ============================================================
@@ -1870,17 +2104,25 @@ function renderUps(){
     const lvl=S.ul[u.id],p=S.up[u.id]||0;
     const isMax=u.maxLvl>0&&lvl>=u.maxLvl;
     const isLocked=lvl===0&&S.cash<u.unlock;
-    const cost=getCost(u,lvl);
+    const cost1=getCost(u,lvl);
     const pct=u.maxLvl>0?Math.min(100,(lvl/u.maxLvl)*100):Math.min(100,lvl%100);
     let cls='uc';
-    if(isMax)cls+=' maxed';else if(isLocked)cls+=' locked';else if(S.cash<cost)cls+=' cant';
+    if(isMax)cls+=' maxed';else if(isLocked)cls+=' locked';else if(S.cash<cost1)cls+=' cant';
     const pb=p>0?`<span class="pbadge">P${p}</span>`:'';
     const lvlTxt=u.maxLvl>0?`${lvl}/${u.maxLvl}`:`Lv ${lvl}`;
-    let costEl='';
-    if(isMax)costEl=`<span class="ucost mx">MAXED</span>`;
-    else if(isLocked)costEl=`<span class="ucost lk">$${fmt(u.unlock)} unlock</span>`;
-    else costEl=`<span class="ucost">${cost===0?'FREE':'$'+fmt(cost)}</span>`;
     const mInfo=getMachineInfo(u);
+    // Batch cost labels
+    const batches=isMax||isLocked?[]:[1,5,100,1000];
+    const batchBtns=batches.map(n=>{
+      const cap=u.maxLvl>0?Math.min(n,u.maxLvl-lvl):n;
+      if(cap<=0)return'';
+      const c=getBatchCost(u,lvl,cap);
+      const canAfford=S.cash>=c;
+      return `<button onclick="buyUpg('${u.id}',${n})" style="flex:1;padding:2px 0;border:none;border-radius:4px;font-size:7px;font-weight:700;cursor:${canAfford?'pointer':'default'};background:${canAfford?'var(--panel3)':'rgba(255,59,92,0.1)'};color:${canAfford?'var(--text)':'var(--dim2)'};font-family:'Exo 2',sans-serif;transition:background 0.15s" onmouseover="this.style.background='${canAfford?'var(--border2)':'rgba(255,59,92,0.1)'}'" onmouseout="this.style.background='${canAfford?'var(--panel3)':'rgba(255,59,92,0.1)'}'">×${n}<br><span style="color:${canAfford?'var(--green)':'var(--red)'}">$${fmt(c)}</span></button>`;
+    }).join('');
+    let costLabel='';
+    if(isMax)costLabel=`<span class="ucost mx">MAXED</span>`;
+    else if(isLocked)costLabel=`<span class="ucost lk">$${fmt(u.unlock)} unlock</span>`;
     const card=document.createElement('div');card.className=cls;
     card.innerHTML=`
       <div class="ur1">
@@ -1892,13 +2134,185 @@ function renderUps(){
       </div>
       <div class="ue">${u.eff}</div>
       ${mInfo?`<div style="margin-bottom:2px">${mInfo}</div>`:''}
-      <div class="ub">${costEl}<span class="ups">${p>0?`+${p*50}% power`:''}</span></div>
-      <div class="ubar"><div class="ubar-f" style="width:${pct}%;background:linear-gradient(90deg,${u.col}77,${u.col})"></div></div>
+      ${costLabel?`<div class="ub">${costLabel}<span class="ups">${p>0?`P${p} +${p*50}% power`:''}</span></div>`:''}
+      ${batchBtns?`<div style="display:flex;gap:2px;margin-top:4px">${batchBtns}</div>`:''}
+      <div class="ubar" style="margin-top:4px"><div class="ubar-f" style="width:${pct}%;background:linear-gradient(90deg,${u.col}77,${u.col})"></div></div>
     `;
-    if(!isMax&&!isLocked)card.onclick=()=>buyUpg(u.id);
     list.appendChild(card);
   });
 }
+
+// ============================================================
+// ASCENDER SWORD SELECTOR MODAL
+// ============================================================
+function openAscSwordModal(){
+  let modal=document.getElementById('asc-modal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.id='asc-modal';
+    modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;display:flex;align-items:center;justify-content:center;';
+    document.body.appendChild(modal);
+  }
+  let pending=S.ascSword;
+  const items=S.inv.map((sw,i)=>`
+    <div onclick="pendingAscSword=${i};document.querySelectorAll('.asc-pick').forEach(x=>x.classList.remove('picked'));this.classList.add('picked')"
+      class="asc-pick" style="background:var(--panel2);border:1px solid ${sw.r.col}55;border-radius:7px;padding:7px 9px;cursor:pointer;transition:all 0.15s;margin-bottom:4px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        ${getSwordSVG(sw,28,28)}
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:${sw.r.col}">${sw.q.n} ${sw.r.n} ${sw.cl.n}</div>
+          <div style="font-size:8px;color:var(--dim2)">Lv${sw.swLvl} · $${fmt(sw.val)} · ${fmt(sw.dmg)} DMG${sw.locked?' 🔒':''}</div>
+        </div>
+      </div>
+    </div>`).join('');
+  modal.innerHTML=`
+    <div style="background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:16px;width:360px;max-height:80vh;display:flex;flex-direction:column;">
+      <div style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--purple);margin-bottom:10px;text-align:center;letter-spacing:2px;">SELECT SWORD TO ASCEND</div>
+      <div style="overflow-y:auto;flex:1;margin-bottom:10px;">${items||'<div style="color:var(--dim2);text-align:center;padding:20px;">No swords in inventory</div>'}</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="closeAscModal(false)" style="flex:1;padding:8px;border:none;border-radius:7px;background:var(--panel3);color:var(--dim2);font-family:'Cinzel',serif;font-size:11px;cursor:pointer;">CANCEL</button>
+        <button onclick="closeAscModal(true)" style="flex:1;padding:8px;border:none;border-radius:7px;background:linear-gradient(135deg,#7c4dff,#ff0066);color:#fff;font-family:'Cinzel',serif;font-size:11px;cursor:pointer;">CONFIRM</button>
+      </div>
+    </div>`;
+}
+let pendingAscSword=-1;
+function closeAscModal(confirm){
+  const modal=document.getElementById('asc-modal');
+  if(confirm&&pendingAscSword>=0&&S.inv[pendingAscSword]){
+    S.ascSword=S.inv[pendingAscSword];
+    updAscDisplay();
+    notify(`Selected: ${S.ascSword.r.n} ${S.ascSword.cl.n}`);
+  }
+  if(modal)modal.remove();
+  pendingAscSword=-1;
+}
+
+// ============================================================
+// SECRET KEY COMBOS
+// ============================================================
+const _keyBuf=[];
+const CHEATS={
+  // Konami-style: type "money" for infinite cash
+  'money':()=>{S.cash+=1e30;S.tc+=1e30;document.getElementById('t-cash').textContent='$'+fmt(S.cash);renderUps();notify('💰 INFINITE CASH ACTIVATED');globalAnnounce('💰 Infinite Cash cheat activated!','#ffd54f','$');},
+  // type "level" for max level
+  'level':()=>{S.lvl=600;S.xpN=1e20;document.getElementById('t-lvl').textContent=600;document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(0);notify('⬆ MAX LEVEL ACTIVATED');},
+  // type "admin" to open admin menu
+  'admin':()=>toggleAdminMenu(),
+  // type "shine" to make current noob shiny
+  'shine':()=>{if(S_mob){S_mob.shiny=true;S_mob.lootMul=10;S_mob.col='#fffde7';notify('✨ SHINY MOB!');}},
+  // type "abuse" for Admin Abuse weather
+  'abuse':()=>{S.activeWeathers.add(9);applyWx();globalAnnounce('🔥 ADMIN ABUSE WEATHER! ×100 LUCK FOR ALL!','#ff0000','🔥');},
+};
+document.addEventListener('keydown',e=>{
+  _keyBuf.push(e.key.toLowerCase());
+  if(_keyBuf.length>10)_keyBuf.shift();
+  const word=_keyBuf.join('');
+  Object.keys(CHEATS).forEach(k=>{ if(word.endsWith(k)){CHEATS[k]();_keyBuf.length=0;} });
+});
+
+// ============================================================
+// ADMIN MENU
+// ============================================================
+function toggleAdminMenu(){
+  S.adminOpen=!S.adminOpen;
+  let menu=document.getElementById('admin-menu');
+  if(S.adminOpen){
+    if(!menu){
+      menu=document.createElement('div');
+      menu.id='admin-menu';
+      menu.style.cssText='position:fixed;top:50px;right:10px;background:var(--panel);border:2px solid #ff1744;border-radius:12px;padding:14px;z-index:9500;width:220px;font-family:Cinzel,serif;';
+      document.body.appendChild(menu);
+    }
+    menu.innerHTML=`
+      <div style="color:#ff1744;font-size:12px;font-weight:700;letter-spacing:2px;margin-bottom:10px;text-align:center;">🔐 ADMIN PANEL</div>
+      <div style="font-size:9px;color:var(--dim2);margin-bottom:6px;">Username</div>
+      <input id="admin-username" value="${S.username}" style="width:100%;background:var(--panel2);border:1px solid var(--border2);border-radius:5px;color:var(--text);font-size:11px;padding:4px 8px;margin-bottom:8px;font-family:'Exo 2',sans-serif;" oninput="S.username=this.value;document.getElementById('profile-name')&&(document.getElementById('profile-name').textContent=this.value)"/>
+      <div style="font-size:9px;color:var(--dim2);margin-bottom:4px;">Weather Control</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px;">${WX.map((w,i)=>`<button onclick="toggleAdminWeather(${i})" id="awt-${i}" style="padding:3px 6px;border:1px solid ${S.activeWeathers.has(i)?w.col:'var(--border)'};border-radius:4px;background:${S.activeWeathers.has(i)?w.col+'22':'var(--panel2)'};color:${S.activeWeathers.has(i)?w.col:'var(--dim2)'};font-size:8px;cursor:pointer;">${w.icon} ${w.n}</button>`).join('')}</div>
+      <button onclick="CHEATS.money()" style="width:100%;margin-bottom:4px;padding:6px;border:none;border-radius:6px;background:linear-gradient(135deg,#ffd54f,#ffab00);color:#111;font-size:10px;font-weight:700;cursor:pointer;font-family:Cinzel,serif;">💰 +Infinite Cash</button>
+      <button onclick="CHEATS.level()" style="width:100%;margin-bottom:4px;padding:6px;border:none;border-radius:6px;background:linear-gradient(135deg,#4fc3f7,#7c4dff);color:#fff;font-size:10px;font-weight:700;cursor:pointer;font-family:Cinzel,serif;">⬆ Max Level (600)</button>
+      <button onclick="toggleAdminMenu()" style="width:100%;padding:5px;border:1px solid var(--border2);border-radius:6px;background:var(--panel2);color:var(--dim2);font-size:9px;cursor:pointer;font-family:Cinzel,serif;">✕ CLOSE</button>
+    `;
+  } else {
+    if(menu)menu.remove();
+  }
+}
+
+function toggleAdminWeather(idx){
+  if(S.activeWeathers.has(idx)) S.activeWeathers.delete(idx);
+  else S.activeWeathers.add(idx);
+  if(S.activeWeathers.size===0) S.activeWeathers.add(0);
+  applyWx();
+  // Refresh admin panel weather buttons
+  WX.forEach((_,i)=>{
+    const b=document.getElementById('awt-'+i);
+    if(b){
+      b.style.borderColor=S.activeWeathers.has(i)?WX[i].col:'var(--border)';
+      b.style.background=S.activeWeathers.has(i)?WX[i].col+'22':'var(--panel2)';
+      b.style.color=S.activeWeathers.has(i)?WX[i].col:'var(--dim2)';
+    }
+  });
+}
+
+// ============================================================
+// EQUIP SWORD FOR COMBAT
+// ============================================================
+function equipSword(sw){
+  S.equippedSword=sw;
+  const el=document.getElementById('equipped-display');
+  if(el){
+    el.innerHTML=`<div style="display:flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid ${sw.r.col}55;border-radius:7px;padding:5px 8px;">
+      ${getSwordSVG(sw,24,24)}
+      <div><div style="font-family:'Cinzel',serif;font-size:9px;font-weight:700;color:${sw.r.col}">${sw.r.n} ${sw.cl.n}</div>
+      <div style="font-size:7px;color:var(--dim2)">${fmt(sw.dmg)} DMG · ${(getCritChance(sw)*100).toFixed(0)}% crit</div></div></div>`;
+  }
+  notify(`⚔ Equipped: ${sw.q.n} ${sw.r.n} ${sw.cl.n} (${fmt(sw.dmg)} DMG)`);
+}
+
+// ============================================================
+// BANK RARITY FILTER (auto-bank by rarity)
+// ============================================================
+function bankAutoByRarity(){
+  const filter=S.bankRarityFilter;
+  if(filter<0){notify('Set a rarity filter first');return;}
+  let count=0;
+  const toBank=S.inv.filter(sw=>R.indexOf(sw.r)>=filter&&!sw.locked);
+  toBank.forEach(sw=>{
+    if(S.bank.length<50){S.bank.push(sw);count++;}
+  });
+  S.inv=S.inv.filter(sw=>!toBank.includes(sw)||sw.locked);
+  renderInv();updBankUI();updSell();
+  notify(`Banked ${count} swords (${R[filter]?.n}+)`);
+}
+
+// ============================================================
+// MOB SHINY / VARIANT SYSTEM
+// ============================================================
+const MOB_VARIANTS=[
+  {n:'',       lootMul:1,  hpMul:1,   col:null, chance:1,    glow:false},
+  {n:'⚡ Speedy ',lootMul:2,  hpMul:0.5, col:'#84ffff',chance:0.1,  glow:false},
+  {n:'🔥 Blazing ',lootMul:3, hpMul:2,   col:'#ff6d00',chance:0.05, glow:true},
+  {n:'✨ Shiny ',  lootMul:5,  hpMul:1.5, col:'#ffd54f',chance:0.02, glow:true},
+  {n:'💎 Diamond ',lootMul:10, hpMul:5,   col:'#80d8ff',chance:0.005,glow:true},
+  {n:'👑 Royal ',  lootMul:25, hpMul:10,  col:'#aa00ff',chance:0.001,glow:true},
+];
+function pickVariant(){
+  for(let i=MOB_VARIANTS.length-1;i>=0;i--){
+    if(Math.random()<MOB_VARIANTS[i].chance) return MOB_VARIANTS[i];
+  }
+  return MOB_VARIANTS[0];
+}
+
+function setBankFilter(rIdx){
+  S.bankRarityFilter=rIdx;
+  document.querySelectorAll('.bank-filter-btn').forEach((b,i)=>{
+    const isActive=(i<1&&rIdx<0)||(i>=1&&rIdx===(i-1)*4+12);
+    b.classList.toggle('active',isActive);
+  });
+  notify(rIdx<0?'Bank filter: All':`Bank filter: ${R[Math.max(0,rIdx)]?.n}+`);
+}
+function spawnBoss(){ spawnNoob(true); }
+
 
 // ============================================================
 // TAB SWITCHER
@@ -2098,9 +2512,10 @@ function calcSpawns(){
 // ============================================================
 let _nt;
 function notify(msg){
-  const el=document.getElementById('notif');el.textContent=msg;el.classList.add('show');
+  const el=document.getElementById('notif');if(!el)return;el.textContent=msg;el.classList.add('show');
   clearTimeout(_nt);_nt=setTimeout(()=>el.classList.remove('show'),2500);
 }
+
 // ============================================================
 // INIT
 // ============================================================
@@ -2109,21 +2524,19 @@ renderInv();
 renderAreas();
 spawnNoob();
 startFact();
-// Initial sword
 rollSword();
-// Weather tick
+// Auto-equip first rolled sword
+setTimeout(()=>{ if(S.inv[0])equipSword(S.inv[0]); },300);
 setInterval(tickWx,1000);
-// Bank passive income tick
 setInterval(tickBankIncome,1000);
-// Triple spawn countdown
 setInterval(tickTripleSpawn,1000);
-// Update luck display every 5s
 setInterval(()=>{
-  document.getElementById('t-luck').textContent='×'+totalLuck().toFixed(2);
-  document.getElementById('s-asc').textContent='×'+ascLuck().toFixed(2);
+  const lk=totalLuck();
+  const el=document.getElementById('t-luck');if(el)el.textContent='×'+fmt(lk);
+  const as=document.getElementById('s-asc');if(as)as.textContent='×'+ascLuck().toFixed(2);
   updateLB();
-},5000);
-// Apply initial weather
+  renderUps(); // refresh batch costs as cash changes
+},3000);
 applyWx();
 sw('factory');
 </script>
