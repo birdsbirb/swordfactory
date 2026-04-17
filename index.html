@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sword Factory v7 — Ultimate Edition</title>
+<title>Sword Factory v9 — Balanced Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -705,7 +705,37 @@ const R=[
 {n:"Summit Void",c:6.486009498220035e-63,col:"#fce4ec"},
 {n:"Summit Void+",c:3.2430047491100176e-63,col:"#f06292"},
 {n:"Summit Void++",c:1.6215023745550088e-63,col:"#e91e63"},
-{n:"Summit Void+++",c:8.107511872775044e-64,col:"#c2185b"}
+{n:"Summit Void+++",c:8.107511872775044e-64,col:"#c2185b"},
+{n:"Oblivion Rift-",c:4.053755936387522e-64,col:"#e8eaf6"},
+{n:"Oblivion Rift",c:2.026877968193761e-64,col:"#c5cae9"},
+{n:"Oblivion Rift+",c:1.0134389840968805e-64,col:"#9fa8da"},
+{n:"Oblivion Rift++",c:5.0671949204844025e-65,col:"#7986cb"},
+{n:"Cosmic Singularity-",c:2.5335974602422013e-65,col:"#f3e5f5"},
+{n:"Cosmic Singularity",c:1.2667987301211006e-65,col:"#e1bee7"},
+{n:"Cosmic Singularity+",c:6.333993650605503e-66,col:"#ce93d8"},
+{n:"Cosmic Singularity++",c:3.1669968253027516e-66,col:"#ba68c8"},
+{n:"Phantom Nexus-",c:1.5834984126513758e-66,col:"#fce4ec"},
+{n:"Phantom Nexus",c:7.917492063256879e-67,col:"#f8bbd0"},
+{n:"Phantom Nexus+",c:3.9587460316284394e-67,col:"#f48fb1"},
+{n:"Phantom Nexus++",c:1.9793730158142197e-67,col:"#f06292"},
+{n:"Stellar Abyss-",c:9.896865079071099e-68,col:"#e0f7fa"},
+{n:"Stellar Abyss",c:4.9484325395355494e-68,col:"#b2ebf2"},
+{n:"Stellar Abyss+",c:2.4742162697677747e-68,col:"#80deea"},
+{n:"Stellar Abyss++",c:1.2371081348838873e-68,col:"#4dd0e1"},
+{n:"Celestial Root-",c:6.185540674419437e-69,col:"#fff8e1"},
+{n:"Celestial Root",c:3.0927703372097183e-69,col:"#ffecb3"},
+{n:"Celestial Root+",c:1.5463851686048592e-69,col:"#ffe082"},
+{n:"Celestial Root++",c:7.731925843024296e-70,col:"#ffd54f"},
+{n:"Infinite Origin-",c:3.865962921512148e-70,col:"#e8f5e9"},
+{n:"Infinite Origin",c:1.932981460756074e-70,col:"#c8e6c9"},
+{n:"Infinite Origin+",c:9.66490730378037e-71,col:"#a5d6a7"},
+{n:"Infinite Origin++",c:4.832453651890185e-71,col:"#81c784"},
+{n:"The First Blade",c:2.4162268259450925e-71,col:"#fff3e0"},
+{n:"The First Blade+",c:1.2081134129725463e-71,col:"#ffcc80"},
+{n:"The First Blade++",c:6.040567064862731e-72,col:"#ffb300"},
+{n:"The Last Sword",c:3.0202835324313657e-72,col:"#ffd700"},
+{n:"The Last Sword+",c:1.5101417662156828e-72,col:"#ffca28"},
+{n:"∞ BEYOND",c:7.550708831078414e-73,col:"#ffffff"}
 ];
 const Q=[
 {n:"Broken",c:1.0,cashBoost:1.0},
@@ -1285,147 +1315,147 @@ const UPS=[
 // AREAS — Heavenly has 40K mob luck, plus post-heavenly zones
 const AREAS=[
   {n:"Beginner's Trials",   mobLuck:1,      pvp:"off",  minLvl:0,   col:"#69f0ae", noobFloor:0,  noobRange:4, special:null},
-  {n:"Mystical Forest",     mobLuck:2,      pvp:"off",  minLvl:20,  col:"#4fc3f7", noobFloor:2,  noobRange:4, special:null},
-  {n:"Stranded Island",     mobLuck:5,      pvp:"off",  minLvl:75,  col:"#ffab40", noobFloor:4,  noobRange:4, special:null},
-  {n:"Snowy Fields",        mobLuck:15,     pvp:"safe", minLvl:120, col:"#b2ebf2", noobFloor:6,  noobRange:4, special:null},
-  {n:"Crystal Caverns",     mobLuck:75,     pvp:"safe", minLvl:200, col:"#ea80fc", noobFloor:9,  noobRange:4, special:null},
-  {n:"Volcanic Isles",      mobLuck:300,    pvp:"on",   minLvl:300, col:"#ff5722", noobFloor:12, noobRange:4, special:null},
-  {n:"Intraplanetarium",    mobLuck:1000,   pvp:"on",   minLvl:420, col:"#7c4dff", noobFloor:15, noobRange:4, special:null},
-  {n:"Ancient Mineshaft",   mobLuck:5000,   pvp:"on",   minLvl:510, col:"#ff6d00", noobFloor:19, noobRange:5, special:null},
-  {n:"⚜ Heavenly Realm",    mobLuck:40000,  pvp:"on",   minLvl:700, col:"#b2ebf2", noobFloor:22, noobRange:5, special:"heavenly"},
-  {n:"✨ Transcendent Spire",mobLuck:200000, pvp:"on",   minLvl:900, col:"#c5cae9", noobFloor:24, noobRange:5, special:"transcendent"},
-  {n:"🌀 Void Citadel",     mobLuck:1e6,    pvp:"on",   minLvl:1200,col:"#ce93d8", noobFloor:26, noobRange:5, special:"void"},
-  {n:"⚡ Apex Domain",      mobLuck:5e6,    pvp:"on",   minLvl:1500,col:"#ffab91", noobFloor:28, noobRange:5, special:"apex"},
-  {n:"∞ Infinity Nexus",    mobLuck:2.5e7,  pvp:"on",   minLvl:2000,col:"#80cbc4", noobFloor:30, noobRange:5, special:"infinity"},
-  {n:"🌌 Omniversal Core",  mobLuck:1e8,    pvp:"on",   minLvl:2500,col:"#e6ee9c", noobFloor:32, noobRange:5, special:"omniversal"},
-  {n:"🔱 Primordial Wastes",  mobLuck:5e8,    pvp:"on",   minLvl:2600,col:"#ffe082", noobFloor:33, noobRange:5, special:"primordial"},
-  {n:"⚗ Genesis Crucible",   mobLuck:2.5e9,  pvp:"on",   minLvl:2700,col:"#c8e6c9", noobFloor:34, noobRange:5, special:"genesis"},
-  {n:"💠 True Void Realm",   mobLuck:1.25e10,pvp:"on",   minLvl:2800,col:"#b39ddb", noobFloor:35, noobRange:5, special:"truevoid"},
-  {n:"🌟 Astral Plane",      mobLuck:6.25e10,pvp:"on",   minLvl:2900,col:"#fff9c4", noobFloor:36, noobRange:5, special:"astral"},
-  {n:"🧿 Nexus Hub",         mobLuck:3e11,   pvp:"on",   minLvl:3000,col:"#80deea", noobFloor:37, noobRange:5, special:"nexus"},
-  {n:"💫 Fractal Expanse",   mobLuck:1.5e12, pvp:"on",   minLvl:3100,col:"#dce775", noobFloor:38, noobRange:5, special:"fractal"},
-  {n:"⚡ Quantum Rift",      mobLuck:7.5e12, pvp:"on",   minLvl:3200,col:"#82b1ff", noobFloor:39, noobRange:5, special:"quantum"},
-  {n:"🌀 Chaos Vortex",      mobLuck:3.75e13,pvp:"on",   minLvl:3300,col:"#ff5252", noobFloor:40, noobRange:5, special:"chaos"},
-  {n:"⚖ Order Sanctum",     mobLuck:1.9e14, pvp:"on",   minLvl:3400,col:"#ffe0b2", noobFloor:41, noobRange:5, special:"order"},
-  {n:"🕊 Ethereal Garden",   mobLuck:9.5e14, pvp:"off",  minLvl:3500,col:"#f8bbd0", noobFloor:42, noobRange:5, special:"ethereal"},
-  {n:"🌈 Prismatic Realm",   mobLuck:4.75e15,pvp:"on",   minLvl:3600,col:"#b2dfdb", noobFloor:43, noobRange:5, special:"prismatic"},
-  {n:"🔮 Oracle's Domain",   mobLuck:2.4e16, pvp:"on",   minLvl:3700,col:"#d1c4e9", noobFloor:44, noobRange:5, special:"oracle"},
-  {n:"🌊 Endless Ocean",     mobLuck:1.2e17, pvp:"on",   minLvl:3800,col:"#0288d1", noobFloor:45, noobRange:5, special:"ocean"},
-  {n:"🔥 Infernal Core",     mobLuck:6e17,   pvp:"on",   minLvl:3900,col:"#ff3d00", noobFloor:46, noobRange:5, special:"infernal"},
-  {n:"🧊 Frozen Eternity",   mobLuck:3e18,   pvp:"on",   minLvl:4000,col:"#b3e5fc", noobFloor:47, noobRange:5, special:"frozen"},
-  {n:"☄ Meteor Graveyard",   mobLuck:1.5e19, pvp:"on",   minLvl:4100,col:"#ff8f00", noobFloor:48, noobRange:5, special:"meteor"},
-  {n:"💀 Death's Domain",    mobLuck:7.5e19, pvp:"on",   minLvl:4200,col:"#546e7a", noobFloor:49, noobRange:5, special:"death"},
-  {n:"🌠 Star Forge",        mobLuck:3.75e20,pvp:"on",   minLvl:4300,col:"#fff176", noobFloor:50, noobRange:5, special:"starforge"},
-  {n:"🎆 Creation Nexus",    mobLuck:1.9e21, pvp:"on",   minLvl:4400,col:"#f3e5f5", noobFloor:51, noobRange:5, special:"creationnexus"},
-  {n:"👁 The Absolute Eye",  mobLuck:1e22,   pvp:"on",   minLvl:4500,col:"#ffffff", noobFloor:52, noobRange:5, special:"absoluteeye"},
+  {n:"Mystical Forest",     mobLuck:1.5,      pvp:"off",  minLvl:20,  col:"#4fc3f7", noobFloor:2,  noobRange:4, special:null},
+  {n:"Stranded Island",     mobLuck:3,      pvp:"off",  minLvl:75,  col:"#ffab40", noobFloor:4,  noobRange:4, special:null},
+  {n:"Snowy Fields",        mobLuck:8,     pvp:"safe", minLvl:120, col:"#b2ebf2", noobFloor:6,  noobRange:4, special:null},
+  {n:"Crystal Caverns",     mobLuck:25,     pvp:"safe", minLvl:200, col:"#ea80fc", noobFloor:9,  noobRange:4, special:null},
+  {n:"Volcanic Isles",      mobLuck:80,    pvp:"on",   minLvl:300, col:"#ff5722", noobFloor:12, noobRange:4, special:null},
+  {n:"Intraplanetarium",    mobLuck:200,   pvp:"on",   minLvl:420, col:"#7c4dff", noobFloor:15, noobRange:4, special:null},
+  {n:"Ancient Mineshaft",   mobLuck:800,   pvp:"on",   minLvl:510, col:"#ff6d00", noobFloor:19, noobRange:5, special:null},
+  {n:"⚜ Heavenly Realm",    mobLuck:5000,  pvp:"on",   minLvl:700, col:"#b2ebf2", noobFloor:22, noobRange:5, special:"heavenly"},
+  {n:"✨ Transcendent Spire",mobLuck:20000, pvp:"on",   minLvl:900, col:"#c5cae9", noobFloor:24, noobRange:5, special:"transcendent"},
+  {n:"🌀 Void Citadel",     mobLuck:80000,    pvp:"on",   minLvl:1200,col:"#ce93d8", noobFloor:26, noobRange:5, special:"void"},
+  {n:"⚡ Apex Domain",      mobLuck:300000,    pvp:"on",   minLvl:1500,col:"#ffab91", noobFloor:28, noobRange:5, special:"apex"},
+  {n:"∞ Infinity Nexus",    mobLuck:1000000,  pvp:"on",   minLvl:2000,col:"#80cbc4", noobFloor:30, noobRange:5, special:"infinity"},
+  {n:"🌌 Omniversal Core",  mobLuck:3500000,    pvp:"on",   minLvl:2500,col:"#e6ee9c", noobFloor:32, noobRange:5, special:"omniversal"},
+  {n:"🔱 Primordial Wastes",  mobLuck:1.2e7,    pvp:"on",   minLvl:2600,col:"#ffe082", noobFloor:33, noobRange:5, special:"primordial"},
+  {n:"⚗ Genesis Crucible",   mobLuck:4e7,  pvp:"on",   minLvl:2700,col:"#c8e6c9", noobFloor:34, noobRange:5, special:"genesis"},
+  {n:"💠 True Void Realm",   mobLuck:1.2e8,pvp:"on",   minLvl:2800,col:"#b39ddb", noobFloor:35, noobRange:5, special:"truevoid"},
+  {n:"🌟 Astral Plane",      mobLuck:4e8,pvp:"on",   minLvl:2900,col:"#fff9c4", noobFloor:36, noobRange:5, special:"astral"},
+  {n:"🧿 Nexus Hub",         mobLuck:1.2e9,   pvp:"on",   minLvl:3000,col:"#80deea", noobFloor:37, noobRange:5, special:"nexus"},
+  {n:"💫 Fractal Expanse",   mobLuck:4e9, pvp:"on",   minLvl:3100,col:"#dce775", noobFloor:38, noobRange:5, special:"fractal"},
+  {n:"⚡ Quantum Rift",      mobLuck:1.2e10, pvp:"on",   minLvl:3200,col:"#82b1ff", noobFloor:39, noobRange:5, special:"quantum"},
+  {n:"🌀 Chaos Vortex",      mobLuck:4e10,pvp:"on",   minLvl:3300,col:"#ff5252", noobFloor:40, noobRange:5, special:"chaos"},
+  {n:"⚖ Order Sanctum",     mobLuck:1.2e11, pvp:"on",   minLvl:3400,col:"#ffe0b2", noobFloor:41, noobRange:5, special:"order"},
+  {n:"🕊 Ethereal Garden",   mobLuck:4e11, pvp:"off",  minLvl:3500,col:"#f8bbd0", noobFloor:42, noobRange:5, special:"ethereal"},
+  {n:"🌈 Prismatic Realm",   mobLuck:1.2e12,pvp:"on",   minLvl:3600,col:"#b2dfdb", noobFloor:43, noobRange:5, special:"prismatic"},
+  {n:"🔮 Oracle's Domain",   mobLuck:4e12, pvp:"on",   minLvl:3700,col:"#d1c4e9", noobFloor:44, noobRange:5, special:"oracle"},
+  {n:"🌊 Endless Ocean",     mobLuck:1.2e13, pvp:"on",   minLvl:3800,col:"#0288d1", noobFloor:45, noobRange:5, special:"ocean"},
+  {n:"🔥 Infernal Core",     mobLuck:4e13,   pvp:"on",   minLvl:3900,col:"#ff3d00", noobFloor:46, noobRange:5, special:"infernal"},
+  {n:"🧊 Frozen Eternity",   mobLuck:1.2e14,   pvp:"on",   minLvl:4000,col:"#b3e5fc", noobFloor:47, noobRange:5, special:"frozen"},
+  {n:"☄ Meteor Graveyard",   mobLuck:4e14, pvp:"on",   minLvl:4100,col:"#ff8f00", noobFloor:48, noobRange:5, special:"meteor"},
+  {n:"💀 Death's Domain",    mobLuck:1.2e15, pvp:"on",   minLvl:4200,col:"#546e7a", noobFloor:49, noobRange:5, special:"death"},
+  {n:"🌠 Star Forge",        mobLuck:4e15,pvp:"on",   minLvl:4300,col:"#fff176", noobFloor:50, noobRange:5, special:"starforge"},
+  {n:"🎆 Creation Nexus",    mobLuck:1.2e16, pvp:"on",   minLvl:4400,col:"#f3e5f5", noobFloor:51, noobRange:5, special:"creationnexus"},
+  {n:"👁 The Absolute Eye",  mobLuck:4e16,   pvp:"on",   minLvl:4500,col:"#ffffff", noobFloor:52, noobRange:5, special:"absoluteeye"},
 ];
 
 // NOOB RARITIES — mob tiers
 const NOOB_RARITIES=[
-  {rIdx:0,n:"Basic Noob",col:"#9e9e9e",hp:80,baseRew:200,xpMul:1},
-  {rIdx:4,n:"Common Noob",col:"#81c784",hp:500,baseRew:2000,xpMul:2},
-  {rIdx:8,n:"Uncommon Noob",col:"#4dd0e1",hp:3000,baseRew:20000,xpMul:4},
-  {rIdx:12,n:"Rare Noob",col:"#64b5f6",hp:2e4,baseRew:2e5,xpMul:8},
-  {rIdx:16,n:"Epic Noob",col:"#ba68c8",hp:1.5e5,baseRew:2e6,xpMul:16},
-  {rIdx:20,n:"Legendary Noob",col:"#ffa726",hp:1e6,baseRew:2e7,xpMul:32},
-  {rIdx:24,n:"Mythical Noob",col:"#e57373",hp:8e6,baseRew:2e8,xpMul:64},
-  {rIdx:28,n:"Divine Noob",col:"#fff176",hp:6e7,baseRew:2e9,xpMul:128},
-  {rIdx:32,n:"Super Noob",col:"#f06292",hp:5e8,baseRew:2e10,xpMul:256},
-  {rIdx:36,n:"Mega Noob",col:"#4db6ac",hp:4e9,baseRew:2e11,xpMul:512},
-  {rIdx:40,n:"Ultra Noob",col:"#ff8a65",hp:3e10,baseRew:2e12,xpMul:1024},
-  {rIdx:44,n:"Omega Noob",col:"#ff4081",hp:2.5e11,baseRew:2e13,xpMul:2048},
-  {rIdx:48,n:"Extreme Noob",col:"#b2ff59",hp:2e12,baseRew:2e14,xpMul:4096},
-  {rIdx:52,n:"Ultimate Noob",col:"#00e676",hp:1.5e13,baseRew:2e15,xpMul:8192},
-  {rIdx:56,n:"Insane Noob",col:"#ff6d00",hp:1e14,baseRew:2e16,xpMul:16384},
-  {rIdx:60,n:"Hyper Noob",col:"#e040fb",hp:8e14,baseRew:2e17,xpMul:32768},
-  {rIdx:64,n:"Godly Noob",col:"#ffd740",hp:6e15,baseRew:2e18,xpMul:65536},
-  {rIdx:68,n:"Unique Noob",col:"#b0bec5",hp:4e16,baseRew:2e19,xpMul:131072},
-  {rIdx:72,n:"Exotic Noob",col:"#ffab91",hp:3e17,baseRew:2e20,xpMul:262144},
-  {rIdx:76,n:"Supreme Noob",col:"#9575cd",hp:2e18,baseRew:2e21,xpMul:524288},
-  {rIdx:80,n:"Celestial Noob",col:"#40c4ff",hp:1.5e19,baseRew:2e22,xpMul:1048576},
-  {rIdx:82,n:"Eternal Noob",col:"#fff9c4",hp:1e20,baseRew:2e23,xpMul:2097152},
-  {rIdx:84,n:"Cosmic Noob",col:"#f8bbd0",hp:7e20,baseRew:2e24,xpMul:4194304},
-  {rIdx:86,n:"Heavenly Noob",col:"#b2ebf2",hp:5e21,baseRew:2e25,xpMul:8388608},
-  {rIdx:88,n:"Transcendent Noob",col:"#c5cae9",hp:3e22,baseRew:2e26,xpMul:1.6e7},
-  {rIdx:90,n:"Void Noob",col:"#ce93d8",hp:2e23,baseRew:2e27,xpMul:3.2e7},
-  {rIdx:92,n:"Apex Noob",col:"#ffab91",hp:1.5e24,baseRew:2e28,xpMul:6.4e7},
-  {rIdx:94,n:"Infinity Noob",col:"#80cbc4",hp:1e25,baseRew:2e29,xpMul:1.28e8},
-  {rIdx:96,n:"Omniversal Noob",col:"#e6ee9c",hp:8e25,baseRew:2e30,xpMul:2.56e8},
-  {rIdx:100,n:"Primordial Noob",col:"#ffe082",hp:5e26,baseRew:2e31,xpMul:5.12e8},
-  {rIdx:104,n:"Genesis Noob",col:"#c8e6c9",hp:4e27,baseRew:2e32,xpMul:1.024e9},
-  {rIdx:108,n:"True Void Noob",col:"#b39ddb",hp:3e28,baseRew:2e33,xpMul:2.048e9},
-  {rIdx:112,n:"Astral Noob",col:"#fff9c4",hp:2e29,baseRew:2e34,xpMul:4.096e9},
-  {rIdx:116,n:"Nexus Noob",col:"#80deea",hp:1.5e30,baseRew:2e35,xpMul:8.192e9},
-  {rIdx:120,n:"Fractal Noob",col:"#dce775",hp:1e31,baseRew:2e36,xpMul:1.6384e10},
-  {rIdx:124,n:"Quantum Noob",col:"#82b1ff",hp:8e31,baseRew:2e37,xpMul:3.2768e10},
-  {rIdx:128,n:"Chaos Noob",col:"#ff5252",hp:6e32,baseRew:2e38,xpMul:6.5536e10},
-  {rIdx:132,n:"Order Noob",col:"#ffe0b2",hp:4e33,baseRew:2e39,xpMul:1.31072e11},
-  {rIdx:136,n:"Ethereal Noob",col:"#f8bbd0",hp:3e34,baseRew:2e40,xpMul:2.62144e11},
-  {rIdx:140,n:"Prismatic Noob",col:"#b2dfdb",hp:2e35,baseRew:2e41,xpMul:5.24288e11},
-  {rIdx:144,n:"Oracle Noob",col:"#d1c4e9",hp:1.5e36,baseRew:2e42,xpMul:1.048576e12},
-  {rIdx:148,n:"Ocean Noob",col:"#0288d1",hp:1e37,baseRew:2e43,xpMul:2.097152e12},
-  {rIdx:152,n:"Infernal Noob",col:"#ff3d00",hp:8e37,baseRew:2e44,xpMul:4.194304e12},
-  {rIdx:156,n:"Frozen Noob",col:"#b3e5fc",hp:6e38,baseRew:2e45,xpMul:8.388608e12},
-  {rIdx:160,n:"Meteor Noob",col:"#ff8f00",hp:4e39,baseRew:2e46,xpMul:1.6777216e13},
-  {rIdx:164,n:"Death Noob",col:"#546e7a",hp:3e40,baseRew:2e47,xpMul:3.3554432e13},
-  {rIdx:168,n:"Star Forge Noob",col:"#fff176",hp:2e41,baseRew:2e48,xpMul:6.7108864e13},
-  {rIdx:172,n:"Creation Noob",col:"#f3e5f5",hp:1.5e42,baseRew:2e49,xpMul:1.34217728e14},
-  {rIdx:176,n:"Absolute Noob",col:"#ffffff",hp:1e43,baseRew:2e50,xpMul:2.68435456e14},
+  {rIdx:0,n:"Basic Noob",col:"#9e9e9e",hp:80,baseRew:30,xpMul:1},
+  {rIdx:4,n:"Common Noob",col:"#81c784",hp:500,baseRew:300,xpMul:2},
+  {rIdx:8,n:"Uncommon Noob",col:"#4dd0e1",hp:3000,baseRew:3000,xpMul:4},
+  {rIdx:12,n:"Rare Noob",col:"#64b5f6",hp:2e4,baseRew:30000,xpMul:8},
+  {rIdx:16,n:"Epic Noob",col:"#ba68c8",hp:1.5e5,baseRew:300000,xpMul:16},
+  {rIdx:20,n:"Legendary Noob",col:"#ffa726",hp:1e6,baseRew:3.00e+06,xpMul:32},
+  {rIdx:24,n:"Mythical Noob",col:"#e57373",hp:8e6,baseRew:3.00e+07,xpMul:64},
+  {rIdx:28,n:"Divine Noob",col:"#fff176",hp:6e7,baseRew:3.00e+08,xpMul:128},
+  {rIdx:32,n:"Super Noob",col:"#f06292",hp:5e8,baseRew:3.00e+09,xpMul:256},
+  {rIdx:36,n:"Mega Noob",col:"#4db6ac",hp:4e9,baseRew:3.00e+10,xpMul:512},
+  {rIdx:40,n:"Ultra Noob",col:"#ff8a65",hp:3e10,baseRew:3.00e+11,xpMul:1024},
+  {rIdx:44,n:"Omega Noob",col:"#ff4081",hp:2.5e11,baseRew:3.00e+12,xpMul:2048},
+  {rIdx:48,n:"Extreme Noob",col:"#b2ff59",hp:2e12,baseRew:3.00e+13,xpMul:4096},
+  {rIdx:52,n:"Ultimate Noob",col:"#00e676",hp:1.5e13,baseRew:3.00e+14,xpMul:8192},
+  {rIdx:56,n:"Insane Noob",col:"#ff6d00",hp:1e14,baseRew:3.00e+15,xpMul:16384},
+  {rIdx:60,n:"Hyper Noob",col:"#e040fb",hp:8e14,baseRew:3.00e+16,xpMul:32768},
+  {rIdx:64,n:"Godly Noob",col:"#ffd740",hp:6e15,baseRew:3.00e+17,xpMul:65536},
+  {rIdx:68,n:"Unique Noob",col:"#b0bec5",hp:4e16,baseRew:3.00e+18,xpMul:131072},
+  {rIdx:72,n:"Exotic Noob",col:"#ffab91",hp:3e17,baseRew:3.00e+19,xpMul:262144},
+  {rIdx:76,n:"Supreme Noob",col:"#9575cd",hp:2e18,baseRew:3.00e+20,xpMul:524288},
+  {rIdx:80,n:"Celestial Noob",col:"#40c4ff",hp:1.5e19,baseRew:3.00e+21,xpMul:1048576},
+  {rIdx:82,n:"Eternal Noob",col:"#fff9c4",hp:1e20,baseRew:3.00e+22,xpMul:2097152},
+  {rIdx:84,n:"Cosmic Noob",col:"#f8bbd0",hp:7e20,baseRew:3.00e+23,xpMul:4194304},
+  {rIdx:86,n:"Heavenly Noob",col:"#b2ebf2",hp:5e21,baseRew:3.00e+24,xpMul:8388608},
+  {rIdx:88,n:"Transcendent Noob",col:"#c5cae9",hp:3e22,baseRew:3.00e+25,xpMul:1.6e7},
+  {rIdx:90,n:"Void Noob",col:"#ce93d8",hp:2e23,baseRew:3.00e+26,xpMul:3.2e7},
+  {rIdx:92,n:"Apex Noob",col:"#ffab91",hp:1.5e24,baseRew:3.00e+27,xpMul:6.4e7},
+  {rIdx:94,n:"Infinity Noob",col:"#80cbc4",hp:1e25,baseRew:3.00e+28,xpMul:1.28e8},
+  {rIdx:96,n:"Omniversal Noob",col:"#e6ee9c",hp:8e25,baseRew:3.00e+29,xpMul:2.56e8},
+  {rIdx:100,n:"Primordial Noob",col:"#ffe082",hp:5e26,baseRew:3.00e+30,xpMul:5.12e8},
+  {rIdx:104,n:"Genesis Noob",col:"#c8e6c9",hp:4e27,baseRew:3.00e+31,xpMul:1.024e9},
+  {rIdx:108,n:"True Void Noob",col:"#b39ddb",hp:3e28,baseRew:3.00e+32,xpMul:2.048e9},
+  {rIdx:112,n:"Astral Noob",col:"#fff9c4",hp:2e29,baseRew:3.00e+33,xpMul:4.096e9},
+  {rIdx:116,n:"Nexus Noob",col:"#80deea",hp:1.5e30,baseRew:3.00e+34,xpMul:8.192e9},
+  {rIdx:120,n:"Fractal Noob",col:"#dce775",hp:1e31,baseRew:3.00e+35,xpMul:1.6384e10},
+  {rIdx:124,n:"Quantum Noob",col:"#82b1ff",hp:8e31,baseRew:3.00e+36,xpMul:3.2768e10},
+  {rIdx:128,n:"Chaos Noob",col:"#ff5252",hp:6e32,baseRew:3.00e+37,xpMul:6.5536e10},
+  {rIdx:132,n:"Order Noob",col:"#ffe0b2",hp:4e33,baseRew:3.00e+38,xpMul:1.31072e11},
+  {rIdx:136,n:"Ethereal Noob",col:"#f8bbd0",hp:3e34,baseRew:3.00e+39,xpMul:2.62144e11},
+  {rIdx:140,n:"Prismatic Noob",col:"#b2dfdb",hp:2e35,baseRew:3.00e+40,xpMul:5.24288e11},
+  {rIdx:144,n:"Oracle Noob",col:"#d1c4e9",hp:1.5e36,baseRew:3.00e+41,xpMul:1.048576e12},
+  {rIdx:148,n:"Ocean Noob",col:"#0288d1",hp:1e37,baseRew:3.00e+42,xpMul:2.097152e12},
+  {rIdx:152,n:"Infernal Noob",col:"#ff3d00",hp:8e37,baseRew:3.00e+43,xpMul:4.194304e12},
+  {rIdx:156,n:"Frozen Noob",col:"#b3e5fc",hp:6e38,baseRew:3.00e+44,xpMul:8.388608e12},
+  {rIdx:160,n:"Meteor Noob",col:"#ff8f00",hp:4e39,baseRew:3.00e+45,xpMul:1.6777216e13},
+  {rIdx:164,n:"Death Noob",col:"#546e7a",hp:3e40,baseRew:3.00e+46,xpMul:3.3554432e13},
+  {rIdx:168,n:"Star Forge Noob",col:"#fff176",hp:2e41,baseRew:3.00e+47,xpMul:6.7108864e13},
+  {rIdx:172,n:"Creation Noob",col:"#f3e5f5",hp:1.5e42,baseRew:3.00e+48,xpMul:1.34217728e14},
+  {rIdx:176,n:"Absolute Noob",col:"#ffffff",hp:1e43,baseRew:3.00e+49,xpMul:2.68435456e14},
 ];
 
 // WEATHER — additive luck sum, then multiply by stack bonus
 const WX=[
   {n:"Clear",     lm:0,   col:"#ffd54f",bc:"#ffab00",cls:"",      icon:"☀"},
-  {n:"Rain",      lm:2,   col:"#82b1ff",bc:"#2979ff",cls:"wrain", icon:"🌧"},
-  {n:"Night",     lm:1.5, col:"#9fa8da",bc:"#3949ab",cls:"wnight",icon:"🌙"},
-  {n:"Blood Moon",lm:5,   col:"#ff5252",bc:"#c62828",cls:"wblood",icon:"🩸"},
-  {n:"Storm",     lm:4,   col:"#ce93d8",bc:"#7c4dff",cls:"",      icon:"⚡"},
-  {n:"Blizzard",  lm:3,   col:"#80d8ff",bc:"#0091ea",cls:"",      icon:"❄"},
-  {n:"Eclipse",   lm:8,   col:"#aa44ff",bc:"#6600cc",cls:"",      icon:"🌑"},
-  {n:"Meteor",    lm:12,  col:"#ff8c00",bc:"#cc5500",cls:"",      icon:"☄"},
-  {n:"Void Storm",lm:20,  col:"#ff00ff",bc:"#aa00aa",cls:"",      icon:"🌀"},
-  {n:"Cosmic Rain",lm:50, col:"#e1bee7",bc:"#7b1fa2",cls:"",      icon:"🌌"},
-  {n:"Solar Flare",lm:30, col:"#ff6f00",bc:"#e65100",cls:"",      icon:"🌞"},
-  {n:"Nebula Shower",lm:15, col:"#b39ddb",bc:"#7c4dff",cls:"",      icon:"🌌"},
-  {n:"Tide of Souls",lm:18, col:"#80d8ff",bc:"#0091ea",cls:"",      icon:"👻"},
-  {n:"Starfall",    lm:22,  col:"#fff176",bc:"#f9a825",cls:"",      icon:"⭐"},
-  {n:"Aurora",      lm:10,  col:"#69f0ae",bc:"#00c853",cls:"",      icon:"🌠"},
-  {n:"Thunder",     lm:8,   col:"#ffd600",bc:"#f57f17",cls:"",      icon:"⚡"},
-  {n:"Ashfall",     lm:14,  col:"#78909c",bc:"#37474f",cls:"",      icon:"🌋"},
-  {n:"Sandstorm",   lm:7,   col:"#ffcc80",bc:"#e65100",cls:"",      icon:"🏜"},
-  {n:"Heatwave",    lm:9,   col:"#ff7043",bc:"#d84315",cls:"",      icon:"🌡"},
-  {n:"Fog",         lm:3,   col:"#cfd8dc",bc:"#607d8b",cls:"",      icon:"🌫"},
-  {n:"Typhoon",     lm:16,  col:"#82b1ff",bc:"#1565c0",cls:"",      icon:"🌀"},
-  {n:"Hailstorm",   lm:13,  col:"#b3e5fc",bc:"#0277bd",cls:"",      icon:"🧊"},
-  {n:"Lunar Tide",  lm:25,  col:"#e1bee7",bc:"#7b1fa2",cls:"",      icon:"🌕"},
-  {n:"Supernova",   lm:40,  col:"#ff8f00",bc:"#e65100",cls:"",      icon:"💥"},
-  {n:"Dark Energy", lm:35,  col:"#212121",bc:"#1a237e",cls:"",      icon:"🖤"},
-  {n:"Light Nova",  lm:28,  col:"#fffde7",bc:"#f9a825",cls:"",      icon:"✨"},
-  {n:"Gravity Wave",lm:45,  col:"#7986cb",bc:"#283593",cls:"",      icon:"🌐"},
-  {n:"Time Storm",  lm:60,  col:"#4fc3f7",bc:"#0277bd",cls:"",      icon:"⏰"},
-  {n:"Void Rain",   lm:55,  col:"#ce93d8",bc:"#6a1b9a",cls:"",      icon:"💜"},
-  {n:"Soul Mist",   lm:38,  col:"#f8bbd0",bc:"#880e4f",cls:"",      icon:"💨"},
-  {n:"Crystal Snow",lm:20,  col:"#e3f2fd",bc:"#0d47a1",cls:"",      icon:"❄"},
-  {n:"Phoenix Rain",lm:70,  col:"#ff7043",bc:"#bf360c",cls:"",      icon:"🔥"},
-  {n:"Dragon Winds",lm:65,  col:"#a5d6a7",bc:"#1b5e20",cls:"",      icon:"🐉"},
-  {n:"Titan Storm", lm:80,  col:"#ffcc80",bc:"#e65100",cls:"",      icon:"⚙"},
-  {n:"Celestial Dew",lm:42, col:"#b2ebf2",bc:"#006064",cls:"",      icon:"💧"},
-  {n:"Chaos Burst", lm:90,  col:"#ff5252",bc:"#b71c1c",cls:"",      icon:"🌪"},
-  {n:"Order Field", lm:75,  col:"#fff9c4",bc:"#f57f17",cls:"",      icon:"🔯"},
-  {n:"Dream Haze",  lm:50,  col:"#e1bee7",bc:"#4a148c",cls:"",      icon:"💫"},
-  {n:"Reality Flux",lm:110, col:"#dce775",bc:"#558b2f",cls:"",      icon:"🔮"},
-  {n:"Nexus Storm", lm:130, col:"#80cbc4",bc:"#004d40",cls:"",      icon:"🌊"},
-  {n:"Genesis Rain",lm:150, col:"#c8e6c9",bc:"#1b5e20",cls:"",      icon:"🌱"},
-  {n:"Source Wave", lm:175, col:"#ffe082",bc:"#f57f17",cls:"",      icon:"🌟"},
-  {n:"Omega Storm", lm:200, col:"#9575cd",bc:"#311b92",cls:"",      icon:"♾"},
-  {n:"Alpha Winds", lm:225, col:"#ff8a65",bc:"#bf360c",cls:"",      icon:"💨"},
-  {n:"Sigma Flux",  lm:250, col:"#e6ee9c",bc:"#827717",cls:"",      icon:"Σ"},
-  {n:"Eternal Rain",lm:300, col:"#fff9c4",bc:"#f9a825",cls:"",      icon:"♾"},
-  {n:"Final Storm", lm:400, col:"#ffffff",bc:"#9e9e9e",cls:"",      icon:"🌩"},
-  {n:"True Eclipse",lm:500, col:"#37474f",bc:"#263238",cls:"",      icon:"🌑"},
-  {n:"Absolute Tide",lm:750,col:"#e3f2fd",bc:"#0d47a1",cls:"",      icon:"🌊"},
-  {n:"Infinite Flux",lm:1000,col:"#f8bbd0",bc:"#880e4f",cls:"",     icon:"∞"},
-  {n:"God's Wrath", lm:2000,col:"#ffd740",bc:"#f57f17",cls:"wblood",icon:"⚡"},
+  {n:"Rain",      lm:1,   col:"#82b1ff",bc:"#2979ff",cls:"wrain", icon:"🌧"},
+  {n:"Night",     lm:0.8, col:"#9fa8da",bc:"#3949ab",cls:"wnight",icon:"🌙"},
+  {n:"Blood Moon",lm:2,   col:"#ff5252",bc:"#c62828",cls:"wblood",icon:"🩸"},
+  {n:"Storm",     lm:1.5,   col:"#ce93d8",bc:"#7c4dff",cls:"",      icon:"⚡"},
+  {n:"Blizzard",  lm:1.2,   col:"#80d8ff",bc:"#0091ea",cls:"",      icon:"❄"},
+  {n:"Eclipse",   lm:3,   col:"#aa44ff",bc:"#6600cc",cls:"",      icon:"🌑"},
+  {n:"Meteor",    lm:4,  col:"#ff8c00",bc:"#cc5500",cls:"",      icon:"☄"},
+  {n:"Void Storm",lm:6,  col:"#ff00ff",bc:"#aa00aa",cls:"",      icon:"🌀"},
+  {n:"Cosmic Rain",lm:10, col:"#e1bee7",bc:"#7b1fa2",cls:"",      icon:"🌌"},
+  {n:"Solar Flare",lm:7, col:"#ff6f00",bc:"#e65100",cls:"",      icon:"🌞"},
+  {n:"Nebula Shower",lm:5, col:"#b39ddb",bc:"#7c4dff",cls:"",      icon:"🌌"},
+  {n:"Tide of Souls",lm:6, col:"#80d8ff",bc:"#0091ea",cls:"",      icon:"👻"},
+  {n:"Starfall",    lm:7,  col:"#fff176",bc:"#f9a825",cls:"",      icon:"⭐"},
+  {n:"Aurora",      lm:3.5,  col:"#69f0ae",bc:"#00c853",cls:"",      icon:"🌠"},
+  {n:"Thunder",     lm:2.5,   col:"#ffd600",bc:"#f57f17",cls:"",      icon:"⚡"},
+  {n:"Ashfall",     lm:4,  col:"#78909c",bc:"#37474f",cls:"",      icon:"🌋"},
+  {n:"Sandstorm",   lm:2,   col:"#ffcc80",bc:"#e65100",cls:"",      icon:"🏜"},
+  {n:"Heatwave",    lm:2.5,   col:"#ff7043",bc:"#d84315",cls:"",      icon:"🌡"},
+  {n:"Fog",         lm:1,   col:"#cfd8dc",bc:"#607d8b",cls:"",      icon:"🌫"},
+  {n:"Typhoon",     lm:5,  col:"#82b1ff",bc:"#1565c0",cls:"",      icon:"🌀"},
+  {n:"Hailstorm",   lm:4,  col:"#b3e5fc",bc:"#0277bd",cls:"",      icon:"🧊"},
+  {n:"Lunar Tide",  lm:7,  col:"#e1bee7",bc:"#7b1fa2",cls:"",      icon:"🌕"},
+  {n:"Supernova",   lm:10,  col:"#ff8f00",bc:"#e65100",cls:"",      icon:"💥"},
+  {n:"Dark Energy", lm:9,  col:"#212121",bc:"#1a237e",cls:"",      icon:"🖤"},
+  {n:"Light Nova",  lm:8,  col:"#fffde7",bc:"#f9a825",cls:"",      icon:"✨"},
+  {n:"Gravity Wave",lm:11,  col:"#7986cb",bc:"#283593",cls:"",      icon:"🌐"},
+  {n:"Time Storm",  lm:14,  col:"#4fc3f7",bc:"#0277bd",cls:"",      icon:"⏰"},
+  {n:"Void Rain",   lm:12,  col:"#ce93d8",bc:"#6a1b9a",cls:"",      icon:"💜"},
+  {n:"Soul Mist",   lm:9,  col:"#f8bbd0",bc:"#880e4f",cls:"",      icon:"💨"},
+  {n:"Crystal Snow",lm:5,  col:"#e3f2fd",bc:"#0d47a1",cls:"",      icon:"❄"},
+  {n:"Phoenix Rain",lm:16,  col:"#ff7043",bc:"#bf360c",cls:"",      icon:"🔥"},
+  {n:"Dragon Winds",lm:14,  col:"#a5d6a7",bc:"#1b5e20",cls:"",      icon:"🐉"},
+  {n:"Titan Storm", lm:18,  col:"#ffcc80",bc:"#e65100",cls:"",      icon:"⚙"},
+  {n:"Celestial Dew",lm:10, col:"#b2ebf2",bc:"#006064",cls:"",      icon:"💧"},
+  {n:"Chaos Burst", lm:20,  col:"#ff5252",bc:"#b71c1c",cls:"",      icon:"🌪"},
+  {n:"Order Field", lm:17,  col:"#fff9c4",bc:"#f57f17",cls:"",      icon:"🔯"},
+  {n:"Dream Haze",  lm:12,  col:"#e1bee7",bc:"#4a148c",cls:"",      icon:"💫"},
+  {n:"Reality Flux",lm:22, col:"#dce775",bc:"#558b2f",cls:"",      icon:"🔮"},
+  {n:"Nexus Storm", lm:25, col:"#80cbc4",bc:"#004d40",cls:"",      icon:"🌊"},
+  {n:"Genesis Rain",lm:28, col:"#c8e6c9",bc:"#1b5e20",cls:"",      icon:"🌱"},
+  {n:"Source Wave", lm:32, col:"#ffe082",bc:"#f57f17",cls:"",      icon:"🌟"},
+  {n:"Omega Storm", lm:36, col:"#9575cd",bc:"#311b92",cls:"",      icon:"♾"},
+  {n:"Alpha Winds", lm:40, col:"#ff8a65",bc:"#bf360c",cls:"",      icon:"💨"},
+  {n:"Sigma Flux",  lm:45, col:"#e6ee9c",bc:"#827717",cls:"",      icon:"Σ"},
+  {n:"Eternal Rain",lm:50, col:"#fff9c4",bc:"#f9a825",cls:"",      icon:"♾"},
+  {n:"Final Storm", lm:65, col:"#ffffff",bc:"#9e9e9e",cls:"",      icon:"🌩"},
+  {n:"True Eclipse",lm:80, col:"#37474f",bc:"#263238",cls:"",      icon:"🌑"},
+  {n:"Absolute Tide",lm:100,col:"#e3f2fd",bc:"#0d47a1",cls:"",      icon:"🌊"},
+  {n:"Infinite Flux",lm:130,col:"#f8bbd0",bc:"#880e4f",cls:"",     icon:"∞"},
+  {n:"God's Wrath", lm:200,col:"#ffd740",bc:"#f57f17",cls:"wblood",icon:"⚡"},
 ];
 
 // MOB VARIANTS
@@ -1506,13 +1536,13 @@ function totalLuck(){
   let wxSum=0;
   S.activeWeathers.forEach(idx=>{wxSum+=WX[idx].lm;});
   const wxStack=S.activeWeathers.size;
-  const wxMul=(1+wxSum)*Math.pow(1.1,Math.max(0,wxStack-1));
-  const lvlBonus=1+(S.lvl*0.0005); // tiny per-level boost
+  const wxMul=(1+wxSum*0.4)*Math.pow(1.04,Math.max(0,wxStack-1));  // nerfed: 40% of lm, smaller stack bonus
+  const lvlBonus=1+(S.lvl*0.0001); // even tinier per-level boost
   return wxMul*lvlBonus*AREAS[S.areaIdx].mobLuck;
 }
 
 function roll(arr,lm=1){
-  const cap=Math.min(lm,1e12);
+  const cap=Math.min(lm,1e9);  // luck cap reduced from 1e12 to 1e9
   let p=arr[0];
   for(let i=arr.length-1;i>=0;i--){
     if(Math.random()<Math.min(0.9999,arr[i].c*cap)){p=arr[i];break;}
@@ -1524,22 +1554,22 @@ function uBonus(id){
   const l=S.ul[id]||0;
   const p=S.up[id]||0;
   if(l===0)return 1;
-  const prestigeMul=1+p*1.5;
+  const prestigeMul=1+p*0.8;  // was p*1.5 — prestige scales less
   let bonus;
-  if(l<=100)      bonus=1+(l/100)*4;
-  else if(l<=400) bonus=5+(l-100)/300*45;
-  else if(l<=1200)bonus=50+(l-400)/800*450;
-  else            bonus=500+(l-1200)/600*4500;
+  if(l<=100)      bonus=1+(l/100)*2;       // was ×4 at Lv100 → now ×2
+  else if(l<=400) bonus=3+(l-100)/300*17;  // was 5→50 → now 3→20
+  else if(l<=1200)bonus=20+(l-400)/800*130;// was 50→500 → now 20→150
+  else            bonus=150+(l-1200)/3800*1350; // was →5000 → now →1500
   return bonus*prestigeMul;
 }
 
-// Conveyor speed — boosted by all machine levels
+// Conveyor speed — boosted by all machine levels (nerfed base)
 function factSpeed(){
   const l=S.ul['conveyor']||0;
-  if(l===0)return 10000;
-  // Other machines boost conveyor speed too
-  const machineBonus=1+(['upgrader','polisher','molder','classifier','enchanter'].reduce((a,id)=>a+(S.ul[id]||0),0)*0.0002);
-  const spd=Math.max(20,Math.floor(10000*Math.pow(0.9983,l)/machineBonus));
+  if(l===0)return 18000;  // was 12000 — longer idle
+  // Lv1=17s, Lv50=11s, Lv200=4s, Lv1000=0.5s, Lv5000=0.05s
+  const machineBonus=1+(['upgrader','polisher','molder','classifier','enchanter'].reduce((a,id)=>a+(S.ul[id]||0),0)*0.00008);  // was 0.00015
+  const spd=Math.max(40,Math.floor(18000*Math.pow(0.9985,l)/machineBonus));  // max 25/s, not 50/s
   return spd;
 }
 
@@ -1555,34 +1585,36 @@ function encLimit(){
 }
 
 function sVal(sw){
-  const rarBase=Math.pow(1/sw.r.c,0.9);
+  // Slower economy: Basic = ~120 cash (not 700), scales steeply with rarity
+  const rarBase=Math.pow(1/sw.r.c,0.88);
   const qMul=sw.q.cashBoost||1;
   const mMul=sw.m.cashBoost||1;
-  const clMul=Math.pow(sw.cl.d,0.5);
-  const lvlMul=1+Math.pow((sw.swLvl||1)*0.003,1.1);
-  let v=rarBase*qMul*mMul*clMul*lvlMul*1400;
+  const clMul=Math.pow(sw.cl.d,0.45);
+  const lvlMul=1+Math.pow((sw.swLvl||1)*0.002,1.15);
+  let v=rarBase*qMul*mMul*clMul*lvlMul*200; // 200 base (was 1400) — Basic gives ~120-200
   sw.encs.forEach(e=>{
-    if(e.n.n==="Fortune")v*=(1+0.10*e.tier);
-    if(e.n.n==="Ancient")v*=(1+0.08*e.tier);
-    if(e.n.n==="Looting")v*=(1+0.02*e.tier);
+    if(e.n.n==="Fortune")v*=(1+0.08*e.tier);
+    if(e.n.n==="Ancient")v*=(1+0.06*e.tier);
+    if(e.n.n==="Looting")v*=(1+0.015*e.tier);
   });
-  return Math.max(700,v);
+  return Math.max(120,v);
 }
 
 function sDmg(sw){
-  const rarBase=Math.pow(1/sw.r.c,0.85);
-  const clMul=Math.pow(sw.cl.d,0.8);
-  const lvlMul=Math.pow(Math.max(1,sw.swLvl||1),0.7);
-  let d=rarBase*clMul*lvlMul*120;
+  // Basic-/Regular/Lv1 = ~50 dmg. Basic/Regular/Lv1 = ~65. Scales steeply with rarity.
+  const rarBase=Math.pow(1/sw.r.c,0.72);   // was 0.85 — less explosive scaling
+  const clMul=Math.pow(sw.cl.d,0.55);       // was 0.80 — classes matter less for raw dmg
+  const lvlMul=Math.pow(Math.max(1,sw.swLvl||1),0.5); // was 0.70 — level matters less
+  let d=rarBase*clMul*lvlMul*65;            // was 120 → 65 base
   sw.encs.forEach(e=>{
-    if(e.n.n==="Sharpness")d*=(1+0.12*e.tier);
-    if(e.n.n==="Berserk")d*=(1+0.20*e.tier);
-    if(e.n.n==="Desperation")d*=(1+0.10*e.tier);
-    if(e.n.n==="Omnislash")d*=(1+0.15*e.tier);
-    if(e.n.n==="Infinity Blade")d*=(1+0.18*e.tier);
-    if(e.n.n==="Godslayer")d*=(1+0.20*e.tier);
+    if(e.n.n==="Sharpness")d*=(1+0.06*e.tier);    // was 0.12
+    if(e.n.n==="Berserk")d*=(1+0.10*e.tier);       // was 0.20
+    if(e.n.n==="Desperation")d*=(1+0.05*e.tier);   // was 0.10
+    if(e.n.n==="Omnislash")d*=(1+0.08*e.tier);     // was 0.15
+    if(e.n.n==="Infinity Blade")d*=(1+0.09*e.tier);// was 0.18
+    if(e.n.n==="Godslayer")d*=(1+0.10*e.tier);     // was 0.20
   });
-  return Math.max(80,d);
+  return Math.max(50,d);
 }
 
 function getCritChance(sw){
@@ -1611,7 +1643,7 @@ function rollSword(manual=false){
     if(now-_rollCD<800){notify('Cooldown: wait 0.8s');return;}
     _rollCD=now;
   }
-  if(S.inv.length>=S.invCap){notify("Inventory full! Sell or bank swords.");return;}
+  if(S.inv.length>=S.invCap){if(manual)notify("Inventory full! Sell or bank swords.");return;}
   S.rolls++;
   const lk=totalLuck();
   const r=roll(R,lk*uBonus('upgrader'));
@@ -1634,21 +1666,26 @@ function rollSword(manual=false){
   }
   const sw={r,q,m,cl,encs,swLvl,id:Date.now()+Math.random(),locked:false};
   sw.val=sVal(sw);sw.dmg=sDmg(sw);
-  S.cur=sw;S.lockedCur=false;
-  dispSword(sw);addHist(sw);
-  // XP gain — slow for 20h grind
+  // Only update display for manual rolls — factory runs silently in background
+  if(manual){
+    S.cur=sw;S.lockedCur=false;
+    dispSword(sw);
+  }
+  addHist(sw);
+  // XP scaled to be slower — requires grinding
   const insightBonus=1+encs.filter(e=>e.n.n==="Insight").reduce((a,e)=>a+e.tier*0.25,0);
-  gainXP(Math.max(1,(sw.val/100)*insightBonus));
+  gainXP(Math.max(0.02,(sw.val/2000)*insightBonus));  // was /500
   if(!S.best||(1/sw.r.c)>(1/S.best.c)){
     S.best=sw.r;
     const el=document.getElementById('s-b');
     if(el){el.textContent=sw.r.n;el.style.color=sw.r.col;}
   }
-  if(R.indexOf(sw.r)>=40)notify(`✦ ${sw.r.n} ${sw.cl.n} forged!`);
-  checkGlobalAnnounce(sw,'forge');
+  if(R.indexOf(sw.r)>=40&&manual)notify(`✦ ${sw.r.n} ${sw.cl.n} forged!`);
+  if(manual)checkGlobalAnnounce(sw,'forge');
   const sr=document.getElementById('s-r');if(sr)sr.textContent=fmt(S.rolls);
-  const sd=document.getElementById('s-d');if(sd)sd.textContent=fmt(sw.dmg)+' DMG';
-  addToInv(sw);S.cur=sw;
+  // DON'T touch s-d (DMG display) — that only updates when you equip a sword
+  addToInv(sw);
+  if(manual)S.cur=sw;
   if(S.autoSell&&!sw.locked)autoSellSword(sw);
 }
 function autoSellSword(sw){
@@ -1757,7 +1794,7 @@ function sellIdx(i){
   const sw=S.inv[i];if(!sw||sw.locked)return;
   if(S.equippedSword===sw){S.equippedSword=null;updEquippedDisplay();}
   addCash(sw.val);S.sold++;
-  gainXP(Math.max(1,(sw.val/100)));
+  gainXP(Math.max(0.05,(sw.val/800)));  // was /100 — slower XP from selling
   S.inv.splice(i,1);renderInv();updSell();
   const ss=document.getElementById('s-s');if(ss)ss.textContent=fmt(S.sold);
   updateLB();
@@ -1765,7 +1802,7 @@ function sellIdx(i){
 function sellAll(){
   let t=0,cnt=0;
   S.inv=S.inv.filter(s=>{
-    if(!s.locked){t+=s.val;S.sold++;cnt++;if(S.equippedSword===s)S.equippedSword=null;gainXP(Math.max(1,s.val/100));return false;}
+    if(!s.locked){t+=s.val;S.sold++;cnt++;if(S.equippedSword===s)S.equippedSword=null;gainXP(Math.max(0.05,s.val/800));return false;}  // nerfed XP
     return true;
   });
   addCash(t);renderInv();updSell();
@@ -1798,7 +1835,7 @@ function sellFromBank(){
 }
 function tickBankIncome(){
   if(S.bank.length===0)return;
-  const income=S.bank.reduce((a,sw)=>a+sw.val*0.001,0);
+  const income=S.bank.reduce((a,sw)=>a+sw.val*0.0001,0);  // was 0.001 — 10× less
   addCash(income);
   S.bankIncome=income;
   const bi=document.getElementById('bank-income');if(bi)bi.textContent='$'+fmt(income*86400)+'/day';
@@ -2039,9 +2076,10 @@ function updAscDisplay(){
 // UPGRADES — batch buying works correctly
 // ============================================================
 function getCost(u,lvl){
-  if(u.id==='appraiser')return Math.floor(1+Math.pow(lvl,1.1));
+  if(u.id==='appraiser')return Math.floor(1+Math.pow(lvl,1.2));
   const p=S.up[u.id]||0;
-  return Math.floor(u.base+u.scale*Math.pow(lvl,1.45)*Math.pow(1.015,lvl)*(1+p*1.8));
+  // Steeper exponent (1.55 vs 1.45) + faster base growth (1.022 vs 1.015)
+  return Math.floor(u.base+u.scale*Math.pow(lvl,1.55)*Math.pow(1.022,lvl)*(1+p*2.5));
 }
 function getBatchCost(u,currentLvl,n){
   let total=0;
@@ -2122,9 +2160,11 @@ function genNoob(area,isElite=false){
   const lvl=50+tier.rIdx*8+Math.floor(Math.random()*30);
   const sw=S.equippedSword||(S.cur)||(S.inv[0]||null);
   const lootMul=sw?sw.encs.filter(e=>e.n.n==="Looting").reduce((a,e)=>a+e.tier*0.02,1):1;
-  const triMul=tripleSpawnActive?125000:1;
+  const triMul=tripleSpawnActive?5000:1;  // was 125000
   const col=variant.col||tier.col;
-  const rew=tier.baseRew*area.mobLuck*lootMul*triMul*variant.lootMul*(isElite?50:1);
+  // mobLuck boosts rewards only logarithmically — prevents exponential cash from later areas
+  const luckRewMul=Math.pow(area.mobLuck,0.35);  // was area.mobLuck directly
+  const rew=tier.baseRew*luckRewMul*lootMul*triMul*variant.lootMul*(isElite?15:1);  // elite was ×50
   const xp=Math.max(1,Math.floor(tier.xpMul*area.mobLuck*variant.lootMul*(isElite?20:1)));
   return {n:`${variant.n}${rarityName} Lv${lvl} Noob${isElite?' ★':''}`,tier,rarityName,lvl,hp:tier.hp*variant.hpMul*(isElite?20:1),rew,xp,col,isElite,variant,dropR:R[Math.min(tier.rIdx+Math.floor(Math.random()*4),R.length-1)]};
 }
@@ -2200,8 +2240,36 @@ function makeMobDrop(mob){
 }
 function showDropUI(sw,mob){
   const dp=document.getElementById('drop-panel');if(!dp)return;dp.style.display='block';
-  dp.innerHTML=`<div style="background:var(--panel2);border:1px solid ${sw.r.col}55;border-radius:6px;padding:6px;margin-top:4px;"><div style="font-size:8px;color:var(--dim2);margin-bottom:2px;">⚔ DROP from ${mob.n}</div><div style="display:flex;align-items:center;gap:6px;">${getSwordSVG(sw,30,30)}<div><div style="font-family:'Cinzel',serif;font-size:9px;font-weight:700;color:${sw.r.col}">${sw.q.n} ${sw.r.n} ${sw.cl.n}</div><div style="font-size:7px;color:var(--dim2)">Lv${sw.swLvl} · $${fmt(sw.val)} · ${fmt(sw.dmg)} DMG</div></div></div><div style="display:flex;gap:4px;margin-top:4px;"><button onclick="claimDrop()" style="flex:1;padding:4px;border:none;border-radius:4px;background:linear-gradient(135deg,#00e676,#4fc3f7);color:#111;font-family:'Cinzel',serif;font-size:8px;font-weight:700;cursor:pointer;">CLAIM</button><button onclick="sellDrop()" style="flex:1;padding:4px;border:none;border-radius:4px;background:linear-gradient(135deg,#ff6d00,#ffd54f);color:#111;font-family:'Cinzel',serif;font-size:8px;font-weight:700;cursor:pointer;">SELL $${fmt(sw.val)}</button></div></div>`;
   dp._pendingSword=sw;
+  // Anti-exploit: sell button is locked for 4 seconds to prevent insta-sell
+  let lockSecs=4;
+  const renderDrop=()=>{
+    const locked=lockSecs>0;
+    dp.innerHTML=`<div style="background:var(--panel2);border:1px solid ${sw.r.col}55;border-radius:6px;padding:6px;margin-top:4px;">
+      <div style="font-size:8px;color:var(--dim2);margin-bottom:2px;">⚔ DROP from ${mob.n}</div>
+      <div style="display:flex;align-items:center;gap:6px;">${getSwordSVG(sw,30,30)}
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:9px;font-weight:700;color:${sw.r.col}">${sw.q.n} ${sw.r.n} ${sw.cl.n}</div>
+          <div style="font-size:7px;color:var(--dim2)">Lv${sw.swLvl} · $${fmt(sw.val)} · ${fmt(sw.dmg)} DMG</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:4px;margin-top:5px;">
+        <button onclick="claimDrop()" style="flex:1;padding:4px;border:none;border-radius:4px;background:linear-gradient(135deg,#00e676,#4fc3f7);color:#111;font-family:'Cinzel',serif;font-size:8px;font-weight:700;cursor:pointer;">CLAIM</button>
+        <button id="drop-sell-btn" ${locked?'disabled':''} onclick="${locked?'':'sellDrop()'}" style="flex:1;padding:4px;border:none;border-radius:4px;background:${locked?'var(--panel3)':'linear-gradient(135deg,#ff6d00,#ffd54f)'};color:${locked?'var(--dim2)':'#111'};font-family:'Cinzel',serif;font-size:8px;font-weight:700;cursor:${locked?'not-allowed':'pointer'};">
+          ${locked?'SELL ('+lockSecs+'s...)':'SELL $'+fmt(sw.val)}
+        </button>
+        <button onclick="document.getElementById('drop-panel').style.display='none'" style="flex:0.5;padding:4px;border:none;border-radius:4px;background:var(--panel3);color:var(--dim2);font-size:8px;cursor:pointer;">✕</button>
+      </div>
+    </div>`;
+  };
+  renderDrop();
+  // Tick down the lock
+  const lockInterval=setInterval(()=>{
+    if(!dp._pendingSword||dp.style.display==='none'){clearInterval(lockInterval);return;}
+    lockSecs=Math.max(0,lockSecs-1);
+    renderDrop();
+    if(lockSecs<=0)clearInterval(lockInterval);
+  },1000);
 }
 function claimDrop(){const dp=document.getElementById('drop-panel');if(!dp||!dp._pendingSword)return;if(S.inv.length>=S.invCap){notify("Inventory full!");return;}addToInv(dp._pendingSword);dp.style.display='none';notify(`Claimed: ${dp._pendingSword.r.n}`);}
 function sellDrop(){const dp=document.getElementById('drop-panel');if(!dp||!dp._pendingSword)return;addCash(dp._pendingSword.val);dp.style.display='none';notify(`Sold for $${fmt(dp._pendingSword.val)}`);}
@@ -2255,13 +2323,15 @@ function updateLB(){
 // XP / LEVELING — very slow for 20h grind
 // ============================================================
 function gainXP(a){
-  S.xp+=Math.max(1,a);
+  // Clamp to prevent accidental huge XP from exploits
+  S.xp+=Math.min(Math.max(0.01,a), S.xpN*0.02); // max 2% per gain — much slower
   let leveled=false;
   while(S.xp>=S.xpN){
     S.xp-=S.xpN;S.lvl++;
-    S.xpN=Math.floor(500*Math.pow(1.065,S.lvl)); // slow curve
+    // Steeper curve: takes much longer at higher levels
+    S.xpN=Math.floor(2000*Math.pow(1.10,S.lvl));  // was 1500×1.085, now steeper
     const tl=document.getElementById('t-lvl');if(tl)tl.textContent=S.lvl;
-    if(S.lvl%25===0)notify(`✦ Level ${S.lvl}! Luck +${(0.05).toFixed(2)}%`);
+    if(S.lvl%25===0)notify(`✦ Level ${S.lvl}!`);
     leveled=true;
   }
   if(leveled){renderAreas();const tl=document.getElementById('t-luck');if(tl)tl.textContent='×'+fmt(totalLuck());}
@@ -2274,13 +2344,13 @@ function gainXP(a){
 // ============================================================
 function tickWx(){
   S.wxTick++;
-  if(S.wxTick>60){
+  if(S.wxTick>120){  // was 60 — now changes every 2min minimum
     S.wxTick=0;if(S.adminOpen)return;
     const r=Math.random();
-    if(r<0.35&&S.activeWeathers.size<6){
+    if(r<0.18&&S.activeWeathers.size<4){  // was 0.35 chance, was cap 6 — now 0.18 and cap 4
       const candidates=WX.map((_,i)=>i).filter(i=>i>0&&!S.activeWeathers.has(i));
       if(candidates.length){const pick=candidates[Math.floor(Math.random()*candidates.length)];S.activeWeathers.add(pick);notify(`+ ${WX[pick].icon} ${WX[pick].n}! ×${fmt(totalLuck())} luck`);applyWx();}
-    }else if(r<0.6&&S.activeWeathers.size>1){
+    }else if(r<0.45&&S.activeWeathers.size>1){  // was 0.6 — weather ends more rarely
       const arr=[...S.activeWeathers].filter(i=>i!==0);
       if(arr.length){const pick=arr[Math.floor(Math.random()*arr.length)];S.activeWeathers.delete(pick);if(S.activeWeathers.size===0)S.activeWeathers.add(0);notify(`- ${WX[pick].icon} ${WX[pick].n} ended`);applyWx();}
     }
@@ -2310,7 +2380,7 @@ function tickTripleSpawn(){
 }
 function triggerTripleSpawn(){
   tripleSpawnActive=true;
-  globalAnnounce('🔥 TRIPLE SPAWN EVENT! ×125,000 Luck for 60 seconds!','#ff1744','🔥');
+  globalAnnounce('🔥 TRIPLE SPAWN EVENT! ×5,000 Luck for 60 seconds!','#ff1744','🔥');
   for(let i=0;i<3;i++)setTimeout(()=>spawnNoob(true),i*3000);
   setTimeout(()=>{tripleSpawnActive=false;notify('Triple Spawn ended.');},60000);
 }
