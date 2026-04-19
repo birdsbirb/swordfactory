@@ -2227,14 +2227,13 @@ function showDmgPopup(text){
   document.body.appendChild(el);setTimeout(()=>el.remove(),900);
 }
 function makeMobDrop(mob){
+  // Drop sword: only the rarity is from the mob — all other stats are floor/lowest
   const dropR=mob.dropR;
-  const dropQ=Q[Math.min(Q.length-1,Math.floor(Math.random()*Q.length*0.6))];
-  const dropM=M[Math.min(M.length-1,Math.floor(Math.random()*M.length*0.5))];
-  const dropCL=CL[Math.min(CL.length-1,Math.floor(Math.random()*CL.length*0.5))];
-  const dropEncs=[];
-  if(Math.random()<0.7)dropEncs.push({n:EN[Math.floor(Math.random()*EN.length)],tier:eTier()});
-  if(Math.random()<0.3)dropEncs.push({n:EN[Math.floor(Math.random()*EN.length)],tier:eTier()});
-  const lvl=mob.lvl+Math.floor(Math.random()*10);
+  const dropQ=Q[0];          // Broken quality — worst possible
+  const dropM=M[0];          // Normal mold — lowest possible
+  const dropCL=CL[0];       // Regular class — lowest possible
+  const dropEncs=[];         // No enchants on mob drops
+  const lvl=1;               // Level 1 always
   const sw={r:dropR,q:dropQ,m:dropM,cl:dropCL,encs:dropEncs,swLvl:lvl,id:Date.now()+Math.random(),locked:false};
   sw.val=sVal(sw);sw.dmg=sDmg(sw);return sw;
 }
